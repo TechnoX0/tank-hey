@@ -1,5 +1,10 @@
 {
-  "dependencies": {
-    "socket.io": "^4.8.1"
-  }
+    "name": "tank-hey-game",
+    "version": "0.0.1",
+    "description": "Tank Trouble like game",
+    "type": "module",
+    "dependencies": {
+        "express": "^4.21.2",
+        "socket.io": "^4.8.1"
+    }
 }
