@@ -4,10 +4,16 @@ import { Server } from "socket.io";
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        method: ["GET", "POST"],
+    },
+});
 
-io.on("connection", (scoket) => {
+io.on("connection", (socket) => {
     console.log("A user has connected");
+    console.log(socket);
 
     io.on("disconnect", () => {
         console.log("A user has disconnected");

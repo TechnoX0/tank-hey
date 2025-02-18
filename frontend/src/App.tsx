@@ -1,3 +1,7 @@
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000");
+
 function App() {
     return (
         <main className="w-screen h-screen bg-orange-200">
