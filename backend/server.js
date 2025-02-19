@@ -1,6 +1,7 @@
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
+import RoomManager from "./classes/RoomManager";
 
 const app = express();
 const server = createServer(app);
@@ -10,6 +11,8 @@ const io = new Server(server, {
         method: ["GET", "POST"],
     },
 });
+
+const roomManager = new RoomManager();
 
 io.on("connection", (socket) => {
     console.log("A user has connected");
