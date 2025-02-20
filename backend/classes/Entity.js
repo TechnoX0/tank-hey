@@ -6,6 +6,7 @@ class Entity {
         this.speed = speed;
         this.rotation = rotation;
         this.hitbox = hitbox;
+        this.color = "orange";
     }
 
     move(forward) {

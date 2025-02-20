@@ -1,14 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
 import { io } from "socket.io-client";
 import GameListener from "../GameListener";
+import { setupControls } from "../Controls";
 
 const socket = io("http://localhost:3000");
-
-interface Player {
-    x: number;
-    y: number;
-}
 
 interface GameState {
     id: string;
@@ -28,33 +24,7 @@ function Game() {
     useEffect(() => {
         const gameListener = new GameListener();
 
-        gameListener.addAction("ArrowUp", (isPressed) => {
-            socket.emit("playerAction", params.roomId, socket.id, {
-                type: "move",
-                data: true,
-            });
-        });
-
-        gameListener.addAction("ArrowDown", (isPressed) => {
-            socket.emit("playerAction", params.roomId, socket.id, {
-                type: "move",
-                data: false,
-            });
-        });
-
-        gameListener.addAction("ArrowLeft", (isPressed) => {
-            socket.emit("playerAction", params.roomId, socket.id, {
-                type: "rotate",
-                data: -4,
-            });
-        });
-
-        gameListener.addAction("ArrowRight", (isPressed) => {
-            socket.emit("playerAction", params.roomId, socket.id, {
-                type: "rotate",
-                data: 4,
-            });
-        });
+        setupControls(gameListener, socket, params.roomId, socket.id);
 
         socket.emit("joinRoom", params.roomId, (room: any) => {
             console.log("Joined room:", room);
@@ -82,7 +52,7 @@ function Game() {
             if (!ctx) return;
 
             ctx.clearRect(0, 0, 1280, 720);
-            ctx.fillStyle = "red";
+            ctx.fillStyle = player.color;
             ctx.beginPath();
             ctx.moveTo(
                 player.x + player.hitbox.vertices[0].x,
@@ -102,7 +72,7 @@ function Game() {
                 ref={canvasRef}
                 width={1280}
                 height={720}
-                className="bg-blue-50"
+                className="bg-blue-100"
             />
         </div>
     );
