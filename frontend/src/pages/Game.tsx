@@ -45,13 +45,15 @@ function Game() {
 
     const drawGame = (gameState: GameState) => {
         if (!ctxRef.current) return;
+        const ctx = ctxRef.current;
+        ctx.clearRect(0, 0, 1280, 720);
 
         Object.keys(gameState.players).forEach((playerId) => {
             const player = gameState.players[playerId];
-            const ctx = ctxRef.current;
             if (!ctx) return;
 
-            ctx.clearRect(0, 0, 1280, 720);
+            console.log(playerId, gameState.players);
+
             ctx.fillStyle = player.color;
             ctx.beginPath();
             ctx.moveTo(
