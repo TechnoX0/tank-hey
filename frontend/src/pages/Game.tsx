@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import GameListener from "../GameListener";
 import { setupControls } from "../Controls";
 
-const socket = io("http://localhost:3000");
+const socket = io("https://tank-hey-server.onrender.com");
 
 interface GameState {
     id: string;

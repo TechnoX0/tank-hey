@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { useNavigate } from "react-router";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+const socket = io("https://tank-hey-server.onrender.com");
 
 function App() {
     const navigate = useNavigate();
