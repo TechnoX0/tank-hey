@@ -1,7 +1,8 @@
+// server.js
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
-import RoomManager from "./classes/RoomManager";
+import RoomManager from "./classes/RoomManager.js";
 
 const app = express();
 const server = createServer(app);
@@ -16,12 +17,34 @@ const roomManager = new RoomManager();
 
 io.on("connection", (socket) => {
     console.log("A user has connected");
-    console.log(socket);
+    const playerId = socket.id;
 
-    io.on("disconnect", () => {
+    socket.on("createRoom", (roomName, callback) => {
+        const roomId = roomManager.createRoom(roomName);
+        callback(roomId);
+    });
+
+    socket.on("joinRoom", (roomId, callback) => {
+        socket.join(roomId);
+        const room = roomManager.joinRoom(roomId, socket.id);
+        callback(room);
+    });
+
+    socket.on("playerAction", (roomId, playerId, action) => {
+        roomManager.playerAction(roomId, playerId, action);
+    });
+
+    socket.on("disconnect", () => {
         console.log("A user has disconnected");
+        roomManager.removePlayerFromRoom(playerId);
     });
 });
+
+setInterval(() => {
+    Object.keys(roomManager.rooms).forEach((roomId) => {
+        io.to(roomId).emit("gameState", roomManager.getRoomGameState(roomId));
+    });
+}, 1000 / 30);
 
 server.listen(3000, () => {
     console.log("server running at http://localhost:3000");

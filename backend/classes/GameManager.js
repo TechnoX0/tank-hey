@@ -1,18 +1,40 @@
+// GameManager.js
+import Tank from "./Tank.js";
+
 class GameManager {
     constructor(canvasWidth, canvasHeight) {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
+        this.players = {};
     }
 
-    assignPlayer(socketId) {}
+    addPlayer(socketId) {
+        this.players[socketId] = new Tank(100, 100, 6);
+    }
 
-    handlePlayerAction(socketId, data) {}
+    playerAction(playerId, action) {
+        const player = this.players[playerId];
+        if (!player) return;
 
-    removePlayer(socketId) {}
+        switch (action.type) {
+            case "rotate":
+                player.rotate(action.data);
+                break;
+            case "move":
+                player.move(action.data);
+                break;
+            default:
+                break;
+        }
+    }
 
-    updateGame() {}
+    removePlayer(socketId) {
+        delete this.players[socketId];
+    }
 
-    getGameState() {}
+    getGameState() {
+        return { players: this.players };
+    }
 }
 
 export default GameManager;
