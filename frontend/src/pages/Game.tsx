@@ -6,7 +6,7 @@ import { setupControls } from "../Controls";
 import { drawTank } from "../interface/Tank";
 import { drawProjectile } from "../interface/Projectile";
 
-const socket = io("http://localhost:4000");
+const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:4000");
 
 interface GameState {
     id: string;
