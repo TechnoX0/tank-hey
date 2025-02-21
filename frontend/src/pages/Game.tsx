@@ -3,8 +3,9 @@ import { useParams } from "react-router";
 import { io } from "socket.io-client";
 import GameListener from "../GameListener";
 import { setupControls } from "../Controls";
+import { drawTank } from "../interface/Tank";
 
-const socket = io("https://tank-hey-server.onrender.com");
+const socket = io("http://localhost:4000");
 
 interface GameState {
     id: string;
@@ -24,7 +25,13 @@ function Game() {
     useEffect(() => {
         const gameListener = new GameListener();
 
-        setupControls(gameListener, socket, params.roomId, socket.id);
+        const checkSocketReady = setInterval(() => {
+            if (socket.id) {
+                console.log("Socket ID ready:", socket.id);
+                setupControls(gameListener, socket, params.roomId, socket.id);
+                clearInterval(checkSocketReady);
+            }
+        }, 100); // Check every 100ms until socket.id is available
 
         socket.emit("joinRoom", params.roomId, (room: any) => {
             console.log("Joined room:", room);
@@ -52,19 +59,7 @@ function Game() {
             const player = gameState.players[playerId];
             if (!ctx) return;
 
-            console.log(playerId, gameState.players);
-
-            ctx.fillStyle = player.color;
-            ctx.beginPath();
-            ctx.moveTo(
-                player.x + player.hitbox.vertices[0].x,
-                player.y + player.hitbox.vertices[0].y
-            );
-            player.hitbox.vertices.forEach((point: any) => {
-                ctx.lineTo(player.x + point.x, player.y + point.y);
-            });
-            ctx.closePath();
-            ctx.fill();
+            drawTank(player, ctx);
         });
     };
 
