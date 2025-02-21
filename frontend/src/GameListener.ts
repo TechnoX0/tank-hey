@@ -1,4 +1,8 @@
-type KeyAction = (isPressed: boolean) => void;
+type KeyAction = {
+    onPress?: () => void;  // Triggered once when key is pressed
+    onHold?: () => void;   // Triggered continuously while key is held
+    onRelease?: () => void; // Triggered when key is released
+};
 
 class GameListener {
     private keys: Record<string, boolean> = {};
@@ -21,20 +25,35 @@ class GameListener {
     }
 
     private handleKeyDown(event: KeyboardEvent) {
-        this.keys[event.code] = true; // Just mark the key as pressed
+        if (!this.keys[event.code]) {
+            this.keys[event.code] = true;
+
+            // Trigger press event (only once per press)
+            if (this.actions[event.code]?.onPress) {
+                this.actions[event.code].onPress!();
+            }
+        }
     }
 
     private handleKeyUp(event: KeyboardEvent) {
         if (this.keys[event.code]) {
             this.keys[event.code] = false;
-            this.triggerAction(event.code, false);
+
+            // Trigger release event
+            if (this.actions[event.code]?.onRelease) {
+                this.actions[event.code].onRelease!();
+            }
         }
     }
 
-    private triggerAction(key: string, isPressed: boolean) {
-        if (this.actions[key]) {
-            this.actions[key](isPressed);
-        }
+    private loop() {
+        Object.keys(this.keys).forEach((key) => {
+            if (this.keys[key] && this.actions[key]?.onHold) {
+                this.actions[key].onHold!(); // Trigger hold action continuously
+            }
+        });
+
+        requestAnimationFrame(() => this.loop());
     }
 
     addAction(key: string, action: KeyAction) {
@@ -43,16 +62,6 @@ class GameListener {
 
     removeAction(key: string) {
         delete this.actions[key];
-    }
-
-    private loop() {
-        Object.keys(this.keys).forEach((key) => {
-            if (this.keys[key] && this.actions[key]) {
-                this.actions[key](true); // Continuously trigger action if key is held
-            }
-        });
-    
-        requestAnimationFrame(() => this.loop());
     }
 }
 
