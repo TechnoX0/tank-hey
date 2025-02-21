@@ -19,7 +19,6 @@ class Entity {
         // Update hitbox position
         this.hitbox.x = this.x;
         this.hitbox.y = this.y;
-        console.log("move");
     }
 
     rotate(angle) {

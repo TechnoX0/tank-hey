@@ -1,8 +1,6 @@
-import { Player } from "./Player";
+import { Entity } from "./Entity";
 
-export function drawTank(player: Player, ctx: CanvasRenderingContext2D) {
-    if (!ctx) return;
-
+export function drawTank(player: Entity, ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = player.color;
     ctx.beginPath();
 
@@ -16,6 +14,4 @@ export function drawTank(player: Player, ctx: CanvasRenderingContext2D) {
 
     ctx.closePath();
     ctx.fill();
-
-    
 }

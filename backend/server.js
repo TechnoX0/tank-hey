@@ -14,6 +14,7 @@ const io = new Server(server, {
 });
 
 const roomManager = new RoomManager();
+let lastUpdateTime = Date.now();
 
 io.on("connection", (socket) => {
     console.log("A user has connected");
@@ -41,6 +42,12 @@ io.on("connection", (socket) => {
 });
 
 setInterval(() => {
+    const now = Date.now();
+    const deltaTime = (now - lastUpdateTime) / 16.67; // Scale updates to ~60 FPS
+    lastUpdateTime = now;
+
+    roomManager.update(deltaTime);
+
     Object.keys(roomManager.rooms).forEach((roomId) => {
         io.to(roomId).emit("gameState", roomManager.getRoomGameState(roomId));
     });

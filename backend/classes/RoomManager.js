@@ -6,15 +6,21 @@ class RoomManager {
         this.rooms = {};
     }
 
+    update(deltaTime) {
+        Object.keys(this.rooms).forEach((roomId) => {
+            this.rooms[roomId].gameManager.update(deltaTime);
+        });
+    }
+
     createRoom(roomName) {
         const roomId = this.generateRoomId();
-        const newRoom = {
+        this.rooms[roomId] = {
             id: roomId,
             roomName: roomName,
             players: [],
             gameManager: new GameManager(800, 600),
+            lastActive: Date.now(), // Track last activity
         };
-        this.rooms[roomId] = newRoom;
         return roomId;
     }
 
@@ -25,6 +31,7 @@ class RoomManager {
 
         this.rooms[roomId].players.push(playerId);
         this.rooms[roomId].gameManager.addPlayer(playerId);
+        this.rooms[roomId].lastActive = Date.now(); // Update activity timestamp
         return this.rooms[roomId];
     }
 
@@ -34,8 +41,21 @@ class RoomManager {
             if (room.players.includes(playerId)) {
                 room.players = room.players.filter((id) => id !== playerId);
                 room.gameManager.removePlayer(playerId);
+                room.lastActive = Date.now(); // Update last activity
             }
         }
+    }
+
+    cleanupRooms() {
+        const now = Date.now();
+        Object.keys(this.rooms).forEach((roomId) => {
+            const room = this.rooms[roomId];
+            if (room.players.length === 0 && now - room.lastActive > 30000) {
+                // Remove rooms inactive for 30+ seconds
+                console.log(`Removing empty room: ${roomId}`);
+                delete this.rooms[roomId];
+            }
+        });
     }
 
     getRoomGameState(roomId) {

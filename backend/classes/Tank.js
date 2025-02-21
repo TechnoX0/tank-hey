@@ -17,7 +17,7 @@ class Tank extends Entity {
             ]),
             rotation
         );
-
+        this.health = 100;
         this.originalVertices = this.hitbox.vertices;
     }
 }

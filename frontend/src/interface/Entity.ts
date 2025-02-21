@@ -1,4 +1,4 @@
-export interface Player {
+export interface Entity {
     x: number;
     y: number;
     speed: number;

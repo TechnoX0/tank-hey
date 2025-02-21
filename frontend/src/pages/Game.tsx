@@ -4,12 +4,14 @@ import { io } from "socket.io-client";
 import GameListener from "../GameListener";
 import { setupControls } from "../Controls";
 import { drawTank } from "../interface/Tank";
+import { drawProjectile } from "../interface/Projectile";
 
 const socket = io("http://localhost:4000");
 
 interface GameState {
     id: string;
     players?: any;
+    projectiles?: any;
 }
 
 function Game() {
@@ -60,6 +62,13 @@ function Game() {
             if (!ctx) return;
 
             drawTank(player, ctx);
+        });
+
+        Object.keys(gameState.projectiles).forEach((projectileId) => {
+            const projectile = gameState.projectiles[projectileId];
+            if (!ctx) return;
+
+            drawProjectile(projectile, ctx);
         });
     };
 
