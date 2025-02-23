@@ -118,32 +118,12 @@ function Game() {
         });
     };
 
-    // const drawGame = (gameState: GameState) => {
-    //     if (!ctxRef.current) return;
-    //     const ctx = ctxRef.current;
-    //     ctx.clearRect(0, 0, 1280, 720);
-
-    //     Object.keys(gameState.players).forEach((playerId) => {
-    //         const player = gameState.players[playerId];
-    //         if (!ctx) return;
-
-    //         drawTank(player, ctx);
-    //     });
-
-    //     Object.keys(gameState.projectiles).forEach((projectileId) => {
-    //         const projectile = gameState.projectiles[projectileId];
-    //         if (!ctx) return;
-
-    //         drawProjectile(projectile, ctx);
-    //     });
-    // };
-
     return (
         <div>
             <canvas
                 ref={canvasRef}
-                width={1200}
-                height={700}
+                width={1000}
+                height={600}
                 className="bg-blue-100"
             />
         </div>
