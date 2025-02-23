@@ -29,7 +29,7 @@ class RoomManager {
             id: roomId,
             roomName: roomName,
             players: [],
-            gameManager: new GameManager(800, 600),
+            gameManager: new GameManager(1200, 700),
             lastActive: Date.now(), // Track last activity
         };
         return roomId;

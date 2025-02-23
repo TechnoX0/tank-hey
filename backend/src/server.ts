@@ -51,7 +51,7 @@ setInterval(() => {
     Object.keys(roomManager.rooms).forEach((roomId) => {
         io.to(roomId).emit("gameState", roomManager.getRoomGameState(roomId));
     });
-}, 1000 / 30);
+}, 1000 / 60);
 
 const PORT = process.env.PORT || 4000;
 

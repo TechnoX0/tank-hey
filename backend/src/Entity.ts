@@ -21,7 +21,7 @@ abstract class Entity {
         this.originalVertices = hitbox.vertices;
     }
 
-    abstract move(params: any): void;
+    abstract move(canvasWidth:number, canvasHeight:number, ...params: any): void;
 
     rotate(angle: number) {
         this.rotation = (this.rotation + angle) % 360;

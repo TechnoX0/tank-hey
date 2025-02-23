@@ -23,16 +23,32 @@ class Tank extends Entity {
         this.originalVertices = this.hitbox.vertices;
     }
 
-    move(forward: boolean): void {
-        const rad = (this.rotation * Math.PI) / 180; // Convert degrees to radians
-        const direction = forward ? 1 : -1; // Move forward or backward
+    move(canvasWidth: number, canvasHeight: number, forward: number) {
+        const rad = (this.rotation * Math.PI) / 180;
+        const direction = forward ? 1 : -1;
+        let newX = this.x + Math.cos(rad) * this.speed * direction;
+        let newY = this.y + Math.sin(rad) * this.speed * direction;
 
-        this.x += Math.cos(rad) * this.speed * direction;
-        this.y += Math.sin(rad) * this.speed * direction;
+        const newVertices = this.hitbox.vertices.map(vertex => {
+            const vx = vertex.x + Math.cos(rad) * this.speed * direction;
+            const vy = vertex.y + Math.sin(rad) * this.speed * direction;
 
-        // Update hitbox position
-        this.hitbox.x = this.x;
-        this.hitbox.y = this.y;
+            return { x: vx, y: vy };
+        })
+
+        const outOfBoundsX = newVertices.some(vertex => this.x + vertex.x < 0 || this.x + vertex.x > canvasWidth);
+        const outOfBoundsY = newVertices.some(vertex => this.y + vertex.y < 0 || this.y + vertex.y > canvasHeight);
+
+        if (outOfBoundsX && outOfBoundsY) {
+            return;
+        } else if (outOfBoundsX) {
+            newX = this.x;
+        } else if (outOfBoundsY) {
+            newY = this.y;
+        }
+        
+        this.x = newX
+        this.y = newY
     }
 }
 

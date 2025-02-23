@@ -25,5 +25,5 @@ interface Point {
     },
   ];
   
-  export default Maps;
+  export {Maps, MapData};
   

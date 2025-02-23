@@ -1,8 +1,9 @@
 // GameManager.js
 import Tank from "./Tank";
 import Projectile from "./Projectile/Projectile";
-import Maps from "./Maps/Map";
+import { Maps } from "./Maps/Map";
 import PlayerAction from "./interface/PlayerAction";
+import Bullet from "./Projectile/Bullet";
 
 class GameManager {
     private canvasWidth: number;
@@ -27,7 +28,7 @@ class GameManager {
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const projectile = this.projectiles[i];
 
-            projectile.move(deltaTime);
+            projectile.move(this.canvasWidth, this.canvasHeight, deltaTime);
         }
     }
 
@@ -44,17 +45,16 @@ class GameManager {
                 player.rotate(action.data);
                 break;
             case "move":
-                player.move(action.data);
+                player.move(this.canvasWidth, this.canvasHeight, action.data);
                 break;
             case "shoot":
                 this.projectiles.push(
-                    // new Projectile(
-                    //     playerId,
-                    //     player.x,
-                    //     player.y,
-                    //     player.rotation,
-                    //     10
-                    // )
+                    new Bullet(
+                        playerId,
+                        player.x,
+                        player.y,
+                        player.rotation,
+                    )
                 );
             default:
                 break;
@@ -66,7 +66,7 @@ class GameManager {
     }
 
     getGameState() {
-        return { players: this.players, projectiles: this.projectiles };
+        return { map: this.map, players: this.players, projectiles: this.projectiles };
     }
 }
 
