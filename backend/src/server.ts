@@ -2,14 +2,14 @@
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
-import RoomManager from "./classes/RoomManager.js";
+import RoomManager from "./RoomManager";
 
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
         origin: "*",
-        method: ["GET", "POST"],
+        methods: ["GET", "POST"],
     },
 });
 

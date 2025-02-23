@@ -1,18 +1,29 @@
-// RoomManager.js
-import GameManager from "./GameManager.js";
+import GameManager from "./GameManager";
+import PlayerAction from "./interface/PlayerAction";
+import GameState from "./interface/GameState";
+
+interface Room {
+    id: string;
+    roomName: string;
+    players: string[];
+    gameManager: GameManager;
+    lastActive: number;
+}
 
 class RoomManager {
+    public rooms: Record<string, Room>;;
+
     constructor() {
         this.rooms = {};
     }
 
-    update(deltaTime) {
+    update(deltaTime: number) {
         Object.keys(this.rooms).forEach((roomId) => {
             this.rooms[roomId].gameManager.update(deltaTime);
         });
     }
 
-    createRoom(roomName) {
+    createRoom(roomName: string) {
         const roomId = this.generateRoomId();
         this.rooms[roomId] = {
             id: roomId,
@@ -24,7 +35,7 @@ class RoomManager {
         return roomId;
     }
 
-    joinRoom(roomId, playerId) {
+    joinRoom(roomId: string, playerId: string) {
         if (!this.rooms[roomId]) return "Room does not exist!";
         if (this.rooms[roomId].players.includes(playerId))
             return "Player already in room";
@@ -35,7 +46,7 @@ class RoomManager {
         return this.rooms[roomId];
     }
 
-    removePlayerFromRoom(playerId) {
+    removePlayerFromRoom(playerId: string) {
         for (const roomId in this.rooms) {
             const room = this.rooms[roomId];
             if (room.players.includes(playerId)) {
@@ -58,17 +69,17 @@ class RoomManager {
         });
     }
 
-    getRoomGameState(roomId) {
+    getRoomGameState(roomId: string) {
         return this.rooms[roomId]?.gameManager.getGameState() || {};
     }
 
-    playerAction(roomId, playerId, action) {
+    playerAction(roomId: string, playerId: string, action: PlayerAction) {
         const room = this.rooms[roomId];
         room.gameManager.playerAction(playerId, action);
     }
 
-    getAllGameStates() {
-        const gameStates = {};
+    getAllGameStates(): Record<string, GameState> {
+        const gameStates: Record<string, GameState> = {};
         for (const roomId in this.rooms) {
             gameStates[roomId] = this.rooms[roomId].gameManager.getGameState();
         }

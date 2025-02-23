@@ -1,27 +1,29 @@
-// Entity.js
-class Entity {
-    constructor(x, y, speed, hitbox, rotation = 0) {
+import { Hitbox } from "./Hitbox";
+import Vertices from "./interface/Vertices";
+
+abstract class Entity {
+    public x: number;
+    public y: number;
+    public speed: number;
+    public rotation: number;
+    public hitbox: Hitbox;
+    public color: string;
+    public originalVertices: Vertices[];
+
+    constructor(x: number, y: number, speed: number, hitbox: Hitbox, rotation: number = 0) {
         this.x = x;
         this.y = y;
         this.speed = speed;
         this.rotation = rotation;
         this.hitbox = hitbox;
         this.color = "orange";
+
+        this.originalVertices = hitbox.vertices;
     }
 
-    move(forward) {
-        const rad = (this.rotation * Math.PI) / 180; // Convert degrees to radians
-        const direction = forward ? 1 : -1; // Move forward or backward
+    abstract move(params: any): void;
 
-        this.x += Math.cos(rad) * this.speed * direction;
-        this.y += Math.sin(rad) * this.speed * direction;
-
-        // Update hitbox position
-        this.hitbox.x = this.x;
-        this.hitbox.y = this.y;
-    }
-
-    rotate(angle) {
+    rotate(angle: number) {
         this.rotation = (this.rotation + angle) % 360;
         const rad = (this.rotation * Math.PI) / 180;
 

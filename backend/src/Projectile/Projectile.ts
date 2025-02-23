@@ -1,14 +1,18 @@
 import Entity from "../Entity.js";
-import Hitbox from "../Hitbox.js";
+import {Hitbox, HitboxTypes} from "../Hitbox.js";
+import Tank from "../Tank.js";
 
-class Projectile extends Entity {
-    constructor(playerId, x, y, rotation, speed = 2) {
-        super(x, y, speed, new Hitbox("circle", x, y, 5), rotation);
-        this.owner = playerId;
+abstract class Projectile extends Entity {
+    public owner: string;
+    public damage: number;
+
+    constructor(owner: string, x: number, y: number, rotation: number, speed: number = 2) {
+        super(x, y, speed, new Hitbox(HitboxTypes.circle, x, y, 5), rotation);
+        this.owner = owner;
         this.damage = 1;
     }
 
-    move(deltaTime) {
+    move(deltaTime: number) {
         const rad = (this.rotation * Math.PI) / 180; // Convert degrees to radians
         this.x += Math.cos(rad) * this.speed * deltaTime;
         this.y += Math.sin(rad) * this.speed * deltaTime;
@@ -41,7 +45,7 @@ class Projectile extends Entity {
         this.rotation = (this.rotation + 360) % 360;
     }
 
-    dealDamage(target) {
+    dealDamage(target: Tank) {
         target.health -= this.damage;
     }
 }
