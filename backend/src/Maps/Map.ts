@@ -1,29 +1,184 @@
 interface Point {
     x: number;
     y: number;
-  }
+}
   
-  interface Wall {
+interface Wall {
     start: Point;
     end: Point;
-  }
+}
   
-  interface MapData {
+interface MapData {
     name: string;
     walls: Wall[];
-  }
+}
   
-  const Maps: MapData[] = [
+const Maps: MapData[] = [
     {
-      name: "Map 1",
-      walls: [
-        { start: { x: 100, y: 100 }, end: { x: 300, y: 100 } },
-        { start: { x: 300, y: 100 }, end: { x: 300, y: 300 } },
-        { start: { x: 300, y: 300 }, end: { x: 100, y: 300 } },
-        { start: { x: 100, y: 300 }, end: { x: 100, y: 100 } },
-      ],
+        name: "Map 1",
+        walls: [
+                { start: { x: 900, y: 0 }, end: { x: 900, y: 100 } },
+                { start: { x: 100, y: 100 }, end: { x: 200, y: 100 } },
+                { start: { x: 200, y: 100 }, end: { x: 300, y: 100 } },
+                { start: { x: 300, y: 100 }, end: { x: 400, y: 100 } },
+                { start: { x: 500, y: 100 }, end: { x: 600, y: 100 } },
+                { start: { x: 600, y: 100 }, end: { x: 700, y: 100 } },
+                { start: { x: 700, y: 100 }, end: { x: 800, y: 100 } },
+                { start: { x: 200, y: 100 }, end: { x: 200, y: 200 } },
+                { start: { x: 400, y: 100 }, end: { x: 400, y: 200 } },
+                { start: { x: 800, y: 100 }, end: { x: 800, y: 200 } },
+                { start: { x: 100, y: 200 }, end: { x: 200, y: 200 } },
+                { start: { x: 400, y: 200 }, end: { x: 500, y: 200 } },
+                { start: { x: 500, y: 200 }, end: { x: 600, y: 200 } },
+                { start: { x: 800, y: 200 }, end: { x: 900, y: 200 } },
+                { start: { x: 300, y: 200 }, end: { x: 300, y: 300 } },
+                { start: { x: 400, y: 200 }, end: { x: 400, y: 300 } },
+                { start: { x: 600, y: 200 }, end: { x: 600, y: 300 } },
+                { start: { x: 700, y: 200 }, end: { x: 700, y: 300 } },
+                { start: { x: 800, y: 200 }, end: { x: 800, y: 300 } },
+                { start: { x: 200, y: 300 }, end: { x: 300, y: 300 } },
+                { start: { x: 700, y: 300 }, end: { x: 800, y: 300 } },
+                { start: { x: 900, y: 300 }, end: { x: 1000, y: 300 } },
+                { start: { x: 100, y: 300 }, end: { x: 100, y: 400 } },
+                { start: { x: 200, y: 300 }, end: { x: 200, y: 400 } },
+                { start: { x: 400, y: 300 }, end: { x: 400, y: 400 } },
+                { start: { x: 600, y: 300 }, end: { x: 600, y: 400 } },
+                { start: { x: 800, y: 300 }, end: { x: 800, y: 400 } },
+                { start: { x: 900, y: 300 }, end: { x: 900, y: 400 } },
+                { start: { x: 300, y: 400 }, end: { x: 400, y: 400 } },
+                { start: { x: 400, y: 400 }, end: { x: 500, y: 400 } },
+                { start: { x: 600, y: 400 }, end: { x: 700, y: 400 } },
+                { start: { x: 100, y: 400 }, end: { x: 100, y: 500 } },
+                { start: { x: 200, y: 400 }, end: { x: 200, y: 500 } },
+                { start: { x: 300, y: 400 }, end: { x: 300, y: 500 } },
+                { start: { x: 500, y: 400 }, end: { x: 500, y: 500 } },
+                { start: { x: 600, y: 400 }, end: { x: 600, y: 500 } },
+                { start: { x: 700, y: 400 }, end: { x: 700, y: 500 } },
+                { start: { x: 800, y: 400 }, end: { x: 800, y: 500 } },
+                { start: { x: 200, y: 500 }, end: { x: 300, y: 500 } },
+                { start: { x: 800, y: 500 }, end: { x: 900, y: 500 } },
+                { start: { x: 900, y: 500 }, end: { x: 1000, y: 500 } },
+                { start: { x: 100, y: 500 }, end: { x: 100, y: 600 } },
+                { start: { x: 400, y: 500 }, end: { x: 400, y: 600 } },
+                { start: { x: 600, y: 500 }, end: { x: 600, y: 600 } },
+            ]
     },
-  ];
+    // {
+    //     name: "Map 1",
+    //     walls: [
+    //         // Row 1
+    //         { start: { x: 100, y: 0 }, end: { x: 100, y: 100 } },
+    //         { start: { x: 200, y: 0 }, end: { x: 200, y: 100 } },
+    //         { start: { x: 300, y: 0 }, end: { x: 300, y: 100 } },
+    //         { start: { x: 400, y: 0 }, end: { x: 400, y: 100 } },
+    //         { start: { x: 500, y: 0 }, end: { x: 500, y: 100 } },
+    //         { start: { x: 600, y: 0 }, end: { x: 600, y: 100 } },
+    //         { start: { x: 700, y: 0 }, end: { x: 700, y: 100 } },
+    //         { start: { x: 800, y: 0 }, end: { x: 800, y: 100 } },
+    //         { start: { x: 900, y: 0 }, end: { x: 900, y: 100 } },
+    //         { start: { x: 0, y: 100 }, end: { x: 100, y: 100 } },
+    //         { start: { x: 100, y: 100 }, end: { x: 200, y: 100 } },
+    //         { start: { x: 200, y: 100 }, end: { x: 300, y: 100 } },
+    //         { start: { x: 300, y: 100 }, end: { x: 400, y: 100 } },
+    //         { start: { x: 400, y: 100 }, end: { x: 500, y: 100 } },
+    //         { start: { x: 500, y: 100 }, end: { x: 600, y: 100 } },
+    //         { start: { x: 600, y: 100 }, end: { x: 700, y: 100 } },
+    //         { start: { x: 700, y: 100 }, end: { x: 800, y: 100 } },
+    //         { start: { x: 800, y: 100 }, end: { x: 900, y: 100 } },
+    //         { start: { x: 900, y: 100 }, end: { x: 1000, y: 100 } },
+    //         // Row 2
+    //         { start: { x: 100, y: 100 }, end: { x: 100, y: 200 } },
+    //         { start: { x: 200, y: 100 }, end: { x: 200, y: 200 } },
+    //         { start: { x: 300, y: 100 }, end: { x: 300, y: 200 } },
+    //         { start: { x: 400, y: 100 }, end: { x: 400, y: 200 } },
+    //         { start: { x: 500, y: 100 }, end: { x: 500, y: 200 } },
+    //         { start: { x: 600, y: 100 }, end: { x: 600, y: 200 } },
+    //         { start: { x: 700, y: 100 }, end: { x: 700, y: 200 } },
+    //         { start: { x: 800, y: 100 }, end: { x: 800, y: 200 } },
+    //         { start: { x: 900, y: 100 }, end: { x: 900, y: 200 } },
+    //         { start: { x: 0, y: 200 }, end: { x: 100, y: 200 } },
+    //         { start: { x: 100, y: 200 }, end: { x: 200, y: 200 } },
+    //         { start: { x: 200, y: 200 }, end: { x: 300, y: 200 } },
+    //         { start: { x: 300, y: 200 }, end: { x: 400, y: 200 } },
+    //         { start: { x: 400, y: 200 }, end: { x: 500, y: 200 } },
+    //         { start: { x: 500, y: 200 }, end: { x: 600, y: 200 } },
+    //         { start: { x: 600, y: 200 }, end: { x: 700, y: 200 } },
+    //         { start: { x: 700, y: 200 }, end: { x: 800, y: 200 } },
+    //         { start: { x: 800, y: 200 }, end: { x: 900, y: 200 } },
+    //         { start: { x: 900, y: 200 }, end: { x: 1000, y: 200 } },
+    //         // Row 3
+    //         { start: { x: 100, y: 200 }, end: { x: 100, y: 300 } },
+    //         { start: { x: 200, y: 200 }, end: { x: 200, y: 300 } },
+    //         { start: { x: 300, y: 200 }, end: { x: 300, y: 300 } },
+    //         { start: { x: 400, y: 200 }, end: { x: 400, y: 300 } },
+    //         { start: { x: 500, y: 200 }, end: { x: 500, y: 300 } },
+    //         { start: { x: 600, y: 200 }, end: { x: 600, y: 300 } },
+    //         { start: { x: 700, y: 200 }, end: { x: 700, y: 300 } },
+    //         { start: { x: 800, y: 200 }, end: { x: 800, y: 300 } },
+    //         { start: { x: 900, y: 200 }, end: { x: 900, y: 300 } },
+    //         { start: { x: 0, y: 300 }, end: { x: 100, y: 300 } },
+    //         { start: { x: 100, y: 300 }, end: { x: 200, y: 300 } },
+    //         { start: { x: 200, y: 300 }, end: { x: 300, y: 300 } },
+    //         { start: { x: 300, y: 300 }, end: { x: 400, y: 300 } },
+    //         { start: { x: 400, y: 300 }, end: { x: 500, y: 300 } },
+    //         { start: { x: 500, y: 300 }, end: { x: 600, y: 300 } },
+    //         { start: { x: 600, y: 300 }, end: { x: 700, y: 300 } },
+    //         { start: { x: 700, y: 300 }, end: { x: 800, y: 300 } },
+    //         { start: { x: 800, y: 300 }, end: { x: 900, y: 300 } },
+    //         { start: { x: 900, y: 300 }, end: { x: 1000, y: 300 } },
+    //         // Row 4
+    //         { start: { x: 100, y: 300 }, end: { x: 100, y: 400 } },
+    //         { start: { x: 200, y: 300 }, end: { x: 200, y: 400 } },
+    //         { start: { x: 300, y: 300 }, end: { x: 300, y: 400 } },
+    //         { start: { x: 400, y: 300 }, end: { x: 400, y: 400 } },
+    //         { start: { x: 500, y: 300 }, end: { x: 500, y: 400 } },
+    //         { start: { x: 600, y: 300 }, end: { x: 600, y: 400 } },
+    //         { start: { x: 700, y: 300 }, end: { x: 700, y: 400 } },
+    //         { start: { x: 800, y: 300 }, end: { x: 800, y: 400 } },
+    //         { start: { x: 900, y: 300 }, end: { x: 900, y: 400 } },
+    //         { start: { x: 0, y: 400 }, end: { x: 100, y: 400 } },
+    //         { start: { x: 100, y: 400 }, end: { x: 200, y: 400 } },
+    //         { start: { x: 200, y: 400 }, end: { x: 300, y: 400 } },
+    //         { start: { x: 300, y: 400 }, end: { x: 400, y: 400 } },
+    //         { start: { x: 400, y: 400 }, end: { x: 500, y: 400 } },
+    //         { start: { x: 500, y: 400 }, end: { x: 600, y: 400 } },
+    //         { start: { x: 600, y: 400 }, end: { x: 700, y: 400 } },
+    //         { start: { x: 700, y: 400 }, end: { x: 800, y: 400 } },
+    //         { start: { x: 800, y: 400 }, end: { x: 900, y: 400 } },
+    //         { start: { x: 900, y: 400 }, end: { x: 1000, y: 400 } },
+    //         // Row 5
+    //         { start: { x: 100, y: 400 }, end: { x: 100, y: 500 } },
+    //         { start: { x: 200, y: 400 }, end: { x: 200, y: 500 } },
+    //         { start: { x: 300, y: 400 }, end: { x: 300, y: 500 } },
+    //         { start: { x: 400, y: 400 }, end: { x: 400, y: 500 } },
+    //         { start: { x: 500, y: 400 }, end: { x: 500, y: 500 } },
+    //         { start: { x: 600, y: 400 }, end: { x: 600, y: 500 } },
+    //         { start: { x: 700, y: 400 }, end: { x: 700, y: 500 } },
+    //         { start: { x: 800, y: 400 }, end: { x: 800, y: 500 } },
+    //         { start: { x: 900, y: 400 }, end: { x: 900, y: 500 } },
+    //         { start: { x: 0, y: 500 }, end: { x: 100, y: 500 } },
+    //         { start: { x: 100, y: 500 }, end: { x: 200, y: 500 } },
+    //         { start: { x: 200, y: 500 }, end: { x: 300, y: 500 } },
+    //         { start: { x: 300, y: 500 }, end: { x: 400, y: 500 } },
+    //         { start: { x: 400, y: 500 }, end: { x: 500, y: 500 } },
+    //         { start: { x: 500, y: 500 }, end: { x: 600, y: 500 } },
+    //         { start: { x: 600, y: 500 }, end: { x: 700, y: 500 } },
+    //         { start: { x: 700, y: 500 }, end: { x: 800, y: 500 } },
+    //         { start: { x: 800, y: 500 }, end: { x: 900, y: 500 } },
+    //         { start: { x: 900, y: 500 }, end: { x: 1000, y: 500 } },
+    //         // Row 6
+    //         { start: { x: 100, y: 500 }, end: { x: 100, y: 600 } },
+    //         { start: { x: 200, y: 500 }, end: { x: 200, y: 600 } },
+    //         { start: { x: 300, y: 500 }, end: { x: 300, y: 600 } },
+    //         { start: { x: 400, y: 500 }, end: { x: 400, y: 600 } },
+    //         { start: { x: 500, y: 500 }, end: { x: 500, y: 600 } },
+    //         { start: { x: 600, y: 500 }, end: { x: 600, y: 600 } },
+    //         { start: { x: 700, y: 500 }, end: { x: 700, y: 600 } },
+    //         { start: { x: 800, y: 500 }, end: { x: 800, y: 600 } },
+    //         { start: { x: 900, y: 500 }, end: { x: 900, y: 600 } },
+    //     ]
+    // }
+];
   
-  export {Maps, MapData};
+export {Maps, MapData};
   
