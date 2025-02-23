@@ -10,7 +10,6 @@ class Projectile extends Entity {
 
     move(deltaTime) {
         const rad = (this.rotation * Math.PI) / 180; // Convert degrees to radians
-
         this.x += Math.cos(rad) * this.speed * deltaTime;
         this.y += Math.sin(rad) * this.speed * deltaTime;
 
@@ -18,14 +17,28 @@ class Projectile extends Entity {
         this.hitbox.x = this.x;
         this.hitbox.y = this.y;
 
-        if (
-            this.x - this.hitbox.radius < 0 ||
-            this.x + this.hitbox.radius > 1280 ||
-            this.y - this.hitbox.radius < 0 ||
-            this.y + this.hitbox.radius > 720
-        ) {
-            this.speed = -this.speed;
+        const buffer = 2; // Push projectile back inside the canvas after collision
+
+        // Reflect off vertical walls
+        if (this.x - this.hitbox.radius < 0) {
+            this.rotation = 180 - this.rotation;
+            this.x = this.hitbox.radius + buffer; // Push projectile inside
+        } else if (this.x + this.hitbox.radius > 1280) {
+            this.rotation = 180 - this.rotation;
+            this.x = 1280 - this.hitbox.radius - buffer;
         }
+
+        // Reflect off horizontal walls
+        if (this.y - this.hitbox.radius < 0) {
+            this.rotation = -this.rotation;
+            this.y = this.hitbox.radius + buffer;
+        } else if (this.y + this.hitbox.radius > 720) {
+            this.rotation = -this.rotation;
+            this.y = 720 - this.hitbox.radius - buffer;
+        }
+
+        // Ensure rotation stays within 0-360 degrees
+        this.rotation = (this.rotation + 360) % 360;
     }
 
     dealDamage(target) {
