@@ -6,9 +6,9 @@ export function drawTank(player: Entity, ctx: CanvasRenderingContext2D) {
 
     player.hitbox.vertices.forEach(({ x: relX, y: relY }, index) => {
         if (index === 0) {
-            ctx.moveTo(player.x + relX, player.y + relY);
+            ctx.moveTo(player.position.x + relX, player.position.y + relY);
         } else {
-            ctx.lineTo(player.x + relX, player.y + relY);
+            ctx.lineTo(player.position.x + relX, player.position.y + relY);
         }
     });
 

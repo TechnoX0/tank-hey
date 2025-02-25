@@ -1,6 +1,5 @@
 export interface Entity {
-    x: number;
-    y: number;
+    position: {x: number, y: number}
     speed: number;
     rotation: number;
     hitbox: {

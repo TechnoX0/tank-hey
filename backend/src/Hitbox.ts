@@ -1,4 +1,4 @@
-import Vertices from './interface/Vertices';
+import Vector2D from './Vector2D';
 
 enum HitboxTypes {
     circle,
@@ -7,17 +7,15 @@ enum HitboxTypes {
 
 class Hitbox {
     public type: HitboxTypes;
-    public x: number;
-    public y: number;
+    public position: Vector2D;
     public radius: number;
-    public vertices: Vertices[];
+    public vertices: Vector2D[];
 
-    constructor(type: HitboxTypes, x: number, y: number, radius: number = 0, vertices: Vertices[] = []) {
+    constructor(type: HitboxTypes, position: Vector2D, radius: number = 0, vertices: Vector2D[] = []) {
         this.type = type;
-        this.x = x;
-        this.y = y;
+        this.position = position
         this.radius = radius;
-        this.vertices = vertices; // Used for polygons and lines
+        this.vertices = vertices;
     }
 }
 

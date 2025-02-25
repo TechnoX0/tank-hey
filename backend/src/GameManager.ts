@@ -3,7 +3,7 @@ import Tank from "./Tank";
 import Projectile from "./Projectile/Projectile";
 import { Maps } from "./Maps/Map";
 import PlayerAction from "./interface/PlayerAction";
-import Bullet from "./Projectile/Bullet";
+import Vector2D from "./Vector2D";
 
 class GameManager {
     private canvasWidth: number;
@@ -27,13 +27,17 @@ class GameManager {
     update(deltaTime: number) {
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const projectile = this.projectiles[i];
-
-            projectile.move(this.canvasWidth, this.canvasHeight, deltaTime);
+            projectile.move(this.canvasWidth, this.canvasHeight, deltaTime, this.map.walls);
+            
+            // Remove projectile if it should be destroyed
+            if (projectile.shouldDestroy()) {
+                this.projectiles.splice(i, 1);
+            }
         }
     }
 
     addPlayer(socketId: string) {
-        this.players[socketId] = new Tank(100, 100, 6);
+        this.players[socketId] = new Tank(new Vector2D(100, 100));
     }
 
     playerAction(playerId: string, action: PlayerAction) {
@@ -48,14 +52,7 @@ class GameManager {
                 player.move(this.canvasWidth, this.canvasHeight, action.data);
                 break;
             case "shoot":
-                this.projectiles.push(
-                    new Bullet(
-                        playerId,
-                        player.x,
-                        player.y,
-                        player.rotation,
-                    )
-                );
+                this.projectiles.push();
             default:
                 break;
         }

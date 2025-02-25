@@ -2,17 +2,17 @@ interface Point {
     x: number;
     y: number;
 }
-  
+
 interface Wall {
     start: Point;
     end: Point;
 }
-  
+
 interface MapData {
     name: string;
     walls: Wall[];
 }
-  
+
 const Maps: MapData[] = [
     {
         name: "Map 1",
@@ -180,5 +180,5 @@ const Maps: MapData[] = [
     // }
 ];
   
-export {Maps, MapData};
+export {Maps, Wall, MapData};
   
