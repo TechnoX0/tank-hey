@@ -1,8 +1,8 @@
 // Projectile.ts
-import GameObject from "../GameObject";
-import { Hitbox, HitboxTypes} from "../Hitbox";
-import Vector2D from "../Vector2D";
-import Tank from "../Tank";
+import GameObject from "../Utils/GameObject";
+import { Hitbox, HitboxTypes} from "../Utils/Hitbox";
+import Vector2D from "../Utils/Vector2D";
+import Tank from "../Tanks/Tank";
 import Movement from "../interface/Movement";
 
 abstract class Projectile extends GameObject implements Movement {

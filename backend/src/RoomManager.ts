@@ -1,14 +1,7 @@
 import GameManager from "./GameManager";
 import PlayerAction from "./interface/PlayerAction";
 import GameState from "./interface/GameState";
-
-interface Room {
-    id: string;
-    roomName: string;
-    players: string[];
-    gameManager: GameManager;
-    lastActive: number;
-}
+import Room from "./interface/Room";
 
 class RoomManager {
     public rooms: Record<string, Room>;;

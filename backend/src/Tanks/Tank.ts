@@ -1,7 +1,7 @@
-import GameObject from "./GameObject";
-import Movement from "./interface/Movement";
-import Vector2D from "./Vector2D";
-import { Hitbox, HitboxTypes } from "./Hitbox";
+import GameObject from "../Utils/GameObject";
+import Movement from "../interface/Movement";
+import Vector2D from "../Utils/Vector2D";
+import { Hitbox, HitboxTypes } from "../Utils/Hitbox";
 
 class Tank extends GameObject implements Movement {
     public speed: number = 5;

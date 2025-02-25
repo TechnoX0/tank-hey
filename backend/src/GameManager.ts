@@ -1,9 +1,9 @@
 // GameManager.js
-import Tank from "./Tank";
-import Projectile from "./Projectile/Projectile";
+import Tank from "./Tanks/Tank";
+import Projectile from "./Projectiles/Projectile";
 import { Maps } from "./Maps/Map";
 import PlayerAction from "./interface/PlayerAction";
-import Vector2D from "./Vector2D";
+import Vector2D from "./Utils/Vector2D";
 
 class GameManager {
     private canvasWidth: number;
@@ -41,7 +41,7 @@ class GameManager {
     }
 
     playerAction(playerId: string, action: PlayerAction) {
-        const player = this.players[playerId];
+        const player: Tank = this.players[playerId];
         if (!player) return;
 
         switch (action.type) {

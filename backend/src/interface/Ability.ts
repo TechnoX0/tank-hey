@@ -1,4 +1,4 @@
-import Tank from "../Tank";
+import Tank from "../Tanks/Tank";
 
 interface Ability {
     id: string;

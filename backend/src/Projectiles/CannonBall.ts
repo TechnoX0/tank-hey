@@ -1,5 +1,5 @@
-import { Hitbox, HitboxTypes } from "../Hitbox";
-import Vector2D from "../Vector2D";
+import { Hitbox, HitboxTypes } from "../Utils/Hitbox";
+import Vector2D from "../Utils/Vector2D";
 import Projectile from "./Projectile";
 
 class CannonBall extends Projectile {

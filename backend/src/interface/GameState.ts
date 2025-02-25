@@ -1,5 +1,5 @@
-import GameObject from "../GameObject";
-import Projectile from "../Projectile/Projectile";
+import GameObject from "../Utils/GameObject";
+import Projectile from "../Projectiles/Projectile";
 import { MapData } from "../Maps/Map";
 
 interface GameState {
