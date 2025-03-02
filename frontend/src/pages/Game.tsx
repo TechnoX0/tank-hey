@@ -6,15 +6,9 @@ import { setupControls } from "../Controls";
 import { drawTank } from "../interface/Tank";
 import { drawProjectile } from "../interface/Projectile";
 import { interpolateEntities } from "../utils/interpolation";
+import GameState from "../interface/GameState";
 
 const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:4000");
-
-interface GameState {
-    id: string;
-    map: any;
-    players?: any;
-    projectiles?: any;
-}
 
 function Game() {
     const params = useParams<{ roomId: string }>();

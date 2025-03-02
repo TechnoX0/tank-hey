@@ -1,16 +1,17 @@
 // GameManager.js
 import Tank from "./Tanks/Tank";
 import Projectile from "./Projectiles/Projectile";
-import { Maps } from "./Maps/Map";
+import Maps from "./Maps/Maps";
 import PlayerAction from "./interface/PlayerAction";
 import Vector2D from "./Utils/Vector2D";
+import MapData from "./interface/MapData";
 
 class GameManager {
     private canvasWidth: number;
     private canvasHeight: number;
     private players: Record<string, Tank>;
     private projectiles: Projectile[];
-    private map: any;
+    private map: MapData;
 
     constructor(canvasWidth: number, canvasHeight: number) {
         this.canvasWidth = canvasWidth;
@@ -37,7 +38,7 @@ class GameManager {
     }
 
     addPlayer(socketId: string) {
-        this.players[socketId] = new Tank(new Vector2D(100, 100));
+        this.players[socketId] = new Tank(new Vector2D(20, 20));
     }
 
     playerAction(playerId: string, action: PlayerAction) {
@@ -46,10 +47,10 @@ class GameManager {
 
         switch (action.type) {
             case "rotate":
-                player.rotate(action.data);
+                player.rotate(action.data, this.map);
                 break;
             case "move":
-                player.move(this.canvasWidth, this.canvasHeight, action.data);
+                player.move(this.map, action.data);
                 break;
             case "shoot":
                 this.projectiles.push();

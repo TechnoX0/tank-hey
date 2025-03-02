@@ -1,8 +1,8 @@
 interface Movement {
     speed: number;
     rotation: number;
-    move(canvasWidth: number, canvasHeight: number, ...params: any): void;
-    rotate(angle: number): void;
+    move(...params: any): void;
+    rotate(angle: number,...params: any): void;
 }
 
 export default Movement;

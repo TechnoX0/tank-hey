@@ -68,6 +68,8 @@ class RoomManager {
 
     playerAction(roomId: string, playerId: string, action: PlayerAction) {
         const room = this.rooms[roomId];
+        // if (!room.gameManager) return
+        // console.log(room.gameManager)
         room.gameManager.playerAction(playerId, action);
     }
 

@@ -11,6 +11,20 @@ abstract class GameObject {
         this.hitbox = hitbox;
         this.originalVertices = hitbox.vertices;
     }
+
+    getSupportPoint(direction: Vector2D): Vector2D {
+        let bestVertex = this.hitbox.vertices[0];
+        let bestDot = bestVertex.dot(direction);
+
+        for (const vertex of this.hitbox.vertices) {
+            const dot = vertex.dot(direction);
+            if (dot > bestDot) {
+                bestDot = dot;
+                bestVertex = vertex;
+            }
+        }
+        return bestVertex.add(this.position);
+    }
 }
 
 export default GameObject;
