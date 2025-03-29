@@ -1,8 +1,9 @@
 import Line from "./Line";
+import Wall from "../Maps/Wall";
 
 interface MapData {
     name: string;
-    walls: Line[];
+    walls: Wall[];
 }
 
 export default MapData

@@ -1,4 +1,4 @@
-import GameObject from "../Utils/GameObject";
+import GameObject from "../GameObjects/GameObject";
 import Projectile from "../Projectiles/Projectile";
 import MapData from "./MapData";
 

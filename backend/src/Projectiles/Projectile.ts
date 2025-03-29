@@ -1,5 +1,5 @@
 // Projectile.ts
-import GameObject from "../Utils/GameObject";
+import GameObject from "../GameObjects/GameObject";
 import { Hitbox, HitboxTypes} from "../Utils/Hitbox";
 import Vector2D from "../Utils/Vector2D";
 import Tank from "../Tanks/Tank";

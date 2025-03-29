@@ -10,6 +10,4 @@ export interface Entity {
         y: number;
     };
     color: string;
-    lines: {start: { x: number; y: number }, end: { x: number; y: number }}[]
-    intersection: { x: number; y: number }[]
 }

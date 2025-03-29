@@ -44,6 +44,15 @@ class Vector2D {
         const bc = b.dot(c);
         return new Vector2D(b.x * ac - a.x * bc, b.y * ac - a.y * bc);
     }
+
+    public equals(other: Vector2D): boolean {
+        // Compare x and y coordinates with a small epsilon to account for floating-point imprecision
+        const epsilon = 0.0001;
+        return (
+            Math.abs(this.x - other.x) < epsilon &&
+            Math.abs(this.y - other.y) < epsilon
+        );
+    }
 }
 
 export default Vector2D;
