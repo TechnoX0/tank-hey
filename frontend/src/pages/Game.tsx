@@ -70,7 +70,9 @@ function Game() {
         drawTank(player, ctx);
       });
 
-      drawMap(gameState);
+      console.log(gameState.map);
+
+      // drawMap(gameState);
 
       animationFrameId = requestAnimationFrame(animate);
     };
