@@ -6,10 +6,10 @@ class Collision {
     public position: Vector2D
     public vertices: Vector2D[]
 
-    constructor(collisionType: CollisionType, position: Vector2D, vertices: Vector2D[]) {
+    constructor(collisionType: CollisionType, position: Vector2D, vertices?: Vector2D[]) {
         this.collisionType = collisionType
         this.position = position
-        this.vertices = vertices
+        this.vertices = vertices || []
     }
 
     // Method to check if this collision overlaps with another

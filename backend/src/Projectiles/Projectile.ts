@@ -1,9 +1,10 @@
 // Projectile.ts
 import GameObject from "../GameObjects/GameObject";
-import { Hitbox, HitboxTypes} from "../Utils/Hitbox";
 import Vector2D from "../Utils/Vector2D";
 import Tank from "../Tanks/Tank";
 import Movement from "../interface/Movement";
+import Collision from "../Utils/Collision";
+import { CollisionType } from "../Utils/Enums";
 
 abstract class Projectile extends GameObject implements Movement {
     public owner: string;
@@ -13,8 +14,8 @@ abstract class Projectile extends GameObject implements Movement {
     public timeAlive: number;
     public maxTimeAlive: number;
 
-    constructor(owner: string, position: Vector2D, hitbox: HitboxTypes) {
-        super(position, new Hitbox(hitbox, new Vector2D(position.x, position.y), 5));
+    constructor(owner: string, position: Vector2D, hitbox: CollisionType) {
+        super(position, new Collision(hitbox, new Vector2D(position.x, position.y),));
         this.owner = owner;
         this.damage = 1;
         this.speed = 10;
