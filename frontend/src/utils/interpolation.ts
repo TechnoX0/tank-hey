@@ -22,5 +22,7 @@ export function interpolateEntities<T extends Entity>(
         };
     });
 
+    console.log(interpolated)
+
     return interpolated;
 }
