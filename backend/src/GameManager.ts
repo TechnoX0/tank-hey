@@ -38,7 +38,7 @@ class GameManager {
     }
 
     addPlayer(socketId: string) {
-        this.players[socketId] = new Tank(new Vector2D(20, 20));
+        this.players[socketId] = new Tank(new Vector2D(40, 40));
     }
 
     playerAction(playerId: string, action: PlayerAction) {

@@ -27,33 +27,59 @@ class Tank extends GameObject implements Movement {
     }
 
     move(map: MapData, forward: number) {
-        const direction = forward ? 1 : -1
-
+        const direction = forward ? 1 : -1;
         let movementVector = new Vector2D(
             Math.cos(this.rotation * (Math.PI / 180)) * (this.speed * direction),
             Math.sin(this.rotation * (Math.PI / 180)) * (this.speed * direction)
         );
-    
-        this.hitbox.position = this.hitbox.position.add(movementVector)
-        this.position = this.position.add(movementVector);
+        
+        let testPosition = this.position.add(movementVector);
+        let testHitbox = new Collision(
+            this.hitbox.collisionType,
+            testPosition,
+            this.hitbox.vertices.map(vertex => vertex.add(movementVector).add(this.position))
+        );
+        
+        let collidingWall = map.walls.find(wall => testHitbox.collidesWith(wall.collision));
+        
+        while (collidingWall && movementVector.magnitude > 0.1) {
+            movementVector = movementVector.multiply(.8); // Reduce movement step faster
+            testPosition = this.position.add(movementVector);
+            testHitbox = new Collision(
+                this.hitbox.collisionType,
+                testPosition,
+                this.hitbox.vertices.map(vertex => vertex.add(movementVector).add(this.position))
+            );
+            collidingWall = map.walls.find(wall => testHitbox.collidesWith(wall.collision));
+        }
+        
+        if (!collidingWall) {
+            this.position = testPosition;
+            this.hitbox.position = testPosition;
+        }
     }
-    
 
     rotate(angle: number, map: MapData) {
-        // Calculate the potential new rotation
         const newRotation = (this.rotation + angle) % 360;
-        const newRad = (newRotation * Math.PI) / 180;
-        
-        // Calculate where vertices would be after rotation
+        const nextRad = (newRotation * Math.PI) / 180;
         const potentialVertices = this.originalVertices.map(({ x, y }) => {
-            const rotatedX = x * Math.cos(newRad) - y * Math.sin(newRad);
-            const rotatedY = x * Math.sin(newRad) + y * Math.cos(newRad);
-            
+            const rotatedX = x * Math.cos(nextRad) - y * Math.sin(nextRad);
+            const rotatedY = x * Math.sin(nextRad) + y * Math.cos(nextRad);
             return new Vector2D(rotatedX, rotatedY);
         });
         
-        this.rotation = newRotation;
-        this.hitbox.vertices = potentialVertices;
+        const newHitbox = new Collision(
+            this.hitbox.collisionType,
+            this.hitbox.position.add(this.position),
+            potentialVertices.map(vertex => vertex.add(this.position))
+        );
+
+        console.log(newHitbox)
+        
+        if (!map.walls.some(wall => newHitbox.collidesWith(wall.collision))) {
+            this.rotation = newRotation;
+            this.hitbox.vertices = potentialVertices;
+        }
     }
 }
 

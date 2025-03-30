@@ -51,6 +51,20 @@ class Collision {
     private isOverlapping(proj1: [number, number], proj2: [number, number]): boolean {
         return !(proj1[1] < proj2[0] || proj2[1] < proj1[0]);
     }
+
+    getDistanceTo(wall: Collision, movementVector: Vector2D): number | null {
+        let minDistance: number | null = null;
+        for (const vertex of this.vertices) {
+            const projectedVertex = vertex.add(movementVector);
+            for (const wallVertex of wall.vertices) {
+                const distance = projectedVertex.distanceTo(wallVertex);
+                if (minDistance === null || distance < minDistance) {
+                    minDistance = distance;
+                }
+            }
+        }
+        return minDistance;
+    }
 }
 
 export default Collision

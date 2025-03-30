@@ -99,10 +99,9 @@ function Game() {
   }, [gameState]);
 
   const drawMap = (gameState: GameState) => {
-    if (!ctxRef.current) return;
+    if (!ctxRef.current || !gameState.map.walls) return;
     const ctx = ctxRef.current;
 
-    console.log(gameState.map.walls);
     gameState.map.walls.forEach((wall: Wall) => {
       ctx.beginPath();
       ctx.moveTo(wall.corners[0].x, wall.corners[0].y);

@@ -12,6 +12,10 @@ class Vector2D {
     subtract(v: Vector2D): Vector2D { return new Vector2D(this.x - v.x, this.y - v.y); }
     multiply(scalar: number): Vector2D { return new Vector2D(this.x * scalar, this.y * scalar); }
     divide(scalar: number): Vector2D { return new Vector2D(this.x / scalar, this.y / scalar); }
+
+    clone(): Vector2D {
+        return new Vector2D(this.x, this.y);
+    }
     
     // Vector magnitude and normalization
     get magnitude() { return Math.sqrt(this.x * this.x + this.y * this.y); }
