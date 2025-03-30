@@ -14,8 +14,8 @@ export function interpolateEntities<T extends Entity>(
 
         interpolated[id] = {
             ...current[id], // Preserve all properties
-            x: prev.x + (current[id].x - prev.x) * deltaTime,
-            y: prev.y + (current[id].y - prev.y) * deltaTime,
+            x: prev.position.x + (current[id].position.x - prev.position.x) * deltaTime,
+            y: prev.position.y + (current[id].position.y - prev.position.y) * deltaTime,
             rotation:
                 prev.rotation +
                 ((current[id].rotation - prev.rotation + 180) % 360 - 180) * deltaTime,
