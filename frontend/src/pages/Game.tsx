@@ -4,8 +4,6 @@ import { io } from "socket.io-client";
 import GameListener from "../GameListener";
 import { setupControls } from "../Controls";
 import { drawTank } from "../interface/Tank";
-import { drawProjectile } from "../interface/Projectile";
-import { interpolateEntities } from "../utils/interpolation";
 import GameState from "../interface/GameState";
 import { Wall } from "../interface/Map";
 
@@ -67,27 +65,10 @@ function Game() {
       const ctx = ctxRef.current;
       ctx.clearRect(0, 0, 1280, 720);
 
-      const now = performance.now();
-      const deltaTime = Math.min((now - lastUpdateTime.current) / 16.67, 1); // Normalize for 60 FPS
-
-      const interpolatedPlayers = interpolateEntities(
-        gameState.players,
-        previousState.current.players,
-        deltaTime
-      );
-      const interpolatedProjectiles = interpolateEntities(
-        gameState.projectiles,
-        previousState.current.projectiles,
-        deltaTime
-      );
-
-      Object.values(interpolatedPlayers).forEach((player) =>
-        drawTank(player, ctx)
-      );
-
-      Object.values(interpolatedProjectiles).forEach((projectile) =>
-        drawProjectile(projectile, ctx)
-      );
+      Object.keys(gameState.players).forEach((players) => {
+        const player = gameState.players[players];
+        drawTank(player, ctx);
+      });
 
       drawMap(gameState);
 
