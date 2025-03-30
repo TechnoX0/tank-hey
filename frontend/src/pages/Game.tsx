@@ -82,7 +82,7 @@ function Game() {
   }, [gameState]);
 
   const drawMap = (gameState: GameState) => {
-    if (!ctxRef.current || !gameState.map.walls) return;
+    if (!ctxRef.current || !gameState.map || !gameState.map.walls) return;
     const ctx = ctxRef.current;
 
     gameState.map.walls.forEach((wall: Wall) => {
