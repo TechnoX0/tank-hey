@@ -72,7 +72,7 @@ function Game() {
 
       console.log(gameState.map);
 
-      // drawMap(gameState);
+      drawMap(gameState);
 
       animationFrameId = requestAnimationFrame(animate);
     };
