@@ -70,7 +70,7 @@ function Game() {
         drawTank(player, ctx);
       });
 
-      console.log(gameState.map);
+      console.log("State: ", gameState.map);
 
       drawMap(gameState);
 
