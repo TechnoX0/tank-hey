@@ -4,8 +4,10 @@ export function drawTank(player: Entity, ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = "black";
     ctx.beginPath();
 
+    if (!player.hitbox?.vertices) return;
+
     player.hitbox.vertices.forEach(({ x: relX, y: relY }, index) => {
-        if(!player.position.x) return
+        if (!player.position || !player.position.x) return;
 
         if (index === 0) {
             ctx.moveTo(player.position.x + relX, player.position.y + relY);
