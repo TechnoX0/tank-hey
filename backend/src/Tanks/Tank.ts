@@ -73,8 +73,6 @@ class Tank extends GameObject implements Movement {
             this.hitbox.position.add(this.position),
             potentialVertices.map(vertex => vertex.add(this.position))
         );
-
-        console.log(newHitbox)
         
         if (!map.walls.some(wall => newHitbox.collidesWith(wall.collision))) {
             this.rotation = newRotation;
