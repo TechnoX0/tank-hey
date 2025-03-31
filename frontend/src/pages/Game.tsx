@@ -3,9 +3,8 @@ import { useParams } from "react-router";
 import { io } from "socket.io-client";
 import GameListener from "../GameListener";
 import { setupControls } from "../Controls";
-import { drawTank } from "../interface/Tank";
 import GameState from "../interface/GameState";
-import { Wall } from "../interface/Map";
+import { drawMap, drawTank } from "../utils/draw";
 
 const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:4000");
 
@@ -65,14 +64,12 @@ function Game() {
       const ctx = ctxRef.current;
       ctx.clearRect(0, 0, 1280, 720);
 
-      Object.keys(gameState.players).forEach((players) => {
-        const player = gameState.players[players];
-        drawTank(player, ctx);
+      Object.keys(gameState.players).forEach((playerId) => {
+        const player = gameState.players[playerId];
+        drawTank(player, ctx, playerId == socket.id);
       });
 
-      console.log("State: ", gameState.map);
-
-      drawMap(gameState);
+      drawMap(gameState.map, ctx);
 
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -80,20 +77,6 @@ function Game() {
     animationFrameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrameId);
   }, [gameState]);
-
-  const drawMap = (gameState: GameState) => {
-    if (!ctxRef.current || !gameState.map || !gameState.map.walls) return;
-    const ctx = ctxRef.current;
-
-    gameState.map.walls.forEach((wall: Wall) => {
-      ctx.beginPath();
-      ctx.moveTo(wall.corners[0].x, wall.corners[0].y);
-      wall.corners.forEach((corner) => {
-        ctx.lineTo(corner.x, corner.y);
-      });
-      ctx.fill();
-    });
-  };
 
   return (
     <div>
