@@ -15,7 +15,7 @@ abstract class Projectile extends GameObject implements Movement {
     public maxTimeAlive: number;
 
     constructor(owner: string, position: Vector2D, hitbox: CollisionType) {
-        super(position, new Collision(hitbox, new Vector2D(position.x, position.y),));
+        super(owner, position, new Collision(hitbox, new Vector2D(position.x, position.y),));
         this.owner = owner;
         this.damage = 1;
         this.speed = 10;
@@ -23,8 +23,9 @@ abstract class Projectile extends GameObject implements Movement {
         this.maxTimeAlive = 10000; // 10 seconds default
     }
 
+    abstract update(): void;
     abstract move(canvasWidth: number, canvasHeight: number, ...params: any): void;
-    abstract rotate(angle: number): void;
+    abstract rotate(clockwise: boolean): void;
 
     dealDamage(target: Tank) {
         target.health -= this.damage;

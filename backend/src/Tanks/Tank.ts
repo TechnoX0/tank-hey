@@ -14,8 +14,9 @@ class Tank extends GameObject implements Movement {
     public turnSpeed: number = 3;
     public projectile: Projectile = new CannonBall("", this.position)
 
-    constructor(position: Vector2D) {
+    constructor(id: string, position: Vector2D) {
         super(
+            id,
             position,
             new Collision(CollisionType.polygon, new Vector2D(position.x, position.y), [
                 new Vector2D(-15, -10),

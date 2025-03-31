@@ -8,6 +8,10 @@ class CannonBall extends Projectile {
         this.speed = 2
     }
 
+    update() {
+        
+    }
+
     move() {
 
     }
