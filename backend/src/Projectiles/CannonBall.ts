@@ -14,3 +14,5 @@ class CannonBall extends Projectile {
 
     rotate() {}
 }
+
+export default CannonBall
