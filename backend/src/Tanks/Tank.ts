@@ -4,12 +4,15 @@ import Vector2D from "../Utils/Vector2D";
 import MapData from "../interface/MapData";
 import { CollisionType } from "../Utils/Enums";
 import Collision from "../Utils/Collision";
+import Projectile from "../Projectiles/Projectile";
+import CannonBall from "../Projectiles/CannonBall";
 
 class Tank extends GameObject implements Movement {
+    public health: number;
     public speed: number = 5;
     public rotation: number = 0;
-    public health: number;
-    public turnSpeed: number = 2
+    public turnSpeed: number = 3;
+    public projectile: Projectile = new CannonBall("", this.position)
 
     constructor(position: Vector2D) {
         super(
@@ -28,9 +31,10 @@ class Tank extends GameObject implements Movement {
 
     move(map: MapData, forward: number) {
         const direction = forward ? 1 : -1;
+        const variedSpeed = forward ? this.speed : this.speed * .4
         let movementVector = new Vector2D(
-            Math.cos(this.rotation * (Math.PI / 180)) * (this.speed * direction),
-            Math.sin(this.rotation * (Math.PI / 180)) * (this.speed * direction)
+            Math.cos(this.rotation * (Math.PI / 180)) * (variedSpeed * direction),
+            Math.sin(this.rotation * (Math.PI / 180)) * (variedSpeed * direction)
         );
         
         let testPosition = this.position.add(movementVector);
@@ -59,8 +63,9 @@ class Tank extends GameObject implements Movement {
         }
     }
 
-    rotate(angle: number, map: MapData) {
-        const newRotation = (this.rotation + angle) % 360;
+    rotate(clockwise: boolean, map: MapData) {
+        const rotationSpeed = clockwise ? -1 : 1
+        const newRotation = (this.rotation + (this.turnSpeed * rotationSpeed)) % 360;
         const nextRad = (newRotation * Math.PI) / 180;
         const potentialVertices = this.originalVertices.map(({ x, y }) => {
             const rotatedX = x * Math.cos(nextRad) - y * Math.sin(nextRad);

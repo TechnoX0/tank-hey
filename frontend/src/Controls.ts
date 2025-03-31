@@ -31,7 +31,7 @@ export function setupControls(
         onHold: () => {
             socket.emit("playerAction", roomId, playerId, {
                 type: "rotate",
-                data: -4,
+                data: true,
             });
         },
     });
@@ -40,7 +40,7 @@ export function setupControls(
         onHold: () => {
             socket.emit("playerAction", roomId, playerId, {
                 type: "rotate",
-                data: 4,
+                data: false,
             });
         },
     });
