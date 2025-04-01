@@ -70,6 +70,7 @@ function Game() {
       });
 
       drawMap(gameState.map, ctx);
+      // drawPolygons("#1F1F1F", gameState.map.walls, ctx);
 
       animationFrameId = requestAnimationFrame(animate);
     };
