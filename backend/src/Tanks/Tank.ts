@@ -85,6 +85,13 @@ class Tank extends GameObject implements Movement {
             this.hitbox.vertices = potentialVertices;
         }
     }
+
+    shoot() {
+        const ProjectileClass = this.projectile.constructor as new (owner: string, position: Vector2D) => Projectile;
+        const newProjectile = new ProjectileClass("", new Vector2D(this.position.x, this.position.y));
+        newProjectile.rotation = this.rotation;
+        return newProjectile;
+    }
 }
 
 export default Tank;
