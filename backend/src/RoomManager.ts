@@ -1,7 +1,7 @@
 import GameManager from "./GameManager";
 import PlayerAction from "./interface/PlayerAction";
 import GameState from "./interface/GameState";
-import Room from "./interface/Room";
+import Room from "./Room";
 
 class RoomManager {
     public rooms: Record<string, Room>;;
@@ -17,26 +17,20 @@ class RoomManager {
     }
 
     createRoom(roomName: string) {
-        const roomId = this.generateRoomId();
-        this.rooms[roomId] = {
-            id: roomId,
-            roomName: roomName,
-            players: [],
-            gameManager: new GameManager(1000, 600),
-            lastActive: Date.now(), // Track last activity
-        };
-        return roomId;
+        const newRoom = new Room(roomName);
+        this.rooms[newRoom.id] = newRoom;
+        return newRoom.id;
     }
 
     joinRoom(roomId: string, playerId: string) {
-        if (!this.rooms[roomId]) return "Room does not exist!";
-        if (this.rooms[roomId].players.includes(playerId))
-            return "Player already in room";
+        const room = this.rooms[roomId];
+        if (!room) return "Room does not exist!";
+        if (room.players.includes(playerId)) return "Player already in room";
 
-        this.rooms[roomId].players.push(playerId);
-        this.rooms[roomId].gameManager.addPlayer(playerId);
-        this.rooms[roomId].lastActive = Date.now(); // Update activity timestamp
-        return this.rooms[roomId];
+        room.players.push(playerId);
+        room.gameManager.addPlayer(playerId);
+        room.lastActive = Date.now(); // Update activity timestamp
+        return room;
     }
 
     removePlayerFromRoom(playerId: string) {
@@ -68,8 +62,6 @@ class RoomManager {
 
     playerAction(roomId: string, playerId: string, action: PlayerAction) {
         const room = this.rooms[roomId];
-        // if (!room.gameManager) return
-        // console.log(room.gameManager)
         room.gameManager.playerAction(playerId, action);
     }
 

@@ -7,15 +7,12 @@ import Vector2D from "./Utils/Vector2D";
 import MapData from "./interface/MapData";
 
 class GameManager {
-    private canvasWidth: number;
-    private canvasHeight: number;
     private players: Record<string, Tank>;
     private projectiles: Projectile[];
     private map: MapData;
+    private gamestarted: boolean = false; // Flag to indicate if the game has started
 
-    constructor(canvasWidth: number, canvasHeight: number) {
-        this.canvasWidth = canvasWidth;
-        this.canvasHeight = canvasHeight;
+    constructor() {
         this.players = {};
         this.projectiles = [];
         this.map = this.pickRandomMap();
@@ -65,7 +62,7 @@ class GameManager {
     }
 
     getGameState() {
-        return { map: this.map, players: this.players, projectiles: this.projectiles };
+        return { map: this.map, players: this.players, projectiles: this.projectiles, gamestarted: this.gamestarted };
     }
 }
 
