@@ -18,6 +18,7 @@ function Game() {
     map: {},
     players: {},
     projectiles: {},
+    gameStarted: false,
   });
   const previousState = useRef<GameState>(gameState);
   const lastUpdateTime = useRef<number>(performance.now());
@@ -78,11 +79,9 @@ function Game() {
           projectile.hitbox.radius,
           ctx
         );
-        // console.log(projectile);
       });
 
       drawMap(gameState.map, ctx);
-      // drawPolygons("#1F1F1F", gameState.map.walls, ctx);
 
       animationFrameId = requestAnimationFrame(animate);
     };

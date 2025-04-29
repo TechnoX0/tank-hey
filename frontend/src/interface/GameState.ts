@@ -3,6 +3,7 @@ interface GameState {
     map: any;
     players?: any;
     projectiles?: any;
+    gameStarted?: boolean;
 }
 
 export default GameState
