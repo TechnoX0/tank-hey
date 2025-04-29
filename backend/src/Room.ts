@@ -14,6 +14,21 @@ class Room {
         this.lastActive = Date.now()
     }
 
+    addPlayer(playerId: string) {
+        if (this.players.includes(playerId)) return "Player already in room";
+        this.players.push(playerId);
+        this.gameManager.addPlayer(playerId);
+        this.lastActive = Date.now(); // Update activity timestamp
+        return this
+    }
+
+    removePlayer(playerId: string) {
+        if (!this.players.includes(playerId)) return "Player is not in room";
+        this.players = this.players.filter((id) => id !== playerId);
+        this.gameManager.removePlayer(playerId);
+        this.lastActive = Date.now(); // Update last activity
+    }
+
     generateRoomId(length = 8) {
         const characters =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

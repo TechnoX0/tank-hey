@@ -1,4 +1,3 @@
-import GameManager from "./GameManager";
 import PlayerAction from "./interface/PlayerAction";
 import GameState from "./interface/GameState";
 import Room from "./Room";
@@ -25,22 +24,13 @@ class RoomManager {
     joinRoom(roomId: string, playerId: string) {
         const room = this.rooms[roomId];
         if (!room) return "Room does not exist!";
-        if (room.players.includes(playerId)) return "Player already in room";
-
-        room.players.push(playerId);
-        room.gameManager.addPlayer(playerId);
-        room.lastActive = Date.now(); // Update activity timestamp
-        return room;
+        return room.addPlayer(playerId);
     }
 
     removePlayerFromRoom(playerId: string) {
         for (const roomId in this.rooms) {
             const room = this.rooms[roomId];
-            if (room.players.includes(playerId)) {
-                room.players = room.players.filter((id) => id !== playerId);
-                room.gameManager.removePlayer(playerId);
-                room.lastActive = Date.now(); // Update last activity
-            }
+            room.removePlayer(playerId);
         }
     }
 
@@ -71,17 +61,6 @@ class RoomManager {
             gameStates[roomId] = this.rooms[roomId].gameManager.getGameState();
         }
         return gameStates;
-    }
-
-    generateRoomId(length = 8) {
-        const characters =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        let roomId = "";
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            roomId += characters[randomIndex];
-        }
-        return roomId;
     }
 }
 
