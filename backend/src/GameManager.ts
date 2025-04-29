@@ -28,7 +28,7 @@ class GameManager {
     update(deltaTime: number) {
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const projectile = this.projectiles[i];
-            projectile.move(this.canvasWidth, this.canvasHeight, deltaTime, this.map.walls);
+            projectile.update(deltaTime, this.map);
             
             // Remove projectile if it should be destroyed
             if (projectile.shouldDestroy()) {
@@ -53,7 +53,8 @@ class GameManager {
                 player.move(this.map, action.data);
                 break;
             case "shoot":
-                this.projectiles.push();
+                const projectile = player.shoot()
+                this.projectiles.push(projectile);
             default:
                 break;
         }
