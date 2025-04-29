@@ -14,8 +14,19 @@ abstract class Projectile extends GameObject implements Movement {
     public timeAlive: number;
     public maxTimeAlive: number;
 
-    constructor(owner: string, position: Vector2D, hitbox: CollisionType) {
-        super(owner, position, new Collision(hitbox, new Vector2D(position.x, position.y),));
+    constructor(owner: string, position: Vector2D, hitbox: CollisionType, verticesOrRadius: Vector2D[] | number) {
+        let collision: Collision;
+    
+        if (Array.isArray(verticesOrRadius)) {
+            collision = new Collision(hitbox, position, verticesOrRadius);
+        } else if (typeof verticesOrRadius === "number") {
+            collision = new Collision(hitbox, position, verticesOrRadius);
+        } else {
+            throw new Error("Invalid hitbox type passed to constructor");
+        }
+    
+        super(owner, position, collision);
+
         this.owner = owner;
         this.damage = 1;
         this.speed = 10;
@@ -23,8 +34,8 @@ abstract class Projectile extends GameObject implements Movement {
         this.maxTimeAlive = 10000; // 10 seconds default
     }
 
-    abstract update(): void;
-    abstract move(canvasWidth: number, canvasHeight: number, ...params: any): void;
+    abstract update(...params: any): void;
+    abstract move(...params: any): void;
     abstract rotate(clockwise: boolean): void;
 
     dealDamage(target: Tank) {

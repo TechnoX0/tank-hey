@@ -54,3 +54,4 @@ class Wall {
 }
 
 export default Wall
+export { WallEdge };

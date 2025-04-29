@@ -1,19 +1,61 @@
+import Wall from "../Maps/Wall";
 import { CollisionType } from "./Enums";
 import Vector2D from "./Vector2D";
 
 class Collision {
     public collisionType: CollisionType;
-    public position: Vector2D
-    public vertices: Vector2D[]
+    public position: Vector2D;
+    public vertices: Vector2D[] = [new Vector2D(0, 0)];
+    public radius: number = 0;
 
-    constructor(collisionType: CollisionType, position: Vector2D, vertices?: Vector2D[]) {
-        this.collisionType = collisionType
-        this.position = position
-        this.vertices = vertices || []
+    constructor(collisionType: CollisionType, position: Vector2D, vertices: Vector2D[]);
+    constructor(collisionType: CollisionType, position: Vector2D, radius: number);
+    constructor(collisionType: CollisionType, position: Vector2D, verticesOrRadius: Vector2D[] | number) {
+        this.collisionType = collisionType;
+        this.position = position;
+
+        if (Array.isArray(verticesOrRadius)) {
+            this.vertices = verticesOrRadius;
+        } else if (typeof verticesOrRadius === "number") {
+            this.radius = verticesOrRadius;
+        } else {
+            throw new Error("Invalid verticesOrRadius type. Expected Vector2D[] or number.");
+        }
     }
 
-    // Method to check if this collision overlaps with another
+
     public collidesWith(other: Collision): boolean {
+        if (this.collisionType === CollisionType.circle && other.collisionType === CollisionType.circle) {
+            return this.collideWithCircle(other);
+        } else if (this.collisionType === CollisionType.circle && other.collisionType === CollisionType.polygon) {
+            return this.collideCircleWithPolygon(other);
+        } else if (this.collisionType === CollisionType.polygon && other.collisionType === CollisionType.circle) {
+            return other.collideCircleWithPolygon(this); // Reverse order
+        } else if (this.collisionType === CollisionType.polygon && other.collisionType === CollisionType.polygon) {
+            return this.collideWithPolygon(other);
+        }
+        return false;
+    }
+
+    public collideCircleWithPolygon(other: Collision): boolean {
+        if (this.pointInPolygon(this.position, other)) {
+            return true; // Circle center is inside the polygon
+        }
+        
+        for (let i = 0; i < other.vertices.length; i++) {
+            const v1 = other.vertices[i]
+            const v2 = other.vertices[(i + 1) % other.vertices.length]
+        
+            const closestPointSegment = this.closestPointOnSegment(this.position, v1, v2);
+            if (closestPointSegment.distanceTo(this.position) < this.radius) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    public collideWithPolygon(other: Collision): boolean {
         const axes = this.getAxes().concat(other.getAxes());
 
         for (const axis of axes) {
@@ -21,19 +63,53 @@ class Collision {
             const proj2 = other.projectOntoAxis(axis);
 
             if (!this.isOverlapping(proj1, proj2)) {
-                return false; // Found a separating axis
+                return false;
             }
         }
 
-        return true; // No separating axis found
+        return true;
+    }
+
+    public collideWithCircle(other: Collision): boolean {
+        const distance = this.position.distanceTo(other.position);
+        return distance < this.radius + other.radius;
+    }
+
+    private closestPointOnSegment(
+        point: Vector2D,
+        segmentStart: Vector2D,
+        segmentEnd: Vector2D
+      ): Vector2D {
+        const segment = segmentEnd.subtract(segmentStart);
+        const segmentLengthSq = segment.magnitudeSquared();
+      
+        if (segmentLengthSq === 0) {
+          // Degenerate segment: just return the start point
+          return segmentStart;
+        }
+      
+        const t = Math.max(0, Math.min(1, point.subtract(segmentStart).dot(segment) / segmentLengthSq));
+        return segmentStart.add(segment.multiply(t));
+      }
+
+    private pointInPolygon(point: Vector2D, polygon: Collision): boolean {
+        let inside = false;
+        for (let i = 0, j = polygon.vertices.length - 1; i < polygon.vertices.length; j = i++) {
+            const vi = polygon.vertices[i].add(polygon.position);
+            const vj = polygon.vertices[j].add(polygon.position);
+            if ((vi.y > point.y) !== (vj.y > point.y) && (point.x < (vj.x - vi.x) * (point.y - vi.y) / (vj.y - vi.y) + vi.x)) {
+                inside = !inside;
+            }
+        }
+        return inside;
     }
 
     private getAxes(): Vector2D[] {
         const axes: Vector2D[] = [];
-        for (let i = 0; i < this.vertices.length; i++) {
+        for (let i = 0; i < this.vertices?.length; i++) {
             const nextIndex = (i + 1) % this.vertices.length;
             const edge = this.vertices[nextIndex].subtract(this.vertices[i]);
-            axes.push(new Vector2D(-edge.y, edge.x).normalize());
+            axes.push(new Vector2D(-edge.y, edge.x).normalized);
         }
         return axes;
     }
@@ -64,7 +140,22 @@ class Collision {
             }
         }
         return minDistance;
+    }  
+
+    getClosestPoint(point: Vector2D): Vector2D {
+        let closestPoint: Vector2D | null = null;
+        let minDistance = Infinity;
+    
+        for (const vertex of this.vertices) {
+            let distance = vertex.subtract(point).magnitude;
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestPoint = vertex;
+            }
+        }
+    
+        return closestPoint!;
     }
 }
 
-export default Collision
+export default Collision;
