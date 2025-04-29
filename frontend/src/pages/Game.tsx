@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import GameListener from "../GameListener";
 import { setupControls } from "../Controls";
 import GameState from "../interface/GameState";
-import { drawMap, drawTank } from "../utils/draw";
+import { drawCircle, drawMap, drawTank } from "../utils/Draw";
 
 const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:4000");
 
@@ -67,6 +67,18 @@ function Game() {
       Object.keys(gameState.players).forEach((playerId) => {
         const player = gameState.players[playerId];
         drawTank(player, ctx, playerId == socket.id);
+      });
+
+      Object.keys(gameState.projectiles).forEach((projectilesId) => {
+        const projectile = gameState.projectiles[projectilesId];
+        console.log(projectile);
+        drawCircle(
+          "#295C0A",
+          projectile.position,
+          projectile.hitbox.radius,
+          ctx
+        );
+        // console.log(projectile);
       });
 
       drawMap(gameState.map, ctx);

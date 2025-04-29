@@ -34,7 +34,6 @@ export function drawMap(map: Map, ctx: CanvasRenderingContext2D) {
 export function drawPolygons(color: string, vertices: Vector2D[], ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = color
     ctx.beginPath()
-    console.log(vertices)
     ctx.moveTo(vertices[0].x, vertices[0].y)
 
     vertices.forEach(vertex => {
