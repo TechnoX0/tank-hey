@@ -23,7 +23,7 @@ class CannonBall extends Projectile {
             Math.sin(this.rotation * (Math.PI / 180))
         ).normalized.multiply(this.speed);
     
-        const steps = 50;
+        const steps = 20;
         let subMovement = movementVector.divide(steps);
     
         for (let i = 0; i < steps; i++) {
