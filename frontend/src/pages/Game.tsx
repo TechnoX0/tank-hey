@@ -4,7 +4,8 @@ import { io } from "socket.io-client";
 import GameListener from "../GameListener";
 import { setupControls } from "../Controls";
 import GameState from "../interface/GameState";
-import { drawCircle, drawMap, drawTank } from "../utils/Draw";
+import { drawCircle, drawMap, drawTank } from "../utils/draw";
+import useGameRenderer from "../hooks/GameRenderer";
 
 const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:4000");
 
@@ -57,38 +58,7 @@ function Game() {
     };
   }, [params.roomId]);
 
-  useEffect(() => {
-    let animationFrameId: number;
-
-    const animate = () => {
-      if (!ctxRef.current) return;
-      const ctx = ctxRef.current;
-      ctx.clearRect(0, 0, 1280, 720);
-
-      Object.keys(gameState.players).forEach((playerId) => {
-        const player = gameState.players[playerId];
-        drawTank(player, ctx, playerId == socket.id);
-      });
-
-      Object.keys(gameState.projectiles).forEach((projectilesId) => {
-        const projectile = gameState.projectiles[projectilesId];
-        console.log(projectile);
-        drawCircle(
-          "#295C0A",
-          projectile.position,
-          projectile.hitbox.radius,
-          ctx
-        );
-      });
-
-      drawMap(gameState.map, ctx);
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [gameState]);
+  useGameRenderer(canvasRef.current, ctxRef.current, gameState, socket);
 
   return (
     <div>
@@ -96,7 +66,7 @@ function Game() {
         ref={canvasRef}
         width={1000}
         height={600}
-        className="bg-blue-100"
+        className={`bg-blue-100 ${!gameState.gameStarted ? "hidden" : ""}`}
       />
     </div>
   );
