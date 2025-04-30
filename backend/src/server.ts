@@ -21,7 +21,7 @@ io.on("connection", (socket) => {
     const playerId = socket.id;
 
     socket.on("createRoom", (roomName, callback) => {
-        const roomId = roomManager.createRoom(roomName);
+        const roomId = roomManager.createRoom(roomName, playerId);
         callback(roomId);
     });
 
@@ -39,6 +39,11 @@ io.on("connection", (socket) => {
         console.log("A user has disconnected");
         roomManager.removePlayerFromRoom(playerId);
     });
+
+    socket.on("getRoomInfo", (roomId, callback) => {
+        const roomInfo = roomManager.getRoomInfo(roomId);
+        callback(roomInfo);
+    })
 });
 
 setInterval(() => {

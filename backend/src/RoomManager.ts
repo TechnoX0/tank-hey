@@ -15,8 +15,8 @@ class RoomManager {
         });
     }
 
-    createRoom(roomName: string) {
-        const newRoom = new Room(roomName);
+    createRoom(roomName: string, ownerId: string) {
+        const newRoom = new Room(roomName, ownerId);
         this.rooms[newRoom.id] = newRoom;
         return newRoom.id;
     }
@@ -44,6 +44,12 @@ class RoomManager {
                 delete this.rooms[roomId];
             }
         });
+    }
+
+    getRoomInfo(roomId: string) {
+        const room = this.rooms[roomId];
+        if (!room) return "Room does not exist!";
+        return room.getState();        
     }
 
     getRoomGameState(roomId: string) {

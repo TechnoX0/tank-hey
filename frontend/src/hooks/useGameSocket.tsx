@@ -28,6 +28,10 @@ export function useGameSocket(
       setGameState(newState);
     });
 
+    socket.emit("getRoomInfo", roomId, (roomInfo: any) => {
+      console.log(roomInfo, socket.id);
+    });
+
     return () => {
       socket.off("gameState");
       gameListener.stop();

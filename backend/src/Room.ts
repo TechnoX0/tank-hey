@@ -2,13 +2,15 @@ import GameManager from "./GameManager";
 
 class Room {
     id: string;
+    ownerId: string;
     name: string;
     players: string[] = [];
     gameManager: GameManager;
     lastActive: number; // Timestamp of last activity
 
-    constructor(roomName: string) {
+    constructor(roomName: string, ownerId: string) {
         this.id = this.generateRoomId()
+        this.ownerId = ownerId
         this.name = roomName
         this.gameManager = new GameManager()
         this.lastActive = Date.now()
@@ -38,6 +40,15 @@ class Room {
             roomId += characters[randomIndex];
         }
         return roomId;
+    }
+
+    getState() {
+        return {
+            id: this.id,
+            ownerId: this.ownerId,
+            name: this.name,
+            players: this.players,
+        };
     }
 }
 

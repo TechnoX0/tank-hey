@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
-import { io } from "socket.io-client";
-import GameListener from "../GameListener";
-import { setupControls } from "../Controls";
 import GameState from "../interface/GameState";
 import useGameRenderer from "../hooks/useGameRenderer";
 import { useGameSocket } from "../hooks/useGameSocket";
+import { getSocket } from "../Socket";
 
-const socketURL = import.meta.env.VITE_SOCKET_URL || "http://localhost:4000";
-const socket = io(socketURL);
+const socket = getSocket();
 const canvasWidth = 1000;
 const canvasHeight = 600;
 
