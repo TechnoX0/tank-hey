@@ -5,12 +5,14 @@ import Maps from "./Maps/Maps";
 import PlayerAction from "./interface/PlayerAction";
 import Vector2D from "./Utils/Vector2D";
 import MapData from "./interface/MapData";
+import Message from "./interface/Message";
 
 class GameManager {
     private players: Record<string, Tank>;
     private projectiles: Projectile[];
     private map: MapData;
     private gamestarted: boolean = false; // Flag to indicate if the game has started
+    private messages: Message[] = []; // Array to store messages
 
     constructor() {
         this.players = {};
@@ -23,6 +25,8 @@ class GameManager {
     }
 
     update(deltaTime: number) {
+        if (!this.gamestarted) return; // Only update if the game has started
+        
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const projectile = this.projectiles[i];
             projectile.update(deltaTime, this.map);
@@ -39,6 +43,7 @@ class GameManager {
     }
 
     playerAction(playerId: string, action: PlayerAction) {
+        if (!this.gamestarted) return; // Only process actions if the game has started
         const player: Tank = this.players[playerId];
         if (!player) return;
 
@@ -61,8 +66,12 @@ class GameManager {
         delete this.players[socketId];
     }
 
+    setMessages(type: string, data: any) {
+        this.messages.push({ type, data });
+    }
+
     getGameState() {
-        return { map: this.map, players: this.players, projectiles: this.projectiles, gamestarted: this.gamestarted };
+        return { map: this.map, players: this.players, projectiles: this.projectiles, gamestarted: this.gamestarted, messages: this.messages };
     }
 }
 
