@@ -3,7 +3,7 @@ import GameState from "./interface/GameState";
 import Room from "./Room";
 
 class RoomManager {
-    public rooms: Record<string, Room>;;
+    public rooms: Record<string, Room>;
 
     constructor() {
         this.rooms = {};
@@ -27,7 +27,7 @@ class RoomManager {
         return room.addPlayer(playerId);
     }
 
-    removePlayerFromRoom(playerId: string) {
+    removePlayer(playerId: string) {
         for (const roomId in this.rooms) {
             const room = this.rooms[roomId];
             room.removePlayer(playerId);
@@ -38,18 +38,12 @@ class RoomManager {
         const now = Date.now();
         Object.keys(this.rooms).forEach((roomId) => {
             const room = this.rooms[roomId];
-            if (room.players.length === 0 && now - room.lastActive > 30000) {
+            if (Object.keys(room.players).length == 0 && now - room.lastActive > 30000) {
                 // Remove rooms inactive for 30+ seconds
                 console.log(`Removing empty room: ${roomId}`);
                 delete this.rooms[roomId];
             }
         });
-    }
-
-    getRoomInfo(roomId: string) {
-        const room = this.rooms[roomId];
-        if (!room) return "Room does not exist!";
-        return room.getState();        
     }
 
     getRoomGameState(roomId: string) {
@@ -59,14 +53,6 @@ class RoomManager {
     playerAction(roomId: string, playerId: string, action: PlayerAction) {
         const room = this.rooms[roomId];
         room.gameManager.playerAction(playerId, action);
-    }
-
-    getAllGameStates(): Record<string, GameState> {
-        const gameStates: Record<string, GameState> = {};
-        for (const roomId in this.rooms) {
-            gameStates[roomId] = this.rooms[roomId].gameManager.getGameState();
-        }
-        return gameStates;
     }
 }
 

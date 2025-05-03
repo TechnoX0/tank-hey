@@ -19,17 +19,13 @@ export function useGameSocket(
       }
     }, 100);
 
-    socket.emit("joinRoom", roomId, (room: any) => {
-      console.log("Joined room:", room);
+    socket.emit("joinRoom", roomId, (gameState: GameState) => {
+      setGameState(gameState);
     });
 
     socket.on("gameState", (newState: GameState) => {
       if (newState.gameStarted) gameListener.start();
       setGameState(newState);
-    });
-
-    socket.emit("getRoomInfo", roomId, (roomInfo: any) => {
-      console.log(roomInfo, socket.id);
     });
 
     return () => {

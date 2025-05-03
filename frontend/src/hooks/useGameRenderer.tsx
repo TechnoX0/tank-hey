@@ -9,7 +9,7 @@ function useGameRenderer(
   gameState: GameState,
   socket: Socket
 ) {
-  if (!canvas || !ctx) return;
+  if (!canvas || !ctx || !gameState.gameStarted) return;
   let animationFrameId: number;
 
   const renderFrame = () => {
@@ -17,9 +17,9 @@ function useGameRenderer(
 
     for (const [id, player] of Object.entries(gameState.players) as [
       string,
-      Entity
+      any
     ][]) {
-      drawTank(player, ctx, id === socket.id);
+      drawTank(player.tank, ctx, id === socket.id);
     }
 
     for (const projectile of Object.values(gameState.projectiles) as Entity[]) {

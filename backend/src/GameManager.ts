@@ -6,12 +6,13 @@ import PlayerAction from "./interface/PlayerAction";
 import Vector2D from "./Utils/Vector2D";
 import MapData from "./interface/MapData";
 import Message from "./interface/Message";
+import Player from "./Utils/Player";
 
 class GameManager {
-    private players: Record<string, Tank>;
+    private players: Record<string, Player>;
     private projectiles: Projectile[];
     private map: MapData;
-    private gamestarted: boolean = false; // Flag to indicate if the game has started
+    public gameStarted: boolean = false; // Flag to indicate if the game has started
     private messages: Message[] = []; // Array to store messages
 
     constructor() {
@@ -25,7 +26,7 @@ class GameManager {
     }
 
     update(deltaTime: number) {
-        if (!this.gamestarted) return; // Only update if the game has started
+        if (!this.gameStarted) return; // Only update if the game has started
         
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const projectile = this.projectiles[i];
@@ -39,12 +40,12 @@ class GameManager {
     }
 
     addPlayer(socketId: string) {
-        this.players[socketId] = new Tank(socketId, new Vector2D(40, 40));
+        this.players[socketId] = new Player(socketId);
     }
 
     playerAction(playerId: string, action: PlayerAction) {
-        if (!this.gamestarted) return; // Only process actions if the game has started
-        const player: Tank = this.players[playerId];
+        if (!this.gameStarted) return; // Only process actions if the game has started
+        const player: Tank = this.players[playerId].tank;
         if (!player) return;
 
         switch (action.type) {
@@ -71,7 +72,7 @@ class GameManager {
     }
 
     getGameState() {
-        return { map: this.map, players: this.players, projectiles: this.projectiles, gamestarted: this.gamestarted, messages: this.messages };
+        return { map: this.map, players: this.players, projectiles: this.projectiles, gameStarted: this.gameStarted, messages: this.messages };
     }
 }
 

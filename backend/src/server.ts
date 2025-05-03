@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
@@ -27,23 +26,47 @@ io.on("connection", (socket) => {
 
     socket.on("joinRoom", (roomId, callback) => {
         socket.join(roomId);
-        const room = roomManager.joinRoom(roomId, socket.id);
-        callback(room);
+        roomManager.joinRoom(roomId, socket.id);
+        const roomState = roomManager.getRoomGameState(roomId);
+        callback(roomState);
     });
 
     socket.on("playerAction", (roomId, playerId, action) => {
         roomManager.playerAction(roomId, playerId, action);
     });
 
+    socket.on("startGame", (roomId, callback) => {
+        const room = roomManager.rooms[roomId];
+        if (!room) return;
+
+        room.gameManager.gameStarted = true;
+        callback(room.gameManager.getGameState());
+        io.to(roomId).emit("gameState", room.gameManager.getGameState());
+        console.log(room.getState(), room.gameManager.getGameState());
+    })
+
+    socket.on("updateLobby", (roomId, data) => {
+        const room = roomManager.rooms[roomId]
+        if (!room) return;
+        const player = room.players[data.playerId]
+        if (!player) return;
+        
+        player.tankClass = data.selectedClass;
+        player.color = data.selectedColor;
+
+        socket.to(roomId).emit("updateLobby", room.getState());
+    })
+
+    socket.on("getRoomState", (roomId, callback) => {
+        const room = roomManager.rooms[roomId];
+        if (!room) return;
+        callback(room.getState());
+    })
+
     socket.on("disconnect", () => {
         console.log("A user has disconnected");
-        roomManager.removePlayerFromRoom(playerId);
+        roomManager.removePlayer(playerId);
     });
-
-    socket.on("getRoomInfo", (roomId, callback) => {
-        const roomInfo = roomManager.getRoomInfo(roomId);
-        callback(roomInfo);
-    })
 });
 
 setInterval(() => {

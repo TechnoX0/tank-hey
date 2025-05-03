@@ -1,10 +1,11 @@
 import GameManager from "./GameManager";
+import Player from "./Utils/Player";
 
 class Room {
     id: string;
     ownerId: string;
     name: string;
-    players: string[] = [];
+    players: Record<string, Player> = {};;
     gameManager: GameManager;
     lastActive: number; // Timestamp of last activity
 
@@ -17,16 +18,17 @@ class Room {
     }
 
     addPlayer(playerId: string) {
-        if (this.players.includes(playerId)) return "Player already in room";
-        this.players.push(playerId);
+        if (Object.keys(this.players).includes(playerId)) return "Player already in room";
+        const newPlayer = new Player(playerId, playerId === this.ownerId);
+        this.players[playerId] = newPlayer;
         this.gameManager.addPlayer(playerId);
         this.lastActive = Date.now(); // Update activity timestamp
         return this
     }
 
     removePlayer(playerId: string) {
-        if (!this.players.includes(playerId)) return "Player is not in room";
-        this.players = this.players.filter((id) => id !== playerId);
+        if (Object.keys(this.players).includes(playerId)) return "Player is not in room";
+        delete this.players[playerId];
         this.gameManager.removePlayer(playerId);
         this.lastActive = Date.now(); // Update last activity
     }
