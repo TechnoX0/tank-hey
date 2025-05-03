@@ -1,37 +1,52 @@
-import { Socket } from "socket.io-client";
+import { useEffect, useRef } from "react";
 import GameState from "../interface/GameState";
 import { drawCircle, drawMap, drawTank } from "../utils/draw";
 import { Entity } from "../interface/Entity";
+import { Socket } from "socket.io-client";
 
-function useGameRenderer(
+export default function useGameRenderer(
   canvas: HTMLCanvasElement | null,
   ctx: CanvasRenderingContext2D | null,
   gameState: GameState,
   socket: Socket
 ) {
-  if (!canvas || !ctx || !gameState.gameStarted) return;
-  let animationFrameId: number;
+  const animationRef = useRef<number | null>(null);
 
-  const renderFrame = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  useEffect(() => {
+    if (!canvas || !ctx || !gameState.gameStarted) return;
 
-    for (const [id, player] of Object.entries(gameState.players) as [
-      string,
-      any
-    ][]) {
-      drawTank(player.tank, ctx, id === socket.id);
-    }
+    const renderFrame = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (const projectile of Object.values(gameState.projectiles) as Entity[]) {
-      drawCircle("#295C0A", projectile.position, projectile.hitbox.radius, ctx);
-    }
+      for (const [id, player] of Object.entries(gameState.players) as [
+        string,
+        any
+      ][]) {
+        drawTank(player.tank, ctx, id === socket.id);
+      }
 
-    drawMap(gameState.map, ctx);
-    animationFrameId = requestAnimationFrame(renderFrame);
-  };
+      for (const projectile of Object.values(
+        gameState.projectiles
+      ) as Entity[]) {
+        drawCircle(
+          "#295C0A",
+          projectile.position,
+          projectile.hitbox.radius,
+          ctx
+        );
+      }
 
-  renderFrame();
-  return () => cancelAnimationFrame(animationFrameId);
+      drawMap(gameState.map, ctx);
+
+      animationRef.current = requestAnimationFrame(renderFrame);
+    };
+
+    renderFrame(); // start loop
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [canvas, ctx, gameState, socket]);
 }
-
-export default useGameRenderer;

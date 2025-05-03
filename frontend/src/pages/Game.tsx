@@ -69,15 +69,15 @@ function Game() {
     }
   }, [selectedClass, selectedColor]);
 
-  useGameSocket(socket, roomId, setGameState);
-  useGameRenderer(canvasRef.current, ctxRef.current, gameState, socket);
-
   function startGame() {
     socket.emit("startGame", roomId, (gameState: GameState) => {
       console.log(gameState);
       setGameState(gameState);
     });
   }
+
+  useGameSocket(socket, roomId, setGameState);
+  useGameRenderer(canvasRef.current, ctxRef.current, gameState, socket);
 
   return (
     <main className="grid place-items-center h-screen w-screen bg-whitee box-border">
