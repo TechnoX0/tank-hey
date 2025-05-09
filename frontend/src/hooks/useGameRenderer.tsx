@@ -3,6 +3,7 @@ import GameState from "../interface/GameState";
 import { drawCircle, drawMap, drawTank } from "../utils/draw";
 import { Entity } from "../interface/Entity";
 import { Socket } from "socket.io-client";
+import Player from "../interface/Player";
 
 export default function useGameRenderer(
   canvas: HTMLCanvasElement | null,
@@ -18,11 +19,8 @@ export default function useGameRenderer(
     const renderFrame = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (const [id, player] of Object.entries(gameState.players) as [
-        string,
-        any
-      ][]) {
-        drawTank(player.tank, ctx, id === socket.id);
+      for (const player of Object.values(gameState.players) as Player[]) {
+        drawTank(player, ctx);
       }
 
       for (const projectile of Object.values(

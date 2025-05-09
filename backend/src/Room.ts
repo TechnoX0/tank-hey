@@ -5,7 +5,7 @@ class Room {
     id: string;
     ownerId: string;
     name: string;
-    players: Record<string, Player> = {};;
+    // players: Record<string, Player> = {};
     gameManager: GameManager;
     lastActive: number; // Timestamp of last activity
 
@@ -18,17 +18,19 @@ class Room {
     }
 
     addPlayer(playerId: string) {
-        if (Object.keys(this.players).includes(playerId)) return "Player already in room";
+        if (Object.keys(this.gameManager.players).includes(playerId)) return "Player already in room";
         const newPlayer = new Player(playerId, playerId === this.ownerId);
-        this.players[playerId] = newPlayer;
-        this.gameManager.addPlayer(playerId);
+        console.log(playerId, this.ownerId);
+
+        // this.gameManager.players[playerId] = newPlayer;
+        this.gameManager.addPlayer(playerId, newPlayer);
         this.lastActive = Date.now(); // Update activity timestamp
         return this
     }
 
     removePlayer(playerId: string) {
-        if (Object.keys(this.players).includes(playerId)) return "Player is not in room";
-        delete this.players[playerId];
+        if (Object.keys(this.gameManager.players).includes(playerId)) return "Player is not in room";
+        delete this.gameManager.players[playerId];
         this.gameManager.removePlayer(playerId);
         this.lastActive = Date.now(); // Update last activity
     }
@@ -49,7 +51,7 @@ class Room {
             id: this.id,
             ownerId: this.ownerId,
             name: this.name,
-            players: this.players,
+            players: this.gameManager.players,
         };
     }
 }

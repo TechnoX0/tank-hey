@@ -1,20 +1,20 @@
-import { Entity } from "../interface/Entity";
 import { Map, Wall } from "../interface/Map";
+import Player from "../interface/Player";
 import { Vector2D } from "../interface/Vector2D";
 
-export function drawTank(player: Entity, ctx: CanvasRenderingContext2D, isPlayer: boolean) {
-    if (!player.hitbox?.vertices) return;
-    const color = isPlayer ? "blue" : "red"
-    ctx.fillStyle = color;
+export function drawTank(player: Player, ctx: CanvasRenderingContext2D) {
+    const tank = player.tank;
+    if (!tank.hitbox?.vertices) return;
+    ctx.fillStyle = player.color || "#000000";
     ctx.beginPath();
 
-    player.hitbox.vertices.forEach(({ x: relX, y: relY }, index) => {
-        if (!player.position || !player.position.x) return;
+    tank.hitbox.vertices.forEach(({ x: relX, y: relY }, index) => {
+        if (!tank.position || !tank.position.x) return;
 
         if (index === 0) {
-            ctx.moveTo(player.position.x + relX, player.position.y + relY);
+            ctx.moveTo(tank.position.x + relX, tank.position.y + relY);
         } else {
-            ctx.lineTo(player.position.x + relX, player.position.y + relY);
+            ctx.lineTo(tank.position.x + relX, tank.position.y + relY);
         }
     });
 

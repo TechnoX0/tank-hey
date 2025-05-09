@@ -27,8 +27,10 @@ function Game() {
     "#bcbd22",
     "#17becf",
   ];
+
   const [selectedClass, setSelectedClass] = useState(classes[0]);
   const [selectedColor, setSelectedColor] = useState(colors[0]);
+  const [isReady, setIsReady] = useState(false);
   const [gameState, setGameState] = useState<GameState>({
     id: "",
     map: {},
@@ -38,13 +40,49 @@ function Game() {
   });
   const [lobbyState, setLobbyState] = useState<any>();
 
+  // Handle changes immediately and emit
+  const handleClassChange = (newClass: string) => {
+    setSelectedClass(newClass);
+    emitLobbyUpdate({ selectedClass: newClass, selectedColor, isReady });
+  };
+
+  const handleColorChange = (newColor: string) => {
+    setSelectedColor(newColor);
+    emitLobbyUpdate({ selectedClass, selectedColor: newColor, isReady });
+  };
+
+  const handleReadyChange = (newReady: boolean) => {
+    setIsReady(newReady);
+    emitLobbyUpdate({ selectedClass, selectedColor, isReady: newReady });
+  };
+
+  const emitLobbyUpdate = (data: {
+    selectedClass: string;
+    selectedColor: string;
+    isReady: boolean;
+  }) => {
+    socket.emit(
+      "updateLobby",
+      roomId,
+      {
+        playerId: socket.id,
+        ...data,
+      },
+      (response: any) => {
+        if (!response?.success) {
+          console.error("Failed to update lobby:", response?.message);
+        }
+      }
+    );
+  };
+
   useEffect(() => {
     socket.emit("getRoomState", roomId, (state: any) => {
       console.log("Lobby state:", state);
       setLobbyState(state);
     });
 
-    socket.on("updateLobby", (state: string) => {
+    socket.on("updateLobby", (state: any) => {
       console.log("Lobby updated:", state);
       setLobbyState(state);
     });
@@ -59,28 +97,24 @@ function Game() {
     ctxRef.current = canvasRef.current.getContext("2d");
   }, [gameState.gameStarted]);
 
-  useEffect(() => {
-    if (!gameState.gameStarted) {
-      socket.emit("updateLobby", roomId, {
-        playerId: socket.id,
-        selectedClass,
-        selectedColor,
-      });
-    }
-  }, [selectedClass, selectedColor]);
-
   function startGame() {
-    socket.emit("startGame", roomId, (gameState: GameState) => {
-      console.log(gameState);
-      setGameState(gameState);
-    });
+    socket.emit(
+      "startGame",
+      roomId,
+      (success: boolean, message: string, gameState: GameState) => {
+        // console.log(success, message, gameState);
+        console.log(success, message);
+        console.log(gameState);
+        // setGameState(gameState);
+      }
+    );
   }
 
   useGameSocket(socket, roomId, setGameState);
   useGameRenderer(canvasRef.current, ctxRef.current, gameState, socket);
 
   return (
-    <main className="grid place-items-center h-screen w-screen bg-whitee box-border">
+    <main className="grid place-items-center h-screen w-screen bg-white box-border">
       <div
         style={{ width: canvasWidth, height: canvasHeight }}
         className={`bg-[#EDEDED] ${gameState.gameStarted ? "hidden" : ""}`}
@@ -95,7 +129,7 @@ function Game() {
                 id={className}
                 value={className}
                 checked={selectedClass === className}
-                onChange={(e) => setSelectedClass(e.target.value)}
+                onChange={(e) => handleClassChange(e.target.value)}
               />
               <label htmlFor={className}>
                 {className.charAt(0).toUpperCase() + className.slice(1)}
@@ -103,7 +137,9 @@ function Game() {
             </div>
           ))}
         </div>
+
         <div>
+          <h1>Colors</h1>
           {colors.map((color) => (
             <div key={color}>
               <input
@@ -112,7 +148,7 @@ function Game() {
                 id={color}
                 value={color}
                 checked={selectedColor === color}
-                onChange={(e) => setSelectedColor(e.target.value)}
+                onChange={(e) => handleColorChange(e.target.value)}
                 className="peer hidden"
               />
               <label
@@ -120,27 +156,44 @@ function Game() {
                 style={{ backgroundColor: color }}
                 className="w-8 h-8 block cursor-pointer border-3 border-transparent 
                         peer-checked:border-white hover:border-white transition"
-              ></label>
+              />
             </div>
           ))}
         </div>
-        <div
-          className={`${
-            lobbyState && lobbyState.ownerId === socket.id ? "" : "hidden"
-          }`}
-        >
-          <button className="text-white bg-green-700" onClick={startGame}>
-            Start Game
-          </button>
-        </div>
+
+        {lobbyState?.ownerId === socket.id ? (
+          <div>
+            <button className="text-white bg-green-700" onClick={startGame}>
+              Start Game
+            </button>
+          </div>
+        ) : (
+          <div>
+            <input
+              type="checkbox"
+              name="tankColor"
+              id="ready-toggle"
+              checked={isReady}
+              onChange={(e) => handleReadyChange(e.target.checked)}
+              className="peer hidden"
+            />
+            <label
+              htmlFor="ready-toggle"
+              className="h-8 cursor-pointer border-3 border-transparent bg-green-800 text-white peer-checked:border-white hover:border-white transition"
+            >
+              {isReady ? "Ready" : "Not Ready"}
+            </label>
+          </div>
+        )}
       </div>
+
       {gameState.gameStarted && (
         <div>
           <canvas
             ref={canvasRef}
             width={canvasWidth}
             height={canvasHeight}
-            className={`bg-blue-100`}
+            className="bg-blue-100"
           />
         </div>
       )}

@@ -38,7 +38,7 @@ class RoomManager {
         const now = Date.now();
         Object.keys(this.rooms).forEach((roomId) => {
             const room = this.rooms[roomId];
-            if (Object.keys(room.players).length == 0 && now - room.lastActive > 30000) {
+            if (Object.keys(room.gameManager.players).length == 0 && now - room.lastActive > 30000) {
                 // Remove rooms inactive for 30+ seconds
                 console.log(`Removing empty room: ${roomId}`);
                 delete this.rooms[roomId];

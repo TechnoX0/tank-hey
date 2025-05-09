@@ -9,7 +9,7 @@ import Message from "./interface/Message";
 import Player from "./Utils/Player";
 
 class GameManager {
-    private players: Record<string, Player>;
+    public players: Record<string, Player>;
     private projectiles: Projectile[];
     private map: MapData;
     public gameStarted: boolean = false; // Flag to indicate if the game has started
@@ -39,8 +39,8 @@ class GameManager {
         }
     }
 
-    addPlayer(socketId: string) {
-        this.players[socketId] = new Player(socketId);
+    addPlayer(socketId: string, player: Player) {
+        this.players[socketId] = player;
     }
 
     playerAction(playerId: string, action: PlayerAction) {

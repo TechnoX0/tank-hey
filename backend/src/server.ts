@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
 
     socket.on("joinRoom", (roomId, callback) => {
         socket.join(roomId);
-        roomManager.joinRoom(roomId, socket.id);
+        roomManager.joinRoom(roomId, playerId);
         const roomState = roomManager.getRoomGameState(roomId);
         callback(roomState);
     });
@@ -37,22 +37,51 @@ io.on("connection", (socket) => {
 
     socket.on("startGame", (roomId, callback) => {
         const room = roomManager.rooms[roomId];
-        if (!room) return;
+        let gameState = room.gameManager.getGameState();
+
+        if (!room) {
+            return callback?.({ success: false, message: "Room not found", gameState });
+        }
+
+        const players = Object.values(room.gameManager.players);
+
+        // Ensure all NON-host players are ready
+        const allNonHostReady = players
+            .filter((p) => !p.isHost)
+            .every((p) => p.isReady);
+
+        if (!allNonHostReady) {
+            return callback?.({ success: false, message: "Not all players are ready.", gameState });
+        }
 
         room.gameManager.gameStarted = true;
-        callback(room.gameManager.getGameState());
-        io.to(roomId).emit("gameState", room.gameManager.getGameState());
-        console.log(room.getState(), room.gameManager.getGameState());
-    })
+        gameState = room.gameManager.getGameState();
+
+        callback?.({ success: true, message: "Game Start", gameState });
+        io.to(roomId).emit("gameState", gameState);
+
+        console.log("Room: ", room.getState(), "\nGame: ", gameState);
+    });
 
     socket.on("updateLobby", (roomId, data) => {
         const room = roomManager.rooms[roomId]
         if (!room) return;
-        const player = room.players[data.playerId]
+        const player = room.gameManager.players[data.playerId]
         if (!player) return;
         
-        player.tankClass = data.selectedClass;
-        player.color = data.selectedColor;
+        if (typeof data.selectedClass === "string") {
+            player.tankClass = data.selectedClass;
+        }
+
+        if (typeof data.selectedColor === "string") {
+            player.color = data.selectedColor;
+        }
+
+        if (typeof data.isReady === "boolean") {
+            player.isReady = data.isReady;
+        }
+
+        io.to(roomId).emit("updateLobby", room);
 
         socket.to(roomId).emit("updateLobby", room.getState());
     })
