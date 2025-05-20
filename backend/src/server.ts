@@ -66,19 +66,20 @@ io.on("connection", (socket) => {
     socket.on("updateLobby", (roomId, data) => {
         const room = roomManager.rooms[roomId]
         if (!room) return;
+
         const player = room.gameManager.players[data.playerId]
         if (!player) return;
         
         if (typeof data.selectedClass === "string") {
-            player.tankClass = data.selectedClass;
+            player.setTankClass(data.selectedClass);
         }
 
         if (typeof data.selectedColor === "string") {
-            player.color = data.selectedColor;
+            player.setColor(data.selectedColor);
         }
 
         if (typeof data.isReady === "boolean") {
-            player.isReady = data.isReady;
+            player.setIsReady(data.isReady);
         }
 
         io.to(roomId).emit("updateLobby", room);
