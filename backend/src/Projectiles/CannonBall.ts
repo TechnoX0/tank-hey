@@ -1,4 +1,3 @@
-import test from "node:test";
 import MapData from "../interface/MapData";
 import Collision from "../Utils/Collision";
 import { CollisionType } from "../Utils/Enums";
@@ -8,16 +7,30 @@ import { WallEdge } from "../Maps/Wall";
 import { circleIntersectsEdge } from "../Utils/Utils";
 
 class CannonBall extends Projectile {
+    timeToLive: number = 5;
+    timeAlive: number = 0;
+    isDead: boolean = false;
+
     constructor(owner: string, position: Vector2D) {
         super(owner, position, CollisionType.circle, 5)
         this.speed = 5
     }
 
     update(deltaTime: number, map: MapData) {
+        const timeElapsed = deltaTime / 60
+        this.timeAlive += timeElapsed;
+
+        if (this.timeAlive > this.timeToLive) {
+            this.isDead = true;
+            return;
+        }
+
         this.move(map)
     }
 
     move(map: MapData) {    
+        if (this.isDead) return;
+
         let movementVector = new Vector2D(
             Math.cos(this.rotation * (Math.PI / 180)),
             Math.sin(this.rotation * (Math.PI / 180))

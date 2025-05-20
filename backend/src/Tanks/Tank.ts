@@ -7,7 +7,13 @@ import Collision from "../Utils/Collision";
 import Projectile from "../Projectiles/Projectile";
 import CannonBall from "../Projectiles/CannonBall";
 
-class Tank extends GameObject implements Movement {
+abstract class Tank extends GameObject implements Movement {
+    // Base stats
+    protected baseHealth: number = 100;
+    protected baseSpeed: number = 5;
+    protected baseTurnSpeed: number = 3;
+
+    // Current stats
     public health: number;
     public speed: number = 5;
     public rotation: number = 0;

@@ -1,16 +1,16 @@
 import Vector2D from "../Utils/Vector2D";
 import Tank from "./Tank";
 
-class Juggernaut extends Tank {
+class Sniper extends Tank {
     constructor(id: string, position: Vector2D) {
         super(id, position);
-        this.baseHealth = 200;
+        this.baseHealth = 100;
         this.health = this.baseHealth;
-        this.baseSpeed = 1;
+        this.baseSpeed = 3;
         this.speed = this.baseSpeed;
-        this.baseTurnSpeed = 1;
+        this.baseTurnSpeed = 2;
         this.turnSpeed = this.baseTurnSpeed;
     }
 }
 
-export default Juggernaut;
+export default Sniper;

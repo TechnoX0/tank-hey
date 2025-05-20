@@ -1,3 +1,4 @@
+import Juggernaut from "../Tanks/Juggernaut";
 import Tank from "../Tanks/Tank";
 import Vector2D from "./Vector2D";
 
@@ -14,7 +15,7 @@ class Player {
   constructor(socketId: string, isHost?: boolean) {
     this.id = socketId;
     this.isHost = isHost || false;
-    this.tank = new Tank(socketId, new Vector2D(40, 40));
+    this.tank = new Juggernaut(socketId, new Vector2D(40, 40));
   }
 
   public setTankClass(tankClass: string) {
