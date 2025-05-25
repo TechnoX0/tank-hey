@@ -36,7 +36,6 @@ abstract class Projectile extends GameObject implements Movement {
 
     abstract update(...params: any): void;
     abstract move(...params: any): void;
-    abstract rotate(clockwise: boolean): void;
 
     dealDamage(target: Tank) {
         target.health -= this.damage;
