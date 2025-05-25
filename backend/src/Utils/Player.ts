@@ -1,4 +1,5 @@
 import Juggernaut from "../Tanks/Juggernaut";
+import Sniper from "../Tanks/Sniper";
 import Tank from "../Tanks/Tank";
 import Vector2D from "./Vector2D";
 
@@ -9,7 +10,7 @@ class Player {
     public isReady: boolean = false;
     public color: string = "#1f77b4";
     public isAlive: boolean = true;
-    public tankClass: string = "jugernaut";
+    public tankClass: string = "juggernaut";
     public tank: Tank;
 
   constructor(socketId: string, isHost?: boolean) {
@@ -20,6 +21,20 @@ class Player {
 
   public setTankClass(tankClass: string) {
     this.tankClass = tankClass
+
+    switch (tankClass) {
+      case "juggernaut":
+        this.tank = new Juggernaut(this.id, new Vector2D(40, 40));
+        break;
+      case "sniper":
+        this.tank = new Sniper(this.id, new Vector2D(40, 40));
+        break;
+      // Add other tank classes here as needed
+      default:
+        this.tank = new Juggernaut(this.id, new Vector2D(40, 40));
+    }
+
+    console.log(this.tank)
   }
 
   public setColor(color: string) {
