@@ -14,13 +14,13 @@ abstract class Projectile extends GameObject implements Movement {
     public timeAlive: number;
     public maxTimeAlive: number;
 
-    constructor(owner: string, position: Vector2D, hitbox: CollisionType, verticesOrRadius: Vector2D[] | number) {
+    constructor(owner: string, position: Vector2D, collisionType: CollisionType, verticesOrRadius: Vector2D[] | number) {
         let collision: Collision;
     
         if (Array.isArray(verticesOrRadius)) {
-            collision = new Collision(hitbox, position, verticesOrRadius);
+            collision = new Collision(collisionType, position, verticesOrRadius);
         } else if (typeof verticesOrRadius === "number") {
-            collision = new Collision(hitbox, position, verticesOrRadius);
+            collision = new Collision(collisionType, position, verticesOrRadius);
         } else {
             throw new Error("Invalid hitbox type passed to constructor");
         }
