@@ -1,4 +1,4 @@
-import MapData from "../interface/MapData";
+import { MapData } from "../interface/Map";
 import Vector2D from "../Utils/Vector2D";
 import Wall from "./Wall";
 
