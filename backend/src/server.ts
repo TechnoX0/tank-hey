@@ -36,31 +36,13 @@ io.on("connection", (socket) => {
     });
 
     socket.on("startGame", (roomId, callback) => {
-        const room = roomManager.rooms[roomId];
-        let gameState = room.gameManager.getGameState();
+        const result = roomManager.startGame(roomId, callback)
 
-        if (!room) {
-            return callback?.({ success: false, message: "Room not found", gameState });
-        }
+        console.log("Result:", result)
 
-        const players = Object.values(room.gameManager.players);
+        if (result.success)
 
-        // Ensure all NON-host players are ready
-        const allNonHostReady = players
-            .filter((p) => !p.isHost)
-            .every((p) => p.isReady);
-
-        if (!allNonHostReady) {
-            return callback?.({ success: false, message: "Not all players are ready.", gameState });
-        }
-
-        room.gameManager.gameStarted = true;
-        gameState = room.gameManager.getGameState();
-
-        callback?.({ success: true, message: "Game Start", gameState });
-        io.to(roomId).emit("gameState", gameState);
-
-        console.log("Room: ", room.getState(), "\nGame: ", gameState);
+        io.to(roomId).emit("gameState", result);
     });
 
     socket.on("updateLobby", (roomId, data) => {

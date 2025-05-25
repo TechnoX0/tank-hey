@@ -54,6 +54,49 @@ class RoomManager {
         const room = this.rooms[roomId];
         room.gameManager.playerAction(playerId, action);
     }
+
+    startGame(roomId: string, callback?: (result: { success: boolean; message: string; gameState: GameState }) => { success: boolean, message: string, gameState: GameState }) {
+        const room = this.rooms[roomId];
+        const manager = room.gameManager
+        let gameState = manager.getGameState();
+
+        if (!room) {
+            const result = { success: false, message: "Room not found", gameState };
+            callback?.(result);
+            return result;
+        }
+
+        const players = Object.values(room.gameManager.players);
+
+        // Ensure all NON-host players are ready
+        const allNonHostReady = players
+            .filter((p) => !p.isHost)
+            .every((p) => p.isReady);
+
+        if (!allNonHostReady) {
+            const result = { success: false, message: "Not all players are ready.", gameState };
+            callback?.(result);
+            return result;
+        }
+
+        gameState = manager.startGame();
+
+        callback?.({ success: true, message: "Game Start", gameState });
+
+        return { success: true, message: "Game Start", gameState };
+    }
+
+    allInRoomReady(roomId: string): boolean {
+        const room = this.rooms[roomId];
+        const manager = room.gameManager
+        const players = Object.values(manager.players);
+
+        const allNonHostReady = players
+            .filter((p) => !p.isHost)
+            .every((p) => p.isReady);
+
+        return allNonHostReady;
+    }
 }
 
 export default RoomManager;
