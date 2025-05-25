@@ -5,13 +5,7 @@ import { MapData } from "../interface/Map";
 import { CollisionType } from "../Utils/Enums";
 import Collision from "../Utils/Collision";
 import Projectile from "../Projectiles/Projectile";
-
-interface Stats {
-    health: number;
-    speed: number;
-    turnSpeed: number;
-    shootSpeed: number;
-}
+import Stats from "../interface/Stats";
 
 abstract class Tank extends GameObject implements Movement {
     protected baseStats: Stats;
