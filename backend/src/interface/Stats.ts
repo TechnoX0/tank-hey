@@ -1,8 +1,14 @@
-interface Stats {
+interface TankStats {
     health: number;
     speed: number;
     turnSpeed: number;
-    shootSpeed: number;
+    shootSpeed: number; // in milliseconds
 }
 
-export default Stats;
+interface ProjectileStats {
+    damage: number;
+    speed: number;
+    maxTimeToLive: number; // in milliseconds
+}
+
+export { TankStats, ProjectileStats };

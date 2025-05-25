@@ -5,10 +5,10 @@ import { MapData } from "../interface/Map";
 import { CollisionType } from "../Utils/Enums";
 import Collision from "../Utils/Collision";
 import Projectile from "../Projectiles/Projectile";
-import Stats from "../interface/Stats";
+import { TankStats } from "../interface/Stats";
 
 abstract class Tank extends GameObject implements Movement {
-    protected baseStats: Stats;
+    protected baseStats: TankStats;
 
     // Current stats
     public health: number;
@@ -19,7 +19,7 @@ abstract class Tank extends GameObject implements Movement {
     protected lastShootTime: number = Date.now();
     protected projectileClass: new (owner: string, position: Vector2D) => Projectile;
 
-    constructor(id: string, position: Vector2D, baseStat: Stats, projectileClass: new (owner: string, position: Vector2D) => Projectile) {
+    constructor(id: string, position: Vector2D, baseStat: TankStats, projectileClass: new (owner: string, position: Vector2D) => Projectile) {
         super(
             id,
             position,
@@ -111,6 +111,10 @@ abstract class Tank extends GameObject implements Movement {
         this.lastShootTime = now; // Update last shoot time
 
         return newProjectile;
+    }
+
+    takeDamage(damage: number) {
+        this.health -= damage;
     }
 }
 
