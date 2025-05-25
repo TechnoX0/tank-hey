@@ -1,34 +1,35 @@
-import MapData from "../interface/MapData";
-import Collision from "../Utils/Collision";
 import { CollisionType } from "../Utils/Enums";
 import Vector2D from "../Utils/Vector2D";
 import Projectile from "./Projectile";
-import { WallEdge } from "../Maps/Wall";
+import Wall, { WallEdge } from "../Maps/Wall";
 import { circleIntersectsEdge } from "../Utils/Utils";
+import { MapData } from "../interface/Map";
+import UniformGridManager from "../UniformGridManager";
 
 class CannonBall extends Projectile {
     timeToLive: number = 5;
     timeAlive: number = 0;
-    isDead: boolean = false;
 
     constructor(owner: string, position: Vector2D) {
         super(owner, position, CollisionType.circle, 5)
         this.speed = 5
     }
 
-    update(deltaTime: number, map: MapData) {
+    update(deltaTime: number, grid: UniformGridManager, map: MapData) {
         const timeElapsed = deltaTime / 60
         this.timeAlive += timeElapsed;
+
+        const nearbyWalls = grid.getNearbyWalls(this)
 
         if (this.timeAlive > this.timeToLive) {
             this.isDead = true;
             return;
         }
 
-        this.move(map)
+        this.move(nearbyWalls)
     }
 
-    move(map: MapData) {    
+    move(walls: Wall[]) {    
         if (this.isDead) return;
 
         let movementVector = new Vector2D(
@@ -43,7 +44,7 @@ class CannonBall extends Projectile {
             let testPosition = this.position.add(subMovement);
     
             let hitEdge: WallEdge | null = null;
-            for (const wall of map.walls) {
+            for (const wall of walls) {
                 for (const edge of wall.edges) {
                     if (circleIntersectsEdge(testPosition, this.hitbox.radius, edge)) {
                         hitEdge = edge;
