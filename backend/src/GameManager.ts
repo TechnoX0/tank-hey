@@ -3,10 +3,10 @@ import Tank from "./Tanks/Tank";
 import Projectile from "./Projectiles/Projectile";
 import Maps from "./Maps/Maps";
 import PlayerAction from "./interface/PlayerAction";
-import Vector2D from "./Utils/Vector2D";
-import MapData from "./interface/MapData";
 import Message from "./interface/Message";
 import Player from "./Utils/Player";
+import { MapData } from "./interface/Map";
+import GameState from "./interface/GameState";
 
 class GameManager {
     public players: Record<string, Player>;
@@ -21,10 +21,6 @@ class GameManager {
         this.map = this.pickRandomMap();
     }
 
-    pickRandomMap() {
-        return Maps[Math.floor(Math.random() * Maps.length)];
-    }
-
     update(deltaTime: number) {
         if (!this.gameStarted) return; // Only update if the game has started
         
@@ -37,6 +33,15 @@ class GameManager {
                 this.projectiles.splice(i, 1);
             }
         }
+    }
+
+    startGame() {
+        this.gameStarted = true;
+        return this.getGameState();
+    }
+
+    pickRandomMap() {
+        return Maps[Math.floor(Math.random() * Maps.length)];
     }
 
     addPlayer(socketId: string, player: Player) {
@@ -57,7 +62,7 @@ class GameManager {
                 break;
             case "shoot":
                 const projectile = player.shoot()
-                this.projectiles.push(projectile);
+                if (projectile) this.projectiles.push(projectile);
             default:
                 break;
         }
@@ -71,7 +76,7 @@ class GameManager {
         this.messages.push({ type, data });
     }
 
-    getGameState() {
+    getGameState(): GameState {
         return { map: this.map, players: this.players, projectiles: this.projectiles, gameStarted: this.gameStarted, messages: this.messages };
     }
 }

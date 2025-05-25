@@ -20,9 +20,7 @@ class Room {
     addPlayer(playerId: string) {
         if (Object.keys(this.gameManager.players).includes(playerId)) return "Player already in room";
         const newPlayer = new Player(playerId, playerId === this.ownerId);
-        console.log(playerId, this.ownerId);
 
-        // this.gameManager.players[playerId] = newPlayer;
         this.gameManager.addPlayer(playerId, newPlayer);
         this.lastActive = Date.now(); // Update activity timestamp
         return this
