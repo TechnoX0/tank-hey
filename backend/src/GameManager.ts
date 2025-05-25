@@ -7,6 +7,7 @@ import Message from "./interface/Message";
 import Player from "./Utils/Player";
 import { MapData } from "./interface/Map";
 import GameState from "./interface/GameState";
+import UniformGridManager from "./UniformGridManager";
 
 class GameManager {
     public players: Record<string, Player>;
@@ -14,19 +15,34 @@ class GameManager {
     private map: MapData;
     public gameStarted: boolean = false; // Flag to indicate if the game has started
     private messages: Message[] = []; // Array to store messages
+    private grid: UniformGridManager = new UniformGridManager(100)
 
     constructor() {
         this.players = {};
         this.projectiles = [];
         this.map = this.pickRandomMap();
+
+        for (const wall of this.map.walls) {
+            this.grid.addWall(wall);
+        }
     }
 
     update(deltaTime: number) {
         if (!this.gameStarted) return; // Only update if the game has started
+
+        this.grid.clear();
+
+        for (const projectile of this.projectiles) {
+            this.grid.addEntity(projectile);
+        }
+
+        for (const player of Object.values(this.players)) {
+            this.grid.addEntity(player.tank);
+        }
         
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const projectile = this.projectiles[i];
-            projectile.update(deltaTime, this.map);
+            projectile.update(deltaTime, this.grid, this.map);
             
             // Remove projectile if it should be destroyed
             if (projectile.shouldDestroy()) {
