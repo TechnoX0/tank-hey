@@ -24,11 +24,11 @@ abstract class Tank extends GameObject implements Movement {
             id,
             position,
             new Collision(CollisionType.polygon, new Vector2D(position.x, position.y), [
-                new Vector2D(-15, -10),
-                new Vector2D(15, -10),
-                new Vector2D(15, 10),
-                new Vector2D(-15, 10),
-                new Vector2D(-15, -10),
+                new Vector2D(-20, -12),
+                new Vector2D(20, -12),
+                new Vector2D(20, 12),
+                new Vector2D(-20, 12),
+                new Vector2D(-20, -12),
             ]),
         );
 

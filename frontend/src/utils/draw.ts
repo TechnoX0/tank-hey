@@ -1,25 +1,28 @@
 import { Map, Wall } from "../interface/Map";
 import Player from "../interface/Player";
 import { Vector2D } from "../interface/Vector2D";
+import { loadTankImage } from "./ImageCache";
 
 export function drawTank(player: Player, ctx: CanvasRenderingContext2D) {
     const tank = player.tank;
     if (!tank.hitbox?.vertices) return;
-    ctx.fillStyle = player.color || "#000000";
-    ctx.beginPath();
 
-    tank.hitbox.vertices.forEach(({ x: relX, y: relY }, index) => {
-        if (!tank.position || !tank.position.x) return;
+    const tankImage = loadTankImage(player.tankClass);
+    
+    // Draw the image if loaded
+    if (tankImage && tankImage.complete) {
+        const width = 40;
+        const height = 40;
+        const spriteOffsetDeg = 90;
+        const finalRotation = tank.rotation + spriteOffsetDeg;
 
-        if (index === 0) {
-            ctx.moveTo(tank.position.x + relX, tank.position.y + relY);
-        } else {
-            ctx.lineTo(tank.position.x + relX, tank.position.y + relY);
-        }
-    });
-
-    ctx.closePath();
-    ctx.fill();
+        ctx.save();
+        ctx.translate(tank.position.x, tank.position.y);
+        ctx.rotate((finalRotation * Math.PI) / 180);
+        ctx.drawImage(tankImage, -width / 2, -height / 2, width, height);
+        ctx.restore();
+        return;
+    }
 }
 
 export function drawMap(map: Map, ctx: CanvasRenderingContext2D) {
