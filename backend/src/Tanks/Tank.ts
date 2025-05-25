@@ -1,26 +1,31 @@
 import GameObject from "../GameObjects/GameObject";
 import Movement from "../interface/Movement";
 import Vector2D from "../Utils/Vector2D";
-import MapData from "../interface/MapData";
+import { MapData } from "../interface/Map";
 import { CollisionType } from "../Utils/Enums";
 import Collision from "../Utils/Collision";
 import Projectile from "../Projectiles/Projectile";
-import CannonBall from "../Projectiles/CannonBall";
+
+interface Stats {
+    health: number;
+    speed: number;
+    turnSpeed: number;
+    shootSpeed: number;
+}
 
 abstract class Tank extends GameObject implements Movement {
-    // Base stats
-    protected baseHealth: number = 100;
-    protected baseSpeed: number = 5;
-    protected baseTurnSpeed: number = 3;
+    protected baseStats: Stats;
 
     // Current stats
     public health: number;
-    public speed: number = 5;
+    public speed: number;
+    public turnSpeed: number;
+    public shootSpeed: number; // milliseconds
     public rotation: number = 0;
-    public turnSpeed: number = 3;
-    public projectile: Projectile = new CannonBall("", this.position)
+    protected lastShootTime: number = Date.now();
+    protected projectileClass: new (owner: string, position: Vector2D) => Projectile;
 
-    constructor(id: string, position: Vector2D) {
+    constructor(id: string, position: Vector2D, baseStat: Stats, projectileClass: new (owner: string, position: Vector2D) => Projectile) {
         super(
             id,
             position,
@@ -32,7 +37,15 @@ abstract class Tank extends GameObject implements Movement {
                 new Vector2D(-15, -10),
             ]),
         );
-        this.health = 100;
+
+        this.baseStats = baseStat;
+
+        this.health = this.baseStats.health;
+        this.turnSpeed = this.baseStats.turnSpeed;
+        this.shootSpeed = this.baseStats.shootSpeed;
+        this.speed = this.baseStats.speed;
+        this.projectileClass = projectileClass;
+
         this.originalVertices = this.hitbox.vertices;
     }
 
@@ -93,9 +106,16 @@ abstract class Tank extends GameObject implements Movement {
     }
 
     shoot() {
-        const ProjectileClass = this.projectile.constructor as new (owner: string, position: Vector2D) => Projectile;
-        const newProjectile = new ProjectileClass("", new Vector2D(this.position.x, this.position.y));
+        const now = Date.now();
+        const deltaTime = (now - this.lastShootTime) / 1000; // Convert to seconds
+
+        if (deltaTime < this.shootSpeed / 1000) return null; // Prevent shooting too fast
+
+        const newProjectile = new this.projectileClass(this.id, new Vector2D(this.position.x, this.position.y));
         newProjectile.rotation = this.rotation;
+
+        this.lastShootTime = now; // Update last shoot time
+
         return newProjectile;
     }
 }

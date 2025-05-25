@@ -1,15 +1,18 @@
+import Stats from "../interface/Stats";
+import CannonBall from "../Projectiles/CannonBall";
 import Vector2D from "../Utils/Vector2D";
 import Tank from "./Tank";
 
 class Sniper extends Tank {
     constructor(id: string, position: Vector2D) {
-        super(id, position);
-        this.baseHealth = 100;
-        this.health = this.baseHealth;
-        this.baseSpeed = 3;
-        this.speed = this.baseSpeed;
-        this.baseTurnSpeed = 2;
-        this.turnSpeed = this.baseTurnSpeed;
+        const baseStats: Stats = {
+            health: 20,
+            speed: 4,
+            turnSpeed: 3,
+            shootSpeed: 1000, // milliseconds
+        }
+        
+        super(id, position, baseStats, CannonBall);
     }
 }
 

@@ -1,15 +1,18 @@
+import Stats from "../interface/Stats";
+import CannonBall from "../Projectiles/CannonBall";
 import Vector2D from "../Utils/Vector2D";
 import Tank from "./Tank";
 
 class Juggernaut extends Tank {
     constructor(id: string, position: Vector2D) {
-        super(id, position);
-        this.baseHealth = 200;
-        this.health = this.baseHealth;
-        this.baseSpeed = 1;
-        this.speed = this.baseSpeed;
-        this.baseTurnSpeed = 1;
-        this.turnSpeed = this.baseTurnSpeed;
+        const baseStats: Stats = {
+            health: 40,
+            speed: 2,
+            turnSpeed: 1.5,
+            shootSpeed: 2000, // milliseconds
+        }
+
+        super(id, position, baseStats, CannonBall);
     }
 }
 
