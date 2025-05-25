@@ -13,6 +13,7 @@ abstract class Projectile extends GameObject implements Movement {
     public rotation: number = 0;
     public timeAlive: number;
     public maxTimeAlive: number;
+    public isDead: boolean = false;
 
     constructor(owner: string, position: Vector2D, collisionType: CollisionType, verticesOrRadius: Vector2D[] | number) {
         let collision: Collision;
@@ -38,7 +39,7 @@ abstract class Projectile extends GameObject implements Movement {
     abstract move(...params: any): void;
 
     dealDamage(target: Tank) {
-        target.health -= this.damage;
+        target.takeDamage(this.damage);
     }
 
     shouldDestroy(): boolean {
