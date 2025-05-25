@@ -49,6 +49,18 @@ class GameManager {
                 this.projectiles.splice(i, 1);
             }
         }
+
+        this.removeDeadEntities()
+    }
+
+    removeDeadEntities() {
+        for (const key in this.projectiles) {
+            const projectile = this.projectiles[key];
+
+            if (projectile.isDead) {
+                this.projectiles.splice(parseInt(key), 1);
+            }
+        }
     }
 
     startGame() {
