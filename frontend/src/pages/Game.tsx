@@ -5,6 +5,7 @@ import useGameRenderer from "../hooks/useGameRenderer";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { getSocket } from "../Socket";
 import Lobby from "../components/Lobby";
+import { GameStatus } from "../components/GameStatus";
 
 const socket = getSocket();
 const canvasWidth = 1000;
@@ -68,13 +69,14 @@ function Game() {
         />
       )}
       {gameState.gameStarted && (
-        <div>
+        <div className="flex">
           <canvas
             ref={canvasRef}
             width={canvasWidth}
             height={canvasHeight}
             className="bg-blue-100"
           />
+          <GameStatus gameState={gameState} />
         </div>
       )}
     </main>
