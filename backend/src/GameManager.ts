@@ -42,7 +42,7 @@ class GameManager {
         
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const projectile = this.projectiles[i];
-            projectile.update(deltaTime, this.grid, this.map);
+            projectile.update(deltaTime, this.grid);
             
             // Remove projectile if it should be destroyed
             if (projectile.shouldDestroy()) {

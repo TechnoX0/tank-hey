@@ -1,5 +1,6 @@
 import GameObject from "./GameObjects/GameObject";
 import Wall from "./Maps/Wall";
+import { EntityType } from "./Utils/Enums";
 
 class UniformGridManager {
     private cellSize: number;
@@ -79,15 +80,22 @@ class UniformGridManager {
         }
     }
 
-    public getNearbyEntities(obj: GameObject): GameObject[] {
+    public getNearbyEntities(obj: GameObject, type?: EntityType): GameObject[] {
         const [col, row] = this.getObjectCellCoords(obj);
         const nearby: GameObject[] = [];
 
         for (let dx = -1; dx <= 1; dx++) {
             for (let dy = -1; dy <= 1; dy++) {
                 const key = this.getCellKey(col + dx, row + dy);
+
                 if (this.grid.has(key)) {
-                    nearby.push(...this.grid.get(key)!.entities);
+                    if (type != undefined) {
+                        const cellEntities = this.grid.get(key)!.entities;
+                        const typeEntities = cellEntities.filter(e => e.entityType === type);
+                        nearby.push(...typeEntities);
+                    } else {
+                        nearby.push(...this.grid.get(key)!.entities);
+                    }
                 }
             }
         }

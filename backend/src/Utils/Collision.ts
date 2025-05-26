@@ -26,36 +26,38 @@ class Collision {
 
     public collidesWith(other: Collision): boolean {
         if (this.collisionType === CollisionType.circle && other.collisionType === CollisionType.circle) {
-            return this.collideWithCircle(other);
+            return this.collideCircleWithCircle(other);
         } else if (this.collisionType === CollisionType.circle && other.collisionType === CollisionType.polygon) {
             return this.collideCircleWithPolygon(other);
         } else if (this.collisionType === CollisionType.polygon && other.collisionType === CollisionType.circle) {
             return other.collideCircleWithPolygon(this); // Reverse order
         } else if (this.collisionType === CollisionType.polygon && other.collisionType === CollisionType.polygon) {
-            return this.collideWithPolygon(other);
+            return this.collidePolygonWithPolygon(other);
         }
         return false;
     }
 
     public collideCircleWithPolygon(other: Collision): boolean {
-        if (this.pointInPolygon(this.position, other)) {
-            return true; // Circle center is inside the polygon
+        const worldVertices = other.vertices.map(v => v.add(other.position));
+
+        if (this.pointInPolygon(this.position, worldVertices)) {
+            return true;
         }
-        
-        for (let i = 0; i < other.vertices.length; i++) {
-            const v1 = other.vertices[i]
-            const v2 = other.vertices[(i + 1) % other.vertices.length]
-        
+
+        for (let i = 0; i < worldVertices.length; i++) {
+            const v1 = worldVertices[i];
+            const v2 = worldVertices[(i + 1) % worldVertices.length];
+
             const closestPointSegment = this.closestPointOnSegment(this.position, v1, v2);
             if (closestPointSegment.distanceTo(this.position) < this.radius) {
-                return true
+                return true;
             }
         }
 
-        return false
+        return false;
     }
 
-    public collideWithPolygon(other: Collision): boolean {
+    public collidePolygonWithPolygon(other: Collision): boolean {
         const axes = this.getAxes().concat(other.getAxes());
 
         for (const axis of axes) {
@@ -70,7 +72,7 @@ class Collision {
         return true;
     }
 
-    public collideWithCircle(other: Collision): boolean {
+    public collideCircleWithCircle(other: Collision): boolean {
         const distance = this.position.distanceTo(other.position);
         return distance < this.radius + other.radius;
     }
@@ -79,27 +81,32 @@ class Collision {
         point: Vector2D,
         segmentStart: Vector2D,
         segmentEnd: Vector2D
-      ): Vector2D {
+    ): Vector2D {
         const segment = segmentEnd.subtract(segmentStart);
         const segmentLengthSq = segment.magnitudeSquared();
-      
+        
         if (segmentLengthSq === 0) {
-          // Degenerate segment: just return the start point
-          return segmentStart;
+            // Degenerate segment: just return the start point
+            return segmentStart;
         }
-      
+        
         const t = Math.max(0, Math.min(1, point.subtract(segmentStart).dot(segment) / segmentLengthSq));
         return segmentStart.add(segment.multiply(t));
-      }
+    }
 
-    private pointInPolygon(point: Vector2D, polygon: Collision): boolean {
+    private pointInPolygon(point: Vector2D, vertices: Vector2D[]): boolean {
         let inside = false;
-        for (let i = 0, j = polygon.vertices.length - 1; i < polygon.vertices.length; j = i++) {
-            const vi = polygon.vertices[i].add(polygon.position);
-            const vj = polygon.vertices[j].add(polygon.position);
-            if ((vi.y > point.y) !== (vj.y > point.y) && (point.x < (vj.x - vi.x) * (point.y - vi.y) / (vj.y - vi.y) + vi.x)) {
-                inside = !inside;
-            }
+        for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+            const xi = vertices[i].x, yi = vertices[i].y;
+            const xj = vertices[j].x, yj = vertices[j].y;
+
+            const intersect = ((yi > point.y) !== (yj > point.y)) &&
+                (point.x < (xj - xi) * (point.y - yi) / (yj - yi + 0.00001) + xi);
+
+            // console.log(`Checking edge (${xi}, ${yi}) -> (${xj}, ${yj})`);
+            // console.log("intersect =", intersect);
+            
+            if (intersect) inside = !inside;
         }
         return inside;
     }
