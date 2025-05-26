@@ -102,14 +102,22 @@ abstract class Tank extends GameObject implements Movement {
 
     shoot() {
         const now = Date.now();
-        const deltaTime = (now - this.lastShootTime) / 1000; // Convert to seconds
+        const deltaTime = (now - this.lastShootTime) / 1000;
 
-        if (deltaTime < this.shootSpeed / 1000) return null; // Prevent shooting too fast
+        if (deltaTime < this.shootSpeed / 1000) return null;
 
-        const newProjectile = new this.projectileClass(this.id, new Vector2D(this.position.x, this.position.y));
+        const offsetDistance = 20; // Distance in front of the tank
+
+        // Direction vector from tank's rotation
+        const forward = Vector2D.fromAngle(this.rotation).multiply(offsetDistance);
+
+        // Position in front of tank
+        const spawnPosition = this.position.add(forward);
+
+        const newProjectile = new this.projectileClass(this.id, spawnPosition);
         newProjectile.rotation = this.rotation;
 
-        this.lastShootTime = now; // Update last shoot time
+        this.lastShootTime = now;
 
         return newProjectile;
     }
