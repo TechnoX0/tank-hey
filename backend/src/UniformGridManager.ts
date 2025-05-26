@@ -42,12 +42,12 @@ class UniformGridManager {
 
         for (let col = startCol; col <= endCol; col++) {
             for (let row = startRow; row <= endRow; row++) {
-            cells.push(this.getCellKey(col, row));
+                cells.push(this.getCellKey(col, row));
             }
         }
 
         return cells;
-        }
+    }
 
 
     public clear(): void {
@@ -55,7 +55,6 @@ class UniformGridManager {
             cell.entities = []; // Only clear entities
             // Keep walls!
         }
-        // this.grid.clear();
     }
 
     public addEntity(entity: GameObject): void {
@@ -63,7 +62,7 @@ class UniformGridManager {
         const key = this.getCellKey(col, row);
 
         if (!this.grid.has(key)) {
-        this.grid.set(key, { entities: [], walls: [] });
+            this.grid.set(key, { entities: [], walls: [] });
         }
 
         this.grid.get(key)!.entities.push(entity);
@@ -73,10 +72,10 @@ class UniformGridManager {
         const keys = this.getCellsForWall(wall);
 
         for (const key of keys) {
-        if (!this.grid.has(key)) {
-            this.grid.set(key, { entities: [], walls: [] });
-        }
-        this.grid.get(key)!.walls.push(wall);
+            if (!this.grid.has(key)) {
+                this.grid.set(key, { entities: [], walls: [] });
+            }
+            this.grid.get(key)!.walls.push(wall);
         }
     }
 
@@ -85,12 +84,12 @@ class UniformGridManager {
         const nearby: GameObject[] = [];
 
         for (let dx = -1; dx <= 1; dx++) {
-        for (let dy = -1; dy <= 1; dy++) {
-            const key = this.getCellKey(col + dx, row + dy);
-            if (this.grid.has(key)) {
-            nearby.push(...this.grid.get(key)!.entities);
+            for (let dy = -1; dy <= 1; dy++) {
+                const key = this.getCellKey(col + dx, row + dy);
+                if (this.grid.has(key)) {
+                    nearby.push(...this.grid.get(key)!.entities);
+                }
             }
-        }
         }
 
         return nearby;
