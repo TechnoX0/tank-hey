@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getSocket } from "../Socket";
+import LobbyStatus from "./LobbyStatus";
 
 const socket = getSocket();
 const classes = ["juggernaut", "sniper"];
@@ -16,13 +17,14 @@ const colors = [
   "#17becf",
 ];
 
-type LobbyProps = {
+type Props = {
   roomId: string;
   onStartGame: () => void;
   isOwner: boolean;
 };
 
-const Lobby = ({ roomId, onStartGame, isOwner }: LobbyProps) => {
+const Lobby = ({ roomId, onStartGame, isOwner }: Props) => {
+  const [lobbyState, setLobbyState] = useState<any>();
   const [selectedClass, setClass] = useState(classes[0]);
   const [selectedColor, setColor] = useState(colors[0]);
   const [isReady, setReady] = useState(false);
@@ -59,73 +61,98 @@ const Lobby = ({ roomId, onStartGame, isOwner }: LobbyProps) => {
     emitLobbyUpdate({ selectedClass, selectedColor, isReady: newReady });
   };
 
-  return (
-    <div className="bg-[#EDEDED]">
-      <div>
-        <h1>Classes</h1>
-        {classes.map((className) => (
-          <div key={className}>
-            <input
-              type="radio"
-              name="tankClass"
-              id={className}
-              value={className}
-              checked={selectedClass === className}
-              onChange={(e) => handleClassChange(e.target.value)}
-            />
-            <label htmlFor={className}>
-              {className.charAt(0).toUpperCase() + className.slice(1)}
-            </label>
-          </div>
-        ))}
-      </div>
+  useEffect(() => {
+    socket.emit("getRoomState", roomId, (state: any) => {
+      console.log("Lobby state:", state);
+      setLobbyState(state);
+    });
 
-      <div>
-        <h1>Colors</h1>
-        {colors.map((color) => (
-          <div key={color}>
+    socket.on("updateLobby", (state: any) => {
+      console.log("Lobby updated:", state);
+      setLobbyState(state);
+    });
+
+    return () => {
+      socket.off("updateLobby");
+    };
+  }, [roomId]);
+
+  return (
+    <div className="w-[1000px] h-[600px] bg-[#EDEDED]">
+      <div className="flex gap-12">
+        <div>
+          <h1>Classes</h1>
+          {classes.map((className) => (
+            <div key={className}>
+              <input
+                type="radio"
+                name="tankClass"
+                id={className}
+                value={className}
+                checked={selectedClass === className}
+                onChange={(e) => handleClassChange(e.target.value)}
+              />
+              <label htmlFor={className}>
+                {className.charAt(0).toUpperCase() + className.slice(1)}
+              </label>
+            </div>
+          ))}
+        </div>
+
+        <div>
+          <h1>Colors</h1>
+          <div className="flex">
+            {colors.map((color) => (
+              <div key={color}>
+                <input
+                  type="radio"
+                  name="tankColor"
+                  id={color}
+                  value={color}
+                  checked={selectedColor === color}
+                  onChange={(e) => handleColorChange(e.target.value)}
+                  className="peer hidden"
+                />
+                <label
+                  htmlFor={color}
+                  style={{ backgroundColor: color }}
+                  className="w-8 h-8 block cursor-pointer border-3 border-transparent 
+                  peer-checked:border-white hover:border-white transition"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {isOwner ? (
+          <div>
+            <button className="text-white bg-green-700" onClick={onStartGame}>
+              Start Game
+            </button>
+          </div>
+        ) : (
+          <div>
             <input
-              type="radio"
-              name="tankColor"
-              id={color}
-              value={color}
-              checked={selectedColor === color}
-              onChange={(e) => handleColorChange(e.target.value)}
+              type="checkbox"
+              id="ready-toggle"
+              checked={isReady}
+              onChange={(e) => handleReadyChange(e.target.checked)}
               className="peer hidden"
             />
             <label
-              htmlFor={color}
-              style={{ backgroundColor: color }}
-              className="w-8 h-8 block cursor-pointer border-3 border-transparent 
-              peer-checked:border-white hover:border-white transition"
-            />
+              htmlFor="ready-toggle"
+              className="h-8 cursor-pointer border-3 border-transparent bg-green-800 text-white peer-checked:border-white hover:border-white transition"
+            >
+              {isReady ? "Ready" : "Not Ready"}
+            </label>
           </div>
-        ))}
+        )}
       </div>
-
-      {isOwner ? (
-        <div>
-          <button className="text-white bg-green-700" onClick={onStartGame}>
-            Start Game
-          </button>
-        </div>
-      ) : (
-        <div>
-          <input
-            type="checkbox"
-            id="ready-toggle"
-            checked={isReady}
-            onChange={(e) => handleReadyChange(e.target.checked)}
-            className="peer hidden"
-          />
-          <label
-            htmlFor="ready-toggle"
-            className="h-8 cursor-pointer border-3 border-transparent bg-green-800 text-white peer-checked:border-white hover:border-white transition"
-          >
-            {isReady ? "Ready" : "Not Ready"}
-          </label>
-        </div>
-      )}
+      <div>
+        {lobbyState && lobbyState.players && (
+          <LobbyStatus lobbyState={lobbyState} />
+        )}
+      </div>
     </div>
   );
 };
