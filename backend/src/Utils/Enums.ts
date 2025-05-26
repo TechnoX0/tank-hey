@@ -6,5 +6,4 @@ export enum CollisionType {
 export enum EntityType {
     tank,
     projectile,
-    wall,
 }

@@ -1,4 +1,4 @@
-import TankStats from "../interface/Stats";
+import { TankStats } from "../interface/Stats";
 import CannonBall from "../Projectiles/CannonBall";
 import Vector2D from "../Utils/Vector2D";
 import Tank from "./Tank";
