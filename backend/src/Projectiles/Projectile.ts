@@ -4,7 +4,7 @@ import Vector2D from "../Utils/Vector2D";
 import Tank from "../Tanks/Tank";
 import Movement from "../interface/Movement";
 import Collision from "../Utils/Collision";
-import { CollisionType } from "../Utils/Enums";
+import { CollisionType, EntityType } from "../Utils/Enums";
 
 abstract class Projectile extends GameObject implements Movement {
     public owner: string;
@@ -26,7 +26,7 @@ abstract class Projectile extends GameObject implements Movement {
             throw new Error("Invalid hitbox type passed to constructor");
         }
     
-        super(owner, position, collision);
+        super(owner, position, collision, EntityType.projectile);
 
         this.owner = owner;
         this.damage = 1;

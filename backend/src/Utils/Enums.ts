@@ -4,7 +4,7 @@ export enum CollisionType {
 }
 
 export enum EntityType {
-    player,
+    tank,
     projectile,
     wall,
 }

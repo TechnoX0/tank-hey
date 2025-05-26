@@ -2,7 +2,7 @@ import GameObject from "../GameObjects/GameObject";
 import Movement from "../interface/Movement";
 import Vector2D from "../Utils/Vector2D";
 import { MapData } from "../interface/Map";
-import { CollisionType } from "../Utils/Enums";
+import { CollisionType, EntityType } from "../Utils/Enums";
 import Collision from "../Utils/Collision";
 import Projectile from "../Projectiles/Projectile";
 import { TankStats } from "../interface/Stats";
@@ -30,6 +30,7 @@ abstract class Tank extends GameObject implements Movement {
                 new Vector2D(-20, 12),
                 new Vector2D(-20, -12),
             ]),
+            EntityType.tank
         );
 
         this.baseStats = baseStat;
