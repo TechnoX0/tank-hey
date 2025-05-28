@@ -15,6 +15,7 @@ abstract class Projectile extends GameObject implements Movement {
     public timeAlive: number = 0;
     public maxTimeAlive: number;
     public isDead: boolean = false;
+    public baseStats: ProjectileStats;
 
     protected dealtDamageTo: Map<string, number> = new Map();
     protected damageCooldown: number = 500;
@@ -46,6 +47,8 @@ abstract class Projectile extends GameObject implements Movement {
 
         super(owner, position, collision, EntityType.projectile);
 
+        this.baseStats = baseStats;
+
         this.owner = owner;
         this.damage = baseStats.damage;
         this.speed = baseStats.speed || 0;
@@ -54,6 +57,14 @@ abstract class Projectile extends GameObject implements Movement {
 
     abstract update(...params: any): void;
     abstract move(...params: any): void;
+
+    resetStats() {
+        this.damage = this.baseStats.damage;
+        this.speed = this.baseStats.speed || 0;
+        this.maxTimeAlive = this.baseStats.maxTimeToLive || 0; // Reset to default if not set
+        this.isDead = false;
+        this.dealtDamageTo.clear();
+    }
 
     dealDamage(target: Tank) {
         const now = Date.now();

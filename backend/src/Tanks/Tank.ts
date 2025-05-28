@@ -57,6 +57,13 @@ abstract class Tank extends GameObject implements Movement {
         this.originalVertices = this.hitbox.vertices;
     }
 
+    resetStats() {
+        this.health = this.baseStats.health;
+        this.turnSpeed = this.baseStats.turnSpeed;
+        this.shootSpeed = this.baseStats.shootSpeed;
+        this.speed = this.baseStats.speed;
+    }
+
     move(map: MapData, forward: number) {
         if (this.isDead) return;
 
