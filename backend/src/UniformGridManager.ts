@@ -1,6 +1,13 @@
 import GameObject from "./GameObjects/GameObject";
 import Wall from "./Maps/Wall";
+import Projectile from "./Projectiles/Projectile";
+import Tank from "./Tanks/Tank";
 import { EntityType } from "./Utils/Enums";
+
+type EntityTypeMap = {
+    [EntityType.tank]: Tank;
+    [EntityType.projectile]: Projectile;
+};
 
 class UniformGridManager {
     private cellSize: number;
@@ -16,7 +23,10 @@ class UniformGridManager {
     }
 
     private getObjectCellCoords(obj: GameObject): [number, number] {
-        return [Math.floor(obj.position.x / this.cellSize), Math.floor(obj.position.y / this.cellSize)];
+        return [
+            Math.floor(obj.position.x / this.cellSize),
+            Math.floor(obj.position.y / this.cellSize),
+        ];
     }
 
     private getCellsForWall(wall: Wall): string[] {
@@ -50,7 +60,6 @@ class UniformGridManager {
         return cells;
     }
 
-
     public clear(): void {
         for (const cell of this.grid.values()) {
             cell.entities = []; // Only clear entities
@@ -80,7 +89,10 @@ class UniformGridManager {
         }
     }
 
-    public getNearbyEntities(obj: GameObject, type?: EntityType): GameObject[] {
+    public getNearbyEntities<T extends EntityType>(
+        obj: GameObject,
+        type?: T
+    ): T extends undefined ? GameObject[] : EntityTypeMap[T][] {
         const [col, row] = this.getObjectCellCoords(obj);
         const nearby: GameObject[] = [];
 
@@ -89,18 +101,20 @@ class UniformGridManager {
                 const key = this.getCellKey(col + dx, row + dy);
 
                 if (this.grid.has(key)) {
-                    if (type != undefined) {
-                        const cellEntities = this.grid.get(key)!.entities;
-                        const typeEntities = cellEntities.filter(e => e.entityType === type);
-                        nearby.push(...typeEntities);
+                    const cellEntities = this.grid.get(key)!.entities;
+
+                    if (type !== undefined) {
+                        nearby.push(
+                            ...cellEntities.filter((e) => e.entityType === type)
+                        );
                     } else {
-                        nearby.push(...this.grid.get(key)!.entities);
+                        nearby.push(...cellEntities);
                     }
                 }
             }
         }
 
-        return nearby;
+        return nearby as any;
     }
 
     public getNearbyWalls(obj: GameObject): Wall[] {
