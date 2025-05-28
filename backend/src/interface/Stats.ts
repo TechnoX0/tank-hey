@@ -7,8 +7,8 @@ interface TankStats {
 
 interface ProjectileStats {
     damage: number;
-    speed: number;
-    maxTimeToLive: number; // in milliseconds
+    speed?: number;
+    maxTimeToLive?: number; // in milliseconds
 }
 
 export { TankStats, ProjectileStats };

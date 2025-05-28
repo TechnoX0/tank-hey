@@ -5,41 +5,66 @@ import Tank from "../Tanks/Tank";
 import Movement from "../interface/Movement";
 import Collision from "../Utils/Collision";
 import { CollisionType, EntityType } from "../Utils/Enums";
+import { ProjectileStats } from "../interface/Stats";
 
 abstract class Projectile extends GameObject implements Movement {
     public owner: string;
     public damage: number;
     public speed: number;
     public rotation: number = 0;
-    public timeAlive: number;
+    public timeAlive: number = 0;
     public maxTimeAlive: number;
     public isDead: boolean = false;
 
-    constructor(owner: string, position: Vector2D, collisionType: CollisionType, verticesOrRadius: Vector2D[] | number) {
+    protected dealtDamageTo: Map<string, number> = new Map();
+    protected damageCooldown: number = 500;
+
+    constructor(
+        owner: string,
+        position: Vector2D,
+        collisionType: CollisionType,
+        baseStats: ProjectileStats,
+        verticesOrRadius: Vector2D[] | number
+    ) {
         let collision: Collision;
-    
+
         if (Array.isArray(verticesOrRadius)) {
-            collision = new Collision(collisionType, position, verticesOrRadius);
+            collision = new Collision(
+                collisionType,
+                position,
+                verticesOrRadius
+            );
         } else if (typeof verticesOrRadius === "number") {
-            collision = new Collision(collisionType, position, verticesOrRadius);
+            collision = new Collision(
+                collisionType,
+                position,
+                verticesOrRadius
+            );
         } else {
             throw new Error("Invalid hitbox type passed to constructor");
         }
-    
+
         super(owner, position, collision, EntityType.projectile);
 
         this.owner = owner;
-        this.damage = 1;
-        this.speed = 10;
-        this.timeAlive = 0;
-        this.maxTimeAlive = 10000; // 10 seconds default
+        this.damage = baseStats.damage;
+        this.speed = baseStats.speed || 0;
+        this.maxTimeAlive = baseStats.maxTimeToLive || 0; // 10 seconds default
     }
 
     abstract update(...params: any): void;
     abstract move(...params: any): void;
 
     dealDamage(target: Tank) {
+        const now = Date.now();
+        const lastDamageTime = this.dealtDamageTo.get(target.id);
+
+        if (lastDamageTime && now - lastDamageTime < this.damageCooldown) {
+            return; // Don't deal damage again yet
+        }
+
         target.takeDamage(this.damage);
+        this.dealtDamageTo.set(target.id, now);
     }
 
     shouldDestroy(): boolean {
