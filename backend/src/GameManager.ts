@@ -1,6 +1,6 @@
 // GameManager.js
-import Tank from "./Tanks/Tank";
-import Projectile from "./Projectiles/Projectile";
+import Tank from "./GameObjects/Tanks/Tank";
+import Projectile from "./GameObjects/Projectiles/Projectile";
 import Maps from "./Maps/Maps";
 import PlayerAction from "./interface/PlayerAction";
 import Message from "./interface/Message";
@@ -15,7 +15,7 @@ class GameManager {
     private map: MapData;
     public gameStarted: boolean = false; // Flag to indicate if the game has started
     private messages: Message[] = []; // Array to store messages
-    private grid: UniformGridManager = new UniformGridManager(100)
+    private grid: UniformGridManager = new UniformGridManager(100);
 
     constructor() {
         this.players = {};
@@ -39,18 +39,18 @@ class GameManager {
         for (const player of Object.values(this.players)) {
             this.grid.addEntity(player.tank);
         }
-        
+
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const projectile = this.projectiles[i];
             projectile.update(deltaTime, this.grid);
-            
+
             // Remove projectile if it should be destroyed
             if (projectile.shouldDestroy()) {
                 this.projectiles.splice(i, 1);
             }
         }
 
-        this.removeDeadEntities()
+        this.removeDeadEntities();
     }
 
     removeDeadEntities() {
@@ -89,7 +89,7 @@ class GameManager {
                 player.move(this.map, action.data);
                 break;
             case "shoot":
-                const projectile = player.shoot()
+                const projectile = player.shoot();
                 if (projectile) this.projectiles.push(projectile);
             default:
                 break;
@@ -105,7 +105,13 @@ class GameManager {
     }
 
     getGameState(): GameState {
-        return { map: this.map, players: this.players, projectiles: this.projectiles, gameStarted: this.gameStarted, messages: this.messages };
+        return {
+            map: this.map,
+            players: this.players,
+            projectiles: this.projectiles,
+            gameStarted: this.gameStarted,
+            messages: this.messages,
+        };
     }
 }
 

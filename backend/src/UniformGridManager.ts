@@ -1,7 +1,7 @@
 import GameObject from "./GameObjects/GameObject";
 import Wall from "./Maps/Wall";
-import Projectile from "./Projectiles/Projectile";
-import Tank from "./Tanks/Tank";
+import Projectile from "./GameObjects/Projectiles/Projectile";
+import Tank from "./GameObjects/Tanks/Tank";
 import { EntityType } from "./Utils/Enums";
 
 type EntityTypeMap = {
