@@ -1,11 +1,11 @@
-import { CollisionType, EntityType } from "../Utils/Enums";
-import Vector2D from "../Utils/Vector2D";
+import { CollisionType, EntityType } from "../../Utils/Enums";
+import Vector2D from "../../Utils/Vector2D";
 import Projectile from "./Projectile";
-import Wall from "../Maps/Wall";
-import UniformGridManager from "../UniformGridManager";
-import { detectWallCollision, reflectVector } from "../Utils/PhysicsUtils";
+import Wall from "../../Maps/Wall";
+import UniformGridManager from "../../UniformGridManager";
+import { detectWallCollision, reflectVector } from "../../Utils/PhysicsUtils";
 import Tank from "../Tanks/Tank";
-import { ProjectileStats } from "../interface/Stats";
+import { ProjectileStats } from "../../interface/Stats";
 
 class CannonBall extends Projectile {
     timeToLive: number = 5;

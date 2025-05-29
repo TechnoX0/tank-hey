@@ -1,11 +1,11 @@
-import GameObject from "../GameObjects/GameObject";
-import Movement from "../interface/Movement";
-import Vector2D from "../Utils/Vector2D";
-import { MapData } from "../interface/Map";
-import { CollisionType, EntityType } from "../Utils/Enums";
-import Collision from "../Utils/Collision";
+import GameObject from "../GameObject";
+import Movement from "../../interface/Movement";
+import Vector2D from "../../Utils/Vector2D";
+import { MapData } from "../../interface/Map";
+import { CollisionType, EntityType } from "../../Utils/Enums";
+import Collision from "../../Utils/Collision";
 import Projectile from "../Projectiles/Projectile";
-import { TankStats } from "../interface/Stats";
+import { TankStats } from "../../interface/Stats";
 
 abstract class Tank extends GameObject implements Movement {
     protected baseStats: TankStats;

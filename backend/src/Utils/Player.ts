@@ -1,6 +1,6 @@
-import Juggernaut from "../Tanks/Juggernaut";
-import Sniper from "../Tanks/Sniper";
-import Tank from "../Tanks/Tank";
+import Juggernaut from "../GameObjects/Tanks/Juggernaut";
+import Sniper from "../GameObjects/Tanks/Sniper";
+import Tank from "../GameObjects/Tanks/Tank";
 import Vector2D from "./Vector2D";
 
 class Player {
@@ -13,37 +13,37 @@ class Player {
     public tankClass: string = "juggernaut";
     public tank: Tank;
 
-  constructor(socketId: string, isHost?: boolean) {
-    this.id = socketId;
-    this.isHost = isHost || false;
-    this.tank = new Juggernaut(socketId, new Vector2D(40, 40));
-  }
-
-  public setTankClass(tankClass: string) {
-    this.tankClass = tankClass
-
-    switch (tankClass) {
-      case "juggernaut":
-        this.tank = new Juggernaut(this.id, new Vector2D(40, 40));
-        break;
-      case "sniper":
-        this.tank = new Sniper(this.id, new Vector2D(40, 40));
-        break;
-      // Add other tank classes here as needed
-      default:
-        this.tank = new Juggernaut(this.id, new Vector2D(40, 40));
+    constructor(socketId: string, isHost?: boolean) {
+        this.id = socketId;
+        this.isHost = isHost || false;
+        this.tank = new Juggernaut(socketId, new Vector2D(40, 40));
     }
 
-    console.log(this.tank)
-  }
+    public setTankClass(tankClass: string) {
+        this.tankClass = tankClass;
 
-  public setColor(color: string) {
-    this.color = color;
-  }
+        switch (tankClass) {
+            case "juggernaut":
+                this.tank = new Juggernaut(this.id, new Vector2D(40, 40));
+                break;
+            case "sniper":
+                this.tank = new Sniper(this.id, new Vector2D(40, 40));
+                break;
+            // Add other tank classes here as needed
+            default:
+                this.tank = new Juggernaut(this.id, new Vector2D(40, 40));
+        }
 
-  public setIsReady(isReady: boolean) {
-    this.isReady = isReady;
-  }
+        console.log(this.tank);
+    }
+
+    public setColor(color: string) {
+        this.color = color;
+    }
+
+    public setIsReady(isReady: boolean) {
+        this.isReady = isReady;
+    }
 }
 
 export default Player;

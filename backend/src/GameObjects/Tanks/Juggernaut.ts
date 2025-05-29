@@ -1,6 +1,6 @@
-import { TankStats } from "../interface/Stats";
+import { TankStats } from "../../interface/Stats";
 import CannonBall from "../Projectiles/CannonBall";
-import Vector2D from "../Utils/Vector2D";
+import Vector2D from "../../Utils/Vector2D";
 import Tank from "./Tank";
 
 class Juggernaut extends Tank {
@@ -10,7 +10,7 @@ class Juggernaut extends Tank {
             speed: 2,
             turnSpeed: 1.5,
             shootSpeed: 2000, // milliseconds
-        }
+        };
 
         super(id, position, baseStats, CannonBall);
     }

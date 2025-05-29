@@ -1,7 +1,7 @@
-import Movement from "../interface/Movement";
-import { ProjectileStats } from "../interface/Stats";
-import { CollisionType } from "../Utils/Enums";
-import Vector2D from "../Utils/Vector2D";
+import Movement from "../../interface/Movement";
+import { ProjectileStats } from "../../interface/Stats";
+import { CollisionType } from "../../Utils/Enums";
+import Vector2D from "../../Utils/Vector2D";
 import Projectile from "./Projectile";
 
 class Shell extends Projectile implements Movement {

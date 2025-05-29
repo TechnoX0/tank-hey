@@ -1,11 +1,11 @@
 // Projectile.ts
-import GameObject from "../GameObjects/GameObject";
-import Vector2D from "../Utils/Vector2D";
+import GameObject from "../GameObject";
+import Vector2D from "../../Utils/Vector2D";
 import Tank from "../Tanks/Tank";
-import Movement from "../interface/Movement";
-import Collision from "../Utils/Collision";
-import { CollisionType, EntityType } from "../Utils/Enums";
-import { ProjectileStats } from "../interface/Stats";
+import Movement from "../../interface/Movement";
+import Collision from "../../Utils/Collision";
+import { CollisionType, EntityType } from "../../Utils/Enums";
+import { ProjectileStats } from "../../interface/Stats";
 
 abstract class Projectile extends GameObject implements Movement {
     public owner: string;
