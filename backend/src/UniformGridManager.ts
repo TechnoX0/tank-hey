@@ -3,10 +3,12 @@ import Wall from "./Maps/Wall";
 import Projectile from "./GameObjects/Projectiles/Projectile";
 import Tank from "./GameObjects/Tanks/Tank";
 import { EntityType } from "./Utils/Enums";
+import PowerUp from "./GameObjects/PowerUps/PowerUp";
 
 type EntityTypeMap = {
     [EntityType.tank]: Tank;
     [EntityType.projectile]: Projectile;
+    [EntityType.powerup]: PowerUp;
 };
 
 class UniformGridManager {

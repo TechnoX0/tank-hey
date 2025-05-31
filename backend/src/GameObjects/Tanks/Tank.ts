@@ -6,8 +6,16 @@ import { CollisionType, EntityType } from "../../Utils/Enums";
 import Collision from "../../Utils/Collision";
 import Projectile from "../Projectiles/Projectile";
 import { TankStats } from "../../interface/Stats";
+import PowerUp from "../PowerUps/PowerUp";
 
 abstract class Tank extends GameObject implements Movement {
+    // Power-ups
+    public activePowerUps: PowerUp[] = [];
+    public onShootModifiers: ((projectile: Projectile) => void)[] = [];
+    public movementModifiers: ((direction: Vector2D) => Vector2D)[] = [];
+    public inputBlockers: Set<string> = new Set(); // e.g., "disarm", "invert"
+
+    // Base stats
     protected baseStats: TankStats;
 
     // Current stats

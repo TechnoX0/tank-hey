@@ -1,9 +1,10 @@
 export enum CollisionType {
     polygon,
-    circle
+    circle,
 }
 
 export enum EntityType {
     tank,
     projectile,
+    powerup,
 }

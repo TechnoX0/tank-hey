@@ -8,6 +8,7 @@ import Player from "./Utils/Player";
 import { MapData } from "./interface/Map";
 import GameState from "./interface/GameState";
 import UniformGridManager from "./UniformGridManager";
+import PowerUpManager from "./GameObjects/PowerUps/PowerUpManager";
 
 class GameManager {
     public players: Record<string, Player>;
@@ -16,6 +17,7 @@ class GameManager {
     public gameStarted: boolean = false; // Flag to indicate if the game has started
     private messages: Message[] = []; // Array to store messages
     private grid: UniformGridManager = new UniformGridManager(100);
+    public powerUpManager: PowerUpManager = new PowerUpManager();
 
     constructor() {
         this.players = {};
@@ -30,6 +32,7 @@ class GameManager {
     update(deltaTime: number) {
         if (!this.gameStarted) return; // Only update if the game has started
 
+        this.powerUpManager.update(deltaTime);
         this.grid.clear();
 
         for (const projectile of this.projectiles) {
@@ -38,6 +41,10 @@ class GameManager {
 
         for (const player of Object.values(this.players)) {
             this.grid.addEntity(player.tank);
+        }
+
+        for (const powerUp of Object.values(this.powerUpManager.powerUps)) {
+            this.grid.addEntity(powerUp);
         }
 
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
@@ -109,6 +116,7 @@ class GameManager {
             map: this.map,
             players: this.players,
             projectiles: this.projectiles,
+            powerUps: this.powerUpManager.powerUps,
             gameStarted: this.gameStarted,
             messages: this.messages,
         };

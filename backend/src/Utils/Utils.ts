@@ -1,7 +1,11 @@
 import Vector2D from "../Utils/Vector2D";
 import { WallEdge } from "../Maps/Wall";
 
-export function circleIntersectsEdge(circleCenter: Vector2D, circleRadius: number, edge: WallEdge): boolean {
+export function circleIntersectsEdge(
+    circleCenter: Vector2D,
+    circleRadius: number,
+    edge: WallEdge
+): boolean {
     const ac = circleCenter.subtract(edge.start);
     const ab = edge.end.subtract(edge.start);
 
@@ -12,7 +16,12 @@ export function circleIntersectsEdge(circleCenter: Vector2D, circleRadius: numbe
     return circleCenter.distanceTo(closestPoint) <= circleRadius;
 }
 
-export function circleSweepEdge(circleCenter: Vector2D, movement: Vector2D, radius: number, edge: WallEdge): { hit: boolean, t: number } {
+export function circleSweepEdge(
+    circleCenter: Vector2D,
+    movement: Vector2D,
+    radius: number,
+    edge: WallEdge
+): { hit: boolean; t: number } {
     const ab = edge.end.subtract(edge.start);
     const abLengthSquared = ab.magnitudeSquared();
 
@@ -48,4 +57,17 @@ export function circleSweepEdge(circleCenter: Vector2D, movement: Vector2D, radi
     }
 
     return { hit: false, t: 0 };
+}
+
+export function generateCustomUUID(length: number = 16): string {
+    const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*_-=?";
+    let result = "";
+
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * chars.length);
+        result += chars[randomIndex];
+    }
+
+    return result;
 }

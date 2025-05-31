@@ -3,6 +3,7 @@ interface TankStats {
     speed: number;
     turnSpeed: number;
     shootSpeed: number; // in milliseconds
+    projectiledamage: number;
 }
 
 interface ProjectileStats {
@@ -11,4 +12,10 @@ interface ProjectileStats {
     maxTimeToLive?: number; // in milliseconds
 }
 
-export { TankStats, ProjectileStats };
+interface PowerUpStats {
+    duration: number;
+    maxTimeOnGround: number;
+    value: number;
+}
+
+export { TankStats, ProjectileStats, PowerUpStats };

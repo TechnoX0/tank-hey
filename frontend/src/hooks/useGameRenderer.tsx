@@ -6,45 +6,56 @@ import { Socket } from "socket.io-client";
 import Player from "../interface/Player";
 
 export default function useGameRenderer(
-  canvas: HTMLCanvasElement | null,
-  ctx: CanvasRenderingContext2D | null,
-  gameState: GameState,
-  socket: Socket
+    canvas: HTMLCanvasElement | null,
+    ctx: CanvasRenderingContext2D | null,
+    gameState: GameState,
+    socket: Socket
 ) {
-  const animationRef = useRef<number | null>(null);
+    const animationRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    if (!canvas || !ctx || !gameState.gameStarted) return;
+    useEffect(() => {
+        if (!canvas || !ctx || !gameState.gameStarted) return;
 
-    const renderFrame = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const renderFrame = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (const player of Object.values(gameState.players) as Player[]) {
-        drawTank(player, ctx);
-      }
+            for (const powerUp of Object.values(
+                gameState.powerUps
+            ) as Entity[]) {
+                drawCircle(
+                    "#FF0000",
+                    powerUp.position,
+                    powerUp.hitbox.radius,
+                    ctx
+                );
+            }
 
-      for (const projectile of Object.values(
-        gameState.projectiles
-      ) as Entity[]) {
-        drawCircle(
-          "#295C0A",
-          projectile.position,
-          projectile.hitbox.radius,
-          ctx
-        );
-      }
+            for (const player of Object.values(gameState.players) as Player[]) {
+                drawTank(player, ctx);
+            }
 
-      drawMap(gameState.map, ctx);
+            for (const projectile of Object.values(
+                gameState.projectiles
+            ) as Entity[]) {
+                drawCircle(
+                    "#295C0A",
+                    projectile.position,
+                    projectile.hitbox.radius,
+                    ctx
+                );
+            }
 
-      animationRef.current = requestAnimationFrame(renderFrame);
-    };
+            drawMap(gameState.map, ctx);
 
-    renderFrame(); // start loop
+            animationRef.current = requestAnimationFrame(renderFrame);
+        };
 
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [canvas, ctx, gameState, socket]);
+        renderFrame(); // start loop
+
+        return () => {
+            if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current);
+            }
+        };
+    }, [canvas, ctx, gameState, socket]);
 }
