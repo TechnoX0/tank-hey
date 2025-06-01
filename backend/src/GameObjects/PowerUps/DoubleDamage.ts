@@ -4,19 +4,20 @@ import Projectile from "../Projectiles/Projectile";
 import Tank from "../Tanks/Tank";
 import PowerUp from "./PowerUp";
 
-class DoubleDamage extends PowerUp {
+class DoubleDamage extends PowerUp<Tank> {
     private modifierFn?: (projectile: Projectile) => void;
 
     constructor(id: string, position: Vector2D) {
         const stats: PowerUpStats = {
             duration: 10000, // 10 seconds
             maxTimeOnGround: 30000, // 30 seconds
+            value: 2,
         };
 
         super(id, position, stats);
     }
 
-    applyEffect(tank: Tank): void {
+    applyEffect(target: Tank): void {
         this.isPickedUp = true;
         this.timeActive = 0;
 
@@ -24,12 +25,12 @@ class DoubleDamage extends PowerUp {
             projectile.damage *= 2;
         };
 
-        tank.onShootModifiers.push(this.modifierFn);
+        target.onShootModifiers.push(this.modifierFn);
     }
 
-    removeEffect(tank: Tank): void {
+    removeEffect(target: Tank): void {
         if (this.modifierFn) {
-            tank.onShootModifiers = tank.onShootModifiers.filter(
+            target.onShootModifiers = target.onShootModifiers.filter(
                 (fn) => fn !== this.modifierFn
             );
         }

@@ -1,9 +1,10 @@
+import { PowerUpType } from "../Utils/Enums";
+
 interface TankStats {
     health: number;
     speed: number;
     turnSpeed: number;
     shootSpeed: number; // in milliseconds
-    projectiledamage: number;
 }
 
 interface ProjectileStats {

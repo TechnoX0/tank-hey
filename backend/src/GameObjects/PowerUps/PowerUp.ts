@@ -5,7 +5,7 @@ import Vector2D from "../../Utils/Vector2D";
 import GameObject from "../GameObject";
 import Tank from "../Tanks/Tank";
 
-abstract class PowerUp extends GameObject {
+abstract class PowerUp<T extends GameObject> extends GameObject {
     public stats: PowerUpStats;
     public timeActive: number = 0;
     public timeOnGround: number = 0;
@@ -47,8 +47,8 @@ abstract class PowerUp extends GameObject {
         }
     }
 
-    abstract applyEffect(target: Tank): void;
-    abstract removeEffect(target: Tank): void;
+    abstract applyEffect(target: T): void;
+    abstract removeEffect(target: T): void;
 }
 
 export default PowerUp;

@@ -8,7 +8,7 @@ import PowerUp from "./GameObjects/PowerUps/PowerUp";
 type EntityTypeMap = {
     [EntityType.tank]: Tank;
     [EntityType.projectile]: Projectile;
-    [EntityType.powerup]: PowerUp;
+    [EntityType.powerup]: PowerUp<any>;
 };
 
 class UniformGridManager {

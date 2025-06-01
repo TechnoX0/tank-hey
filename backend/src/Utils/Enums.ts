@@ -8,3 +8,8 @@ export enum EntityType {
     projectile,
     powerup,
 }
+
+export enum PowerUpType {
+    tank,
+    projectile,
+}

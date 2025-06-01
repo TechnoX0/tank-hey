@@ -4,7 +4,7 @@ import DoubleDamage from "./DoubleDamage";
 import PowerUp from "./PowerUp";
 
 class PowerUpManager {
-    public powerUps: Record<string, PowerUp> = {};
+    public powerUps: Record<string, PowerUp<any>> = {};
 
     update(deltaTime: number): void {
         const powerUpIds = Object.keys(this.powerUps);
