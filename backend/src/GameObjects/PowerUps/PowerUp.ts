@@ -3,7 +3,6 @@ import Collision from "../../Utils/Collision";
 import { CollisionType, EntityType } from "../../Utils/Enums";
 import Vector2D from "../../Utils/Vector2D";
 import GameObject from "../GameObject";
-import Tank from "../Tanks/Tank";
 
 abstract class PowerUp<T extends GameObject> extends GameObject {
     public stats: PowerUpStats;
@@ -29,9 +28,9 @@ abstract class PowerUp<T extends GameObject> extends GameObject {
 
     update(deltaTime: number): void {
         if (this.isActive) {
-            this.timeActive += deltaTime;
+            this.timeActive += deltaTime / 60;
 
-            if (this.timeActive >= this.stats.duration) {
+            if (this.timeActive >= this.stats.duration / 1000) {
                 this.isActive = false; // Deactivate power-up after duration
             }
         }
@@ -39,9 +38,9 @@ abstract class PowerUp<T extends GameObject> extends GameObject {
 
     updateOnGround(deltaTime: number): void {
         if (!this.isExpired) {
-            this.timeOnGround += deltaTime;
+            this.timeOnGround += deltaTime / 60;
 
-            if (this.timeOnGround >= this.stats.maxTimeOnGround) {
+            if (this.timeOnGround >= this.stats.maxTimeOnGround / 1000) {
                 this.isExpired = true; // Remove power-up after max time on ground
             }
         }

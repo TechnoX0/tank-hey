@@ -6,9 +6,11 @@ import { CollisionType, EntityType } from "../../Utils/Enums";
 import Collision from "../../Utils/Collision";
 import Projectile from "../Projectiles/Projectile";
 import { TankStats } from "../../interface/Stats";
+import PowerUp from "../PowerUps/PowerUp";
 
 abstract class Tank extends GameObject implements Movement {
     // Power-ups
+    private activePowerUp: PowerUp<any>[] = [];
     public onShootModifiers: ((projectile: Projectile) => void)[] = [];
     public movementModifiers: ((direction: Vector2D) => Vector2D)[] = [];
     public inputBlockers: Set<string> = new Set(); // e.g., "disarm", "invert"
@@ -63,6 +65,36 @@ abstract class Tank extends GameObject implements Movement {
         this.projectileClass = projectileClass;
 
         this.originalVertices = this.hitbox.vertices;
+    }
+
+    update(deltaTime: number) {
+        this.activePowerUp = this.activePowerUp.filter((powerUp) => {
+            powerUp.update(deltaTime);
+
+            console.log(powerUp.timeActive);
+
+            if (!powerUp.isActive) {
+                powerUp.removeEffect(this);
+                return false;
+            }
+
+            return true;
+        });
+    }
+
+    applyPowerUp(powerUp: PowerUp<Tank>) {
+        const alreadyHas = this.activePowerUp.some(
+            (p) => p.stats.type === powerUp.stats.type && !p.isExpired
+        );
+
+        if (alreadyHas) {
+            console.log(`Power-up ${powerUp.stats.type} is already active.`);
+            return;
+        }
+
+        powerUp.applyEffect(this);
+        this.activePowerUp.push(powerUp);
+        console.log("Applied Power-up", this.activePowerUp);
     }
 
     resetStats() {
@@ -125,9 +157,7 @@ abstract class Tank extends GameObject implements Movement {
         const forwardFactor = this.isMovingForward ? 1 : -1;
         const rotationSpeed = clockwise ? -1 : 1;
         const newRotation =
-            (this.rotation +
-                this.turnSpeed * rotationSpeed * forwardFactor +
-                360) %
+            (this.rotation + this.turnSpeed * rotationSpeed * forwardFactor) %
             360;
         const nextRad = (newRotation * Math.PI) / 180;
         const potentialVertices = this.originalVertices.map(({ x, y }) => {
@@ -154,7 +184,7 @@ abstract class Tank extends GameObject implements Movement {
 
         if (deltaTime < this.shootSpeed / 1000) return null;
 
-        const offsetDistance = 20; // Distance in front of the tank
+        const offsetDistance = 24; // Distance in front of the tank
 
         // Direction vector from tank's rotation
         const forward = Vector2D.fromAngle(this.rotation).multiply(
@@ -167,7 +197,13 @@ abstract class Tank extends GameObject implements Movement {
         const newProjectile = new this.projectileClass(this.id, spawnPosition);
         newProjectile.rotation = this.rotation;
 
-        console.log(this.onShootModifiers);
+        console.log("Old projectile", newProjectile);
+
+        for (const modifierFn of this.onShootModifiers) {
+            modifierFn(newProjectile);
+        }
+
+        console.log("New projectile", newProjectile);
 
         this.lastShootTime = now;
 

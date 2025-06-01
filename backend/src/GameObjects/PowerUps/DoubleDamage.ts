@@ -9,8 +9,10 @@ class DoubleDamage extends PowerUp<Tank> {
 
     constructor(id: string, position: Vector2D) {
         const stats: PowerUpStats = {
-            duration: 10000, // 10 seconds
+            duration: 5000,
             maxTimeOnGround: 30000, // 30 seconds
+            name: "Double Damage",
+            type: "double-damage",
             value: 2,
         };
 

@@ -9,6 +9,7 @@ import { MapData } from "./interface/Map";
 import GameState from "./interface/GameState";
 import UniformGridManager from "./UniformGridManager";
 import PowerUpManager from "./GameObjects/PowerUps/PowerUpManager";
+import { EntityType } from "./Utils/Enums";
 
 class GameManager {
     public players: Record<string, Player>;
@@ -17,12 +18,13 @@ class GameManager {
     public gameStarted: boolean = false; // Flag to indicate if the game has started
     private messages: Message[] = []; // Array to store messages
     private grid: UniformGridManager = new UniformGridManager(100);
-    public powerUpManager: PowerUpManager = new PowerUpManager();
+    public powerUpManager: PowerUpManager;
 
     constructor() {
         this.players = {};
         this.projectiles = [];
         this.map = this.pickRandomMap();
+        this.powerUpManager = new PowerUpManager(this.map.walls);
 
         for (const wall of this.map.walls) {
             this.grid.addWall(wall);
@@ -32,7 +34,6 @@ class GameManager {
     update(deltaTime: number) {
         if (!this.gameStarted) return; // Only update if the game has started
 
-        this.powerUpManager.update(deltaTime);
         this.grid.clear();
 
         for (const projectile of this.projectiles) {
@@ -41,6 +42,7 @@ class GameManager {
 
         for (const player of Object.values(this.players)) {
             this.grid.addEntity(player.tank);
+            player.tank.update(deltaTime);
         }
 
         for (const powerUp of Object.values(this.powerUpManager.powerUps)) {
@@ -56,6 +58,25 @@ class GameManager {
                 this.projectiles.splice(i, 1);
             }
         }
+
+        for (const player of Object.values(this.players)) {
+            const tank = player.tank;
+            const nearbyPowerUps = this.grid.getNearbyEntities(
+                tank,
+                EntityType.powerup
+            );
+
+            for (const powerUp of nearbyPowerUps) {
+                if (tank.hitbox.collidesWith(powerUp.hitbox)) {
+                    tank.applyPowerUp(powerUp);
+                    powerUp.isActive = true;
+                    powerUp.isPickedUp = true;
+                    continue;
+                }
+            }
+        }
+
+        this.powerUpManager.update(deltaTime);
 
         this.removeDeadEntities();
     }

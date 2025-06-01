@@ -16,6 +16,8 @@ interface ProjectileStats {
 interface PowerUpStats {
     duration: number;
     maxTimeOnGround: number;
+    name: string;
+    type: string;
     value: number;
 }
 
