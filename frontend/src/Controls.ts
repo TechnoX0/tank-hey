@@ -9,7 +9,7 @@ export function setupControls(
 ) {
     if (!roomId || !playerId) return;
 
-    gameListener.addAction("ArrowUp", {
+    gameListener.addAction("KeyW", {
         onHold: () => {
             socket.emit("playerAction", roomId, playerId, {
                 type: "move",
@@ -18,7 +18,7 @@ export function setupControls(
         },
     });
 
-    gameListener.addAction("ArrowDown", {
+    gameListener.addAction("KeyS", {
         onHold: () => {
             socket.emit("playerAction", roomId, playerId, {
                 type: "move",
@@ -27,7 +27,7 @@ export function setupControls(
         },
     });
 
-    gameListener.addAction("ArrowLeft", {
+    gameListener.addAction("KeyA", {
         onHold: () => {
             socket.emit("playerAction", roomId, playerId, {
                 type: "rotate",
@@ -36,7 +36,7 @@ export function setupControls(
         },
     });
 
-    gameListener.addAction("ArrowRight", {
+    gameListener.addAction("KeyD", {
         onHold: () => {
             socket.emit("playerAction", roomId, playerId, {
                 type: "rotate",
@@ -45,7 +45,7 @@ export function setupControls(
         },
     });
 
-    gameListener.addAction("Space", {
+    gameListener.addAction("KeyJ", {
         onPress: () => {
             socket.emit("playerAction", roomId, playerId, {
                 type: "shoot",

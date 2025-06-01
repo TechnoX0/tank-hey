@@ -7,6 +7,7 @@ type KeyAction = {
 class GameListener {
     private keys: Record<string, boolean> = {};
     private actions: Record<string, KeyAction> = {};
+    private started: boolean = false;
 
     constructor() {
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -14,6 +15,8 @@ class GameListener {
     }
 
     start() {
+        if (this.started) return; // Prevent multiple starts
+        this.started = true;
         window.addEventListener("keydown", this.handleKeyDown);
         window.addEventListener("keyup", this.handleKeyUp);
         this.loop();

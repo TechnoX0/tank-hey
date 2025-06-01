@@ -1,45 +1,91 @@
 // GameManager.js
-import Tank from "./Tanks/Tank";
-import Projectile from "./Projectiles/Projectile";
+import Tank from "./GameObjects/Tanks/Tank";
+import Projectile from "./GameObjects/Projectiles/Projectile";
 import Maps from "./Maps/Maps";
 import PlayerAction from "./interface/PlayerAction";
-import Vector2D from "./Utils/Vector2D";
-import MapData from "./interface/MapData";
+import Message from "./interface/Message";
+import Player from "./Utils/Player";
+import { MapData } from "./interface/Map";
+import GameState from "./interface/GameState";
+import UniformGridManager from "./UniformGridManager";
+import PowerUpManager from "./GameObjects/PowerUps/PowerUpManager";
 
 class GameManager {
-    private players: Record<string, Tank>;
+    public players: Record<string, Player>;
     private projectiles: Projectile[];
     private map: MapData;
-    private gamestarted: boolean = false; // Flag to indicate if the game has started
+    public gameStarted: boolean = false; // Flag to indicate if the game has started
+    private messages: Message[] = []; // Array to store messages
+    private grid: UniformGridManager = new UniformGridManager(100);
+    public powerUpManager: PowerUpManager = new PowerUpManager();
 
     constructor() {
         this.players = {};
         this.projectiles = [];
         this.map = this.pickRandomMap();
+
+        for (const wall of this.map.walls) {
+            this.grid.addWall(wall);
+        }
+    }
+
+    update(deltaTime: number) {
+        if (!this.gameStarted) return; // Only update if the game has started
+
+        this.powerUpManager.update(deltaTime);
+        this.grid.clear();
+
+        for (const projectile of this.projectiles) {
+            this.grid.addEntity(projectile);
+        }
+
+        for (const player of Object.values(this.players)) {
+            this.grid.addEntity(player.tank);
+        }
+
+        for (const powerUp of Object.values(this.powerUpManager.powerUps)) {
+            this.grid.addEntity(powerUp);
+        }
+
+        for (let i = this.projectiles.length - 1; i >= 0; i--) {
+            const projectile = this.projectiles[i];
+            projectile.update(deltaTime, this.grid);
+
+            // Remove projectile if it should be destroyed
+            if (projectile.shouldDestroy()) {
+                this.projectiles.splice(i, 1);
+            }
+        }
+
+        this.removeDeadEntities();
+    }
+
+    removeDeadEntities() {
+        for (const key in this.projectiles) {
+            const projectile = this.projectiles[key];
+
+            if (projectile.isDead) {
+                this.projectiles.splice(parseInt(key), 1);
+            }
+        }
+    }
+
+    startGame() {
+        this.gameStarted = true;
+        return this.getGameState();
     }
 
     pickRandomMap() {
         return Maps[Math.floor(Math.random() * Maps.length)];
     }
 
-    update(deltaTime: number) {
-        for (let i = this.projectiles.length - 1; i >= 0; i--) {
-            const projectile = this.projectiles[i];
-            projectile.update(deltaTime, this.map);
-            
-            // Remove projectile if it should be destroyed
-            if (projectile.shouldDestroy()) {
-                this.projectiles.splice(i, 1);
-            }
-        }
-    }
-
-    addPlayer(socketId: string) {
-        this.players[socketId] = new Tank(socketId, new Vector2D(40, 40));
+    addPlayer(socketId: string, player: Player) {
+        this.players[socketId] = player;
     }
 
     playerAction(playerId: string, action: PlayerAction) {
-        const player: Tank = this.players[playerId];
+        if (!this.gameStarted) return; // Only process actions if the game has started
+        const player: Tank = this.players[playerId].tank;
         if (!player) return;
 
         switch (action.type) {
@@ -50,8 +96,8 @@ class GameManager {
                 player.move(this.map, action.data);
                 break;
             case "shoot":
-                const projectile = player.shoot()
-                this.projectiles.push(projectile);
+                const projectile = player.shoot();
+                if (projectile) this.projectiles.push(projectile);
             default:
                 break;
         }
@@ -61,8 +107,19 @@ class GameManager {
         delete this.players[socketId];
     }
 
-    getGameState() {
-        return { map: this.map, players: this.players, projectiles: this.projectiles, gamestarted: this.gamestarted };
+    setMessages(type: string, data: any) {
+        this.messages.push({ type, data });
+    }
+
+    getGameState(): GameState {
+        return {
+            map: this.map,
+            players: this.players,
+            projectiles: this.projectiles,
+            powerUps: this.powerUpManager.powerUps,
+            gameStarted: this.gameStarted,
+            messages: this.messages,
+        };
     }
 }
 

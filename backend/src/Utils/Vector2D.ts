@@ -48,6 +48,11 @@ class Vector2D {
             Math.abs(this.y - other.y) < epsilon
         );
     }
+
+    static fromAngle(degrees: number): Vector2D {
+        const radians = degrees * (Math.PI / 180);
+        return new Vector2D(Math.cos(radians), Math.sin(radians));
+    }
 }
 
 export default Vector2D;
