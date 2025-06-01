@@ -23,6 +23,8 @@ abstract class Tank extends GameObject implements Movement {
     public shootSpeed: number; // milliseconds
     public rotation: number = 0;
     public isDead: boolean = false;
+    private isMovingForward: boolean = true;
+
     protected lastShootTime: number = Date.now();
     protected projectileClass: new (
         owner: string,
@@ -70,8 +72,9 @@ abstract class Tank extends GameObject implements Movement {
         this.speed = this.baseStats.speed;
     }
 
-    move(map: MapData, forward: number) {
+    move(map: MapData, forward: boolean) {
         if (this.isDead) return;
+        this.isMovingForward = forward;
 
         const direction = forward ? 1 : -1;
         const variedSpeed = forward ? this.speed : this.speed * 0.4;
@@ -119,9 +122,13 @@ abstract class Tank extends GameObject implements Movement {
     rotate(clockwise: boolean, map: MapData) {
         if (this.isDead) return;
 
+        const forwardFactor = this.isMovingForward ? 1 : -1;
         const rotationSpeed = clockwise ? -1 : 1;
         const newRotation =
-            (this.rotation + this.turnSpeed * rotationSpeed) % 360;
+            (this.rotation +
+                this.turnSpeed * rotationSpeed * forwardFactor +
+                360) %
+            360;
         const nextRad = (newRotation * Math.PI) / 180;
         const potentialVertices = this.originalVertices.map(({ x, y }) => {
             const rotatedX = x * Math.cos(nextRad) - y * Math.sin(nextRad);
