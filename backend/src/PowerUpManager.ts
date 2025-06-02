@@ -6,6 +6,7 @@ import PowerUp from "./GameObjects/PowerUps/PowerUp";
 import SpeedBoost from "./GameObjects/PowerUps/SpeedBoost";
 import InvertControl from "./GameObjects/PowerUps/InvertControl";
 import StopMovement from "./GameObjects/PowerUps/StopMovement";
+import Disarm from "./GameObjects/PowerUps/Disarm";
 
 class PowerUpManager {
     public powerUps: Record<string, PowerUp<any>> = {};
@@ -68,11 +69,11 @@ class PowerUpManager {
 
         // In the future, you can add more types here
         const powerUpTypes = [
-            // () => new DoubleDamage(id, position),
-            // () => new SpeedBoost(id, position),
+            () => new Disarm(id, position),
+            () => new DoubleDamage(id, position),
             () => new InvertControl(id, position),
-            // () => new StopMovement(id, position),
-            // () => new Disarm(id, position),
+            () => new SpeedBoost(id, position),
+            () => new StopMovement(id, position),
         ];
 
         const randomIndex = Math.floor(Math.random() * powerUpTypes.length);

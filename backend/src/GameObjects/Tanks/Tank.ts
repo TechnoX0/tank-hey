@@ -209,6 +209,7 @@ abstract class Tank extends GameObject implements Movement {
     }
 
     shoot() {
+        if (this.inputBlockers.has("disarm")) return;
         const now = Date.now();
         const deltaTime = (now - this.lastShootTime) / 1000;
 

@@ -9,7 +9,7 @@ interface GameState {
     map: MapData;
     players: Record<string, Player>;
     projectiles: Projectile[];
-    powerUps: Record<string, PowerUp>;
+    powerUps: Record<string, PowerUp<any>>;
     gameStarted: boolean;
     messages: Message[];
 }
