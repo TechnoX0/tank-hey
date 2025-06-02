@@ -6,10 +6,11 @@ import { TankStats } from "../../interface/Stats";
 class Sniper extends Tank {
     constructor(id: string, position: Vector2D) {
         const baseStats: TankStats = {
-            health: 20,
-            speed: 4,
-            turnSpeed: 3,
+            health: 10,
+            speed: 2,
+            turnSpeed: 2,
             shootSpeed: 1000, // milliseconds
+            baseProjectileDamage: 10,
         };
 
         super(id, position, baseStats, CannonBall);

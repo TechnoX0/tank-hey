@@ -8,6 +8,11 @@ import Projectile from "../Projectiles/Projectile";
 import { TankStats } from "../../interface/Stats";
 import PowerUp from "../PowerUps/PowerUp";
 
+const maxStatRange = {
+    speed: { min: 1, max: 8 },
+    turnSpeed: { min: 1, max: 10 },
+};
+
 abstract class Tank extends GameObject implements Movement {
     // Power-ups
     private activePowerUp: PowerUp<any>[] = [];
@@ -25,7 +30,8 @@ abstract class Tank extends GameObject implements Movement {
     public shootSpeed: number; // milliseconds
     public rotation: number = 0;
     public isDead: boolean = false;
-    private isMovingForward: boolean = true;
+    public isMoving = false;
+    private currentDirection: -1 | 1 = 1;
 
     protected lastShootTime: number = Date.now();
     protected projectileClass: new (
@@ -59,9 +65,15 @@ abstract class Tank extends GameObject implements Movement {
         this.baseStats = baseStat;
 
         this.health = this.baseStats.health;
-        this.turnSpeed = this.baseStats.turnSpeed;
         this.shootSpeed = this.baseStats.shootSpeed;
-        this.speed = this.baseStats.speed;
+        this.turnSpeed =
+            maxStatRange.turnSpeed.min +
+            ((this.baseStats.turnSpeed - 1) / 9) *
+                (maxStatRange.turnSpeed.max - maxStatRange.turnSpeed.min);
+        this.speed =
+            maxStatRange.speed.min +
+            ((this.baseStats.speed - 1) / 9) *
+                (maxStatRange.speed.max - maxStatRange.speed.min);
         this.projectileClass = projectileClass;
 
         this.originalVertices = this.hitbox.vertices;
@@ -106,7 +118,8 @@ abstract class Tank extends GameObject implements Movement {
 
     move(map: MapData, forward: boolean) {
         if (this.isDead) return;
-        this.isMovingForward = forward;
+        this.isMoving = true;
+        this.currentDirection = forward ? 1 : -1;
 
         const direction = forward ? 1 : -1;
         const variedSpeed = forward ? this.speed : this.speed * 0.4;
@@ -154,7 +167,8 @@ abstract class Tank extends GameObject implements Movement {
     rotate(clockwise: boolean, map: MapData) {
         if (this.isDead) return;
 
-        const forwardFactor = this.isMovingForward ? 1 : -1;
+        const forwardFactor =
+            this.isMoving && this.currentDirection === -1 ? -1 : 1;
         const rotationSpeed = clockwise ? -1 : 1;
         const newRotation =
             (this.rotation + this.turnSpeed * rotationSpeed * forwardFactor) %
@@ -196,14 +210,15 @@ abstract class Tank extends GameObject implements Movement {
 
         const newProjectile = new this.projectileClass(this.id, spawnPosition);
         newProjectile.rotation = this.rotation;
+        newProjectile.damage = this.baseStats.baseProjectileDamage
+            ? this.baseStats.baseProjectileDamage
+            : newProjectile.damage;
 
         console.log("Old projectile", newProjectile);
 
         for (const modifierFn of this.onShootModifiers) {
             modifierFn(newProjectile);
         }
-
-        console.log("New projectile", newProjectile);
 
         this.lastShootTime = now;
 
