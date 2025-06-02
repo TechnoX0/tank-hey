@@ -84,10 +84,11 @@ class CannonBall extends Projectile {
             const doesCollide = this.hitbox.collidesWith(tank.hitbox);
 
             if (doesCollide) {
+                if (this.owner == tank.id && this.timeAlive * 1000 < 100)
+                    return;
                 this.dealDamage(tank);
                 return;
             }
-            console.log(doesCollide);
         }
     }
 

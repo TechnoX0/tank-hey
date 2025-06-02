@@ -14,7 +14,7 @@ class Shell extends Projectile {
     constructor(owner: string, position: Vector2D, stats?: ProjectileStats) {
         const baseStats: ProjectileStats = {
             damage: 3,
-            speed: 10,
+            speed: 15,
             maxTimeToLive: 5,
         };
 
@@ -70,6 +70,8 @@ class Shell extends Projectile {
             const doesCollide = this.hitbox.collidesWith(tank.hitbox);
 
             if (doesCollide) {
+                if (this.owner == tank.id && this.timeAlive * 1000 < 100)
+                    return;
                 this.dealDamage(tank);
                 return;
             }

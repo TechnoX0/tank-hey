@@ -198,7 +198,7 @@ abstract class Tank extends GameObject implements Movement {
 
         if (deltaTime < this.shootSpeed / 1000) return null;
 
-        const offsetDistance = 24; // Distance in front of the tank
+        const offsetDistance = 10; // Distance in front of the tank
 
         // Direction vector from tank's rotation
         const forward = Vector2D.fromAngle(this.rotation).multiply(
