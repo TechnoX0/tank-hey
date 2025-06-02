@@ -109,11 +109,14 @@ class GameManager {
         const player: Tank = this.players[playerId].tank;
         if (!player) return;
 
+        let moved = false;
+
         switch (action.type) {
             case "rotate":
                 player.rotate(action.data, this.map);
                 break;
             case "move":
+                moved = true;
                 player.move(this.map, action.data);
                 break;
             case "shoot":
@@ -122,6 +125,10 @@ class GameManager {
             default:
                 break;
         }
+
+        console.log(moved);
+
+        if (!moved) player.isMoving = false;
     }
 
     removePlayer(socketId: string) {

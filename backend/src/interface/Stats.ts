@@ -5,6 +5,7 @@ interface TankStats {
     speed: number;
     turnSpeed: number;
     shootSpeed: number; // in milliseconds
+    baseProjectileDamage?: number;
 }
 
 interface ProjectileStats {
