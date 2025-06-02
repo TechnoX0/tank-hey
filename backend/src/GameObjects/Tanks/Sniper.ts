@@ -1,7 +1,7 @@
-import CannonBall from "../Projectiles/CannonBall";
 import Vector2D from "../../Utils/Vector2D";
 import Tank from "./Tank";
 import { TankStats } from "../../interface/Stats";
+import Shell from "../Projectiles/Shell";
 
 class Sniper extends Tank {
     constructor(id: string, position: Vector2D) {
@@ -13,7 +13,7 @@ class Sniper extends Tank {
             baseProjectileDamage: 10,
         };
 
-        super(id, position, baseStats, CannonBall);
+        super(id, position, baseStats, Shell);
     }
 }
 

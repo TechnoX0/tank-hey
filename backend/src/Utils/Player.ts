@@ -1,4 +1,6 @@
+import AllRounder from "../GameObjects/Tanks/AllRounder";
 import Juggernaut from "../GameObjects/Tanks/Juggernaut";
+import Scout from "../GameObjects/Tanks/Scout";
 import Sniper from "../GameObjects/Tanks/Sniper";
 import Tank from "../GameObjects/Tanks/Tank";
 import Vector2D from "./Vector2D";
@@ -28,6 +30,12 @@ class Player {
                 break;
             case "sniper":
                 this.tank = new Sniper(this.id, new Vector2D(40, 40));
+                break;
+            case "scout":
+                this.tank = new Scout(this.id, new Vector2D(40, 40));
+                break;
+            case "allrounde":
+                this.tank = new AllRounder(this.id, new Vector2D(40, 40));
                 break;
             // Add other tank classes here as needed
             default:

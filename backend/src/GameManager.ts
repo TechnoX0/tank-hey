@@ -122,6 +122,7 @@ class GameManager {
             case "shoot":
                 const projectile = player.shoot();
                 if (projectile) this.projectiles.push(projectile);
+                console.log(projectile, this.projectiles.length);
             default:
                 break;
         }
