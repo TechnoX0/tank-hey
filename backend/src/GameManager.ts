@@ -8,7 +8,7 @@ import Player from "./Utils/Player";
 import { MapData } from "./interface/Map";
 import GameState from "./interface/GameState";
 import UniformGridManager from "./UniformGridManager";
-import PowerUpManager from "./GameObjects/PowerUps/PowerUpManager";
+import PowerUpManager from "./PowerUpManager";
 import { EntityType } from "./Utils/Enums";
 
 class GameManager {

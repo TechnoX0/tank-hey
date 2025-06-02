@@ -75,7 +75,6 @@ class Shell extends Projectile {
                 this.dealDamage(tank);
                 return;
             }
-            console.log(doesCollide);
         }
     }
 }

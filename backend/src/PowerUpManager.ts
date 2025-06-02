@@ -1,8 +1,11 @@
-import Wall from "../../Maps/Wall";
-import { generateCustomUUID } from "../../Utils/Utils";
-import Vector2D from "../../Utils/Vector2D";
-import DoubleDamage from "./DoubleDamage";
-import PowerUp from "./PowerUp";
+import Wall from "./Maps/Wall";
+import { generateCustomUUID } from "./Utils/Utils";
+import Vector2D from "./Utils/Vector2D";
+import DoubleDamage from "./GameObjects/PowerUps/DoubleDamage";
+import PowerUp from "./GameObjects/PowerUps/PowerUp";
+import SpeedBoost from "./GameObjects/PowerUps/SpeedBoost";
+import InvertControl from "./GameObjects/PowerUps/InvertControl";
+import StopMovement from "./GameObjects/PowerUps/StopMovement";
 
 class PowerUpManager {
     public powerUps: Record<string, PowerUp<any>> = {};
@@ -42,7 +45,7 @@ class PowerUpManager {
             const spawnY = Math.random() * 600; // replace with your map height
             const position = vector || new Vector2D(spawnX, spawnY);
 
-            const candidate = new DoubleDamage(generateCustomUUID(), position);
+            const candidate = this.getRandomPowerUp(position);
 
             const collides = this.walls.some((wall) =>
                 candidate.hitbox.collidesWith(wall.collision)
@@ -58,6 +61,22 @@ class PowerUpManager {
         }
 
         console.warn("Failed to spawn a power-up after multiple attempts.");
+    }
+
+    getRandomPowerUp(position: Vector2D): PowerUp<any> {
+        const id = generateCustomUUID();
+
+        // In the future, you can add more types here
+        const powerUpTypes = [
+            // () => new DoubleDamage(id, position),
+            // () => new SpeedBoost(id, position),
+            () => new InvertControl(id, position),
+            // () => new StopMovement(id, position),
+            // () => new Disarm(id, position),
+        ];
+
+        const randomIndex = Math.floor(Math.random() * powerUpTypes.length);
+        return powerUpTypes[randomIndex]();
     }
 
     removedPickedUpOrExpired() {

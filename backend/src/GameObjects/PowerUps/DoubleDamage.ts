@@ -12,7 +12,7 @@ class DoubleDamage extends PowerUp<Tank> {
             duration: 5000,
             maxTimeOnGround: 30000, // 30 seconds
             name: "Double Damage",
-            type: "double-damage",
+            type: "damage",
             value: 2,
         };
 
@@ -24,7 +24,7 @@ class DoubleDamage extends PowerUp<Tank> {
         this.timeActive = 0;
 
         this.modifierFn = (projectile: Projectile) => {
-            projectile.damage *= 2;
+            projectile.damage *= this.stats.value || 1;
         };
 
         target.onShootModifiers.push(this.modifierFn);

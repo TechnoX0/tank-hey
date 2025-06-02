@@ -18,6 +18,7 @@ abstract class Tank extends GameObject implements Movement {
     private activePowerUp: PowerUp<any>[] = [];
     public onShootModifiers: ((projectile: Projectile) => void)[] = [];
     public movementModifiers: ((direction: Vector2D) => Vector2D)[] = [];
+    public rotationModifiers: ((baseTurnSpeed: number) => number)[] = [];
     public inputBlockers: Set<string> = new Set(); // e.g., "disarm", "invert"
 
     // Base stats
@@ -83,8 +84,6 @@ abstract class Tank extends GameObject implements Movement {
         this.activePowerUp = this.activePowerUp.filter((powerUp) => {
             powerUp.update(deltaTime);
 
-            console.log(powerUp.timeActive);
-
             if (!powerUp.isActive) {
                 powerUp.removeEffect(this);
                 return false;
@@ -117,11 +116,16 @@ abstract class Tank extends GameObject implements Movement {
     }
 
     move(map: MapData, forward: boolean) {
-        if (this.isDead) return;
+        if (this.isDead || this.inputBlockers.has("stop-movement")) return;
         this.isMoving = true;
         this.currentDirection = forward ? 1 : -1;
 
-        const direction = forward ? 1 : -1;
+        let direction = forward ? 1 : -1;
+        if (this.inputBlockers.has("invert-control")) {
+            direction *= -1;
+        }
+
+        // const direction = forward ? 1 : -1;
         const variedSpeed = forward ? this.speed : this.speed * 0.4;
         let movementVector = new Vector2D(
             Math.cos(this.rotation * (Math.PI / 180)) *
@@ -129,6 +133,10 @@ abstract class Tank extends GameObject implements Movement {
             Math.sin(this.rotation * (Math.PI / 180)) *
                 (variedSpeed * direction)
         );
+
+        for (const movementMod of this.movementModifiers) {
+            movementVector = movementMod(movementVector);
+        }
 
         let testPosition = this.position.add(movementVector);
         let testHitbox = new Collision(
@@ -165,14 +173,22 @@ abstract class Tank extends GameObject implements Movement {
     }
 
     rotate(clockwise: boolean, map: MapData) {
-        if (this.isDead) return;
+        if (this.isDead || this.inputBlockers.has("stop-movement")) return;
+
+        let turnSpeed = this.turnSpeed;
+
+        for (const turnMod of this.rotationModifiers) {
+            turnSpeed = turnMod(turnSpeed);
+        }
 
         const forwardFactor =
             this.isMoving && this.currentDirection === -1 ? -1 : 1;
+        const adjustedFactor = this.inputBlockers.has("invert-control")
+            ? -forwardFactor
+            : forwardFactor;
         const rotationSpeed = clockwise ? -1 : 1;
         const newRotation =
-            (this.rotation + this.turnSpeed * rotationSpeed * forwardFactor) %
-            360;
+            (this.rotation + turnSpeed * rotationSpeed * adjustedFactor) % 360;
         const nextRad = (newRotation * Math.PI) / 180;
         const potentialVertices = this.originalVertices.map(({ x, y }) => {
             const rotatedX = x * Math.cos(nextRad) - y * Math.sin(nextRad);

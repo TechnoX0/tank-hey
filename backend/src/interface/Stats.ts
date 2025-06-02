@@ -19,7 +19,7 @@ interface PowerUpStats {
     maxTimeOnGround: number;
     name: string;
     type: string;
-    value: number;
+    value?: number;
 }
 
 export { TankStats, ProjectileStats, PowerUpStats };
