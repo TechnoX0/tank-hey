@@ -31,6 +31,7 @@ export default function useGameRenderer(
             }
 
             for (const player of Object.values(gameState.players) as Player[]) {
+                if (!player.tank.isVisible && socket.id != player.id) continue;
                 drawTank(player, ctx);
             }
 

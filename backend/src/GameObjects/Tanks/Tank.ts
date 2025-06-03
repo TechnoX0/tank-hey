@@ -7,6 +7,7 @@ import Collision from "../../Utils/Collision";
 import Projectile from "../Projectiles/Projectile";
 import { TankStats } from "../../interface/Stats";
 import PowerUp from "../PowerUps/PowerUp";
+import Ability from "../../Abilitiese/Ability";
 
 const maxStatRange = {
     speed: { min: 1, max: 8 },
@@ -17,6 +18,8 @@ abstract class Tank extends GameObject implements Movement {
     // Power-ups
     private activePowerUp: PowerUp<any>[] = [];
     public onShootModifiers: ((projectile: Projectile) => void)[] = [];
+    public onTakeDamageModifier: ((tank: Tank) => void)[] = [];
+    public onTakeDamage: ((damage: number) => number)[] = [];
     public movementModifiers: ((direction: Vector2D) => Vector2D)[] = [];
     public rotationModifiers: ((baseTurnSpeed: number) => number)[] = [];
     public inputBlockers: Set<string> = new Set(); // e.g., "disarm", "invert"
@@ -32,9 +35,14 @@ abstract class Tank extends GameObject implements Movement {
     public rotation: number = 0;
     public isDead: boolean = false;
     public isMoving = false;
+    public isVisible = true;
     private currentDirection: -1 | 1 = 1;
 
-    protected lastShootTime: number = Date.now();
+    protected lastOfAction: Record<string, number> = {
+        shoot: Date.now() / 2,
+        ability: Date.now() / 2,
+    };
+    protected ability: Ability<Tank>;
     protected projectileClass: new (
         owner: string,
         position: Vector2D
@@ -75,6 +83,7 @@ abstract class Tank extends GameObject implements Movement {
             maxStatRange.speed.min +
             ((this.baseStats.speed - 1) / 9) *
                 (maxStatRange.speed.max - maxStatRange.speed.min);
+        this.ability = baseStat.ability;
         this.projectileClass = projectileClass;
 
         this.originalVertices = this.hitbox.vertices;
@@ -91,6 +100,12 @@ abstract class Tank extends GameObject implements Movement {
 
             return true;
         });
+
+        this.ability.update(deltaTime);
+
+        if (!this.ability.isActive) {
+            this.ability.deactivateAbility(this);
+        }
     }
 
     applyPowerUp(powerUp: PowerUp<Tank>) {
@@ -99,13 +114,29 @@ abstract class Tank extends GameObject implements Movement {
         );
 
         if (alreadyHas) {
-            console.log(`Power-up ${powerUp.stats.type} is already active.`);
             return;
         }
 
         powerUp.applyEffect(this);
         this.activePowerUp.push(powerUp);
         console.log("Applied Power-up", this.activePowerUp);
+    }
+
+    useAbility() {
+        if (this.isDead) return;
+
+        const now = Date.now();
+        const lastAbilityTime = (now - this.lastOfAction["ability"]) / 1000;
+
+        if (
+            lastAbilityTime < this.ability.stats.cooldown ||
+            this.ability.isActive
+        ) {
+            return;
+        }
+
+        this.ability.activateAbility(this);
+        this.lastOfAction["ability"] = now;
     }
 
     resetStats() {
@@ -210,8 +241,9 @@ abstract class Tank extends GameObject implements Movement {
 
     shoot() {
         if (this.inputBlockers.has("disarm")) return;
+
         const now = Date.now();
-        const deltaTime = (now - this.lastShootTime) / 1000;
+        const deltaTime = (now - this.lastOfAction["shoot"]) / 1000;
 
         if (deltaTime < this.shootSpeed / 1000) return null;
 
@@ -231,19 +263,27 @@ abstract class Tank extends GameObject implements Movement {
             ? this.baseStats.baseProjectileDamage
             : newProjectile.damage;
 
-        console.log("Old projectile", newProjectile);
-
         for (const modifierFn of this.onShootModifiers) {
             modifierFn(newProjectile);
         }
 
-        this.lastShootTime = now;
+        this.lastOfAction["shoot"] = now;
 
         return newProjectile;
     }
 
     takeDamage(damage: number) {
+        if (this.inputBlockers.has("invulnerability")) return;
+
+        for (const modifierFn of this.onTakeDamage) {
+            console.log(modifierFn);
+            damage = modifierFn(damage);
+        }
+
+        // console.log(this.id, this.ability.stats.name, damage);
+
         this.health -= damage;
+
         if (this.health <= 0) {
             this.isDead = true;
         }

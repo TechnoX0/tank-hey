@@ -11,6 +11,7 @@ export interface Entity {
     position: { x: number; y: number };
     speed: number;
     rotation: number;
+    isVisible: boolean;
     hitbox: {
         type: string;
         radius: number;

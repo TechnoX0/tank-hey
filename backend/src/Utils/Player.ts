@@ -34,15 +34,13 @@ class Player {
             case "scout":
                 this.tank = new Scout(this.id, new Vector2D(40, 40));
                 break;
-            case "allrounde":
+            case "allrounder":
                 this.tank = new AllRounder(this.id, new Vector2D(40, 40));
                 break;
             // Add other tank classes here as needed
             default:
                 this.tank = new Juggernaut(this.id, new Vector2D(40, 40));
         }
-
-        console.log(this.tank);
     }
 
     public setColor(color: string) {

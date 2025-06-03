@@ -1,3 +1,4 @@
+import Ability from "../Abilitiese/Ability";
 import { PowerUpType } from "../Utils/Enums";
 
 interface TankStats {
@@ -6,10 +7,12 @@ interface TankStats {
     turnSpeed: number;
     shootSpeed: number; // in milliseconds
     baseProjectileDamage?: number;
+    ability: Ability<any>;
 }
 
 interface ProjectileStats {
     damage: number;
+    radius?: number;
     speed?: number;
     maxTimeToLive?: number; // in milliseconds
 }
@@ -22,4 +25,11 @@ interface PowerUpStats {
     value?: number;
 }
 
-export { TankStats, ProjectileStats, PowerUpStats };
+interface AbilityStats {
+    duration: number;
+    cooldown: number;
+    name: string;
+    type: string;
+}
+
+export { TankStats, ProjectileStats, PowerUpStats, AbilityStats };

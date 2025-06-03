@@ -122,12 +122,11 @@ class GameManager {
             case "shoot":
                 const projectile = player.shoot();
                 if (projectile) this.projectiles.push(projectile);
-                console.log(projectile, this.projectiles.length);
+            case "ability":
+                player.useAbility();
             default:
                 break;
         }
-
-        console.log(moved);
 
         if (!moved) player.isMoving = false;
     }

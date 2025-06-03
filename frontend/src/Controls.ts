@@ -52,4 +52,12 @@ export function setupControls(
             });
         },
     });
+
+    gameListener.addAction("KeyK", {
+        onPress: () => {
+            socket.emit("playerAction", roomId, playerId, {
+                type: "ability",
+            });
+        },
+    });
 }

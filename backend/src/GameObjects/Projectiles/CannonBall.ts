@@ -14,11 +14,18 @@ class CannonBall extends Projectile {
     constructor(owner: string, position: Vector2D, stats?: ProjectileStats) {
         const baseStats: ProjectileStats = {
             damage: 3,
+            radius: 5,
             speed: 6,
             maxTimeToLive: 5,
         };
 
-        super(owner, position, CollisionType.circle, stats || baseStats, 5);
+        super(
+            owner,
+            position,
+            CollisionType.circle,
+            stats || baseStats,
+            baseStats.radius || 1
+        );
     }
 
     update(deltaTime: number, grid: UniformGridManager) {
