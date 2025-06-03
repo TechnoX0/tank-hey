@@ -16,6 +16,7 @@ class GameManager {
     private projectiles: Projectile[];
     private map: MapData;
     public gameStarted: boolean = false; // Flag to indicate if the game has started
+    public gameEnded: boolean = false;
     private messages: Message[] = []; // Array to store messages
     private grid: UniformGridManager = new UniformGridManager(100);
     public powerUpManager: PowerUpManager;
@@ -77,7 +78,7 @@ class GameManager {
         }
 
         this.powerUpManager.update(deltaTime);
-
+        this.checkGameOver();
         this.removeDeadEntities();
     }
 
@@ -89,6 +90,14 @@ class GameManager {
                 this.projectiles.splice(parseInt(key), 1);
             }
         }
+    }
+
+    checkGameOver() {
+        const livingPlayers = Object.values(this.players).filter(
+            (player: Player) => player.tank.health > 0
+        );
+
+        this.gameEnded = livingPlayers.length <= 1;
     }
 
     startGame() {

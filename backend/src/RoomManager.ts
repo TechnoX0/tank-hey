@@ -38,7 +38,10 @@ class RoomManager {
         const now = Date.now();
         Object.keys(this.rooms).forEach((roomId) => {
             const room = this.rooms[roomId];
-            if (Object.keys(room.gameManager.players).length == 0 && now - room.lastActive > 30000) {
+            if (
+                Object.keys(room.gameManager.players).length == 0 &&
+                now - room.lastActive > 30000
+            ) {
                 // Remove rooms inactive for 30+ seconds
                 console.log(`Removing empty room: ${roomId}`);
                 delete this.rooms[roomId];
@@ -55,13 +58,34 @@ class RoomManager {
         room.gameManager.playerAction(playerId, action);
     }
 
-    startGame(roomId: string, callback?: (result: { success: boolean; message: string; gameState: GameState }) => { success: boolean, message: string, gameState: GameState }) {
+    startGame(
+        roomId: string,
+        callback?: (result: {
+            success: boolean;
+            message: string;
+            gameState: GameState;
+        }) => { success: boolean; message: string; gameState: GameState }
+    ) {
         const room = this.rooms[roomId];
-        const manager = room.gameManager
+        const manager = room.gameManager;
         let gameState = manager.getGameState();
 
         if (!room) {
-            const result = { success: false, message: "Room not found", gameState };
+            const result = {
+                success: false,
+                message: "Room not found",
+                gameState,
+            };
+            callback?.(result);
+            return result;
+        }
+
+        if (Object.keys(room.gameManager.players).length < 2) {
+            const result = {
+                success: false,
+                message: "Not enough players",
+                gameState,
+            };
             callback?.(result);
             return result;
         }
@@ -74,7 +98,11 @@ class RoomManager {
             .every((p) => p.isReady);
 
         if (!allNonHostReady) {
-            const result = { success: false, message: "Not all players are ready.", gameState };
+            const result = {
+                success: false,
+                message: "Not all players are ready.",
+                gameState,
+            };
             callback?.(result);
             return result;
         }
@@ -88,7 +116,7 @@ class RoomManager {
 
     allInRoomReady(roomId: string): boolean {
         const room = this.rooms[roomId];
-        const manager = room.gameManager
+        const manager = room.gameManager;
         const players = Object.values(manager.players);
 
         const allNonHostReady = players
