@@ -10,7 +10,7 @@ class Player {
     public score: number = 0;
     public isHost: boolean;
     public isReady: boolean = false;
-    public color: string = "#1f77b4";
+    public color: string = "1f77b4";
     public isAlive: boolean = true;
     public tankClass: string = "juggernaut";
     public tank: Tank;

@@ -10,24 +10,26 @@ class Room {
     lastActive: number; // Timestamp of last activity
 
     constructor(roomName: string, ownerId: string) {
-        this.id = this.generateRoomId()
-        this.ownerId = ownerId
-        this.name = roomName
-        this.gameManager = new GameManager()
-        this.lastActive = Date.now()
+        this.id = this.generateRoomId();
+        this.ownerId = ownerId;
+        this.name = roomName;
+        this.gameManager = new GameManager();
+        this.lastActive = Date.now();
     }
 
     addPlayer(playerId: string) {
-        if (Object.keys(this.gameManager.players).includes(playerId)) return "Player already in room";
+        if (Object.keys(this.gameManager.players).includes(playerId))
+            return "Player already in room";
         const newPlayer = new Player(playerId, playerId === this.ownerId);
 
         this.gameManager.addPlayer(playerId, newPlayer);
         this.lastActive = Date.now(); // Update activity timestamp
-        return this
+        return this;
     }
 
     removePlayer(playerId: string) {
-        if (Object.keys(this.gameManager.players).includes(playerId)) return "Player is not in room";
+        if (Object.keys(this.gameManager.players).includes(playerId))
+            return "Player is not in room";
         delete this.gameManager.players[playerId];
         this.gameManager.removePlayer(playerId);
         this.lastActive = Date.now(); // Update last activity

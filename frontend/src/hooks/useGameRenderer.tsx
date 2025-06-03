@@ -31,7 +31,6 @@ export default function useGameRenderer(
             }
 
             for (const player of Object.values(gameState.players) as Player[]) {
-                console.log(player.tank.activePowerUp);
                 drawTank(player, ctx);
             }
 
