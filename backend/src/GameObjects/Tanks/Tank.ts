@@ -6,11 +6,22 @@ import { CollisionType, EntityType } from "../../Utils/Enums";
 import Collision from "../../Utils/Collision";
 import Projectile from "../Projectiles/Projectile";
 import { TankStats } from "../../interface/Stats";
+import PowerUp from "../PowerUps/PowerUp";
+import Ability from "../../Abilitiese/Ability";
+
+const maxStatRange = {
+    speed: { min: 1, max: 8 },
+    turnSpeed: { min: 1, max: 10 },
+};
 
 abstract class Tank extends GameObject implements Movement {
     // Power-ups
+    private activePowerUp: PowerUp<any>[] = [];
     public onShootModifiers: ((projectile: Projectile) => void)[] = [];
+    public onTakeDamageModifier: ((tank: Tank) => void)[] = [];
+    public onTakeDamage: ((damage: number) => number)[] = [];
     public movementModifiers: ((direction: Vector2D) => Vector2D)[] = [];
+    public rotationModifiers: ((baseTurnSpeed: number) => number)[] = [];
     public inputBlockers: Set<string> = new Set(); // e.g., "disarm", "invert"
 
     // Base stats
@@ -23,7 +34,15 @@ abstract class Tank extends GameObject implements Movement {
     public shootSpeed: number; // milliseconds
     public rotation: number = 0;
     public isDead: boolean = false;
-    protected lastShootTime: number = Date.now();
+    public isMoving = false;
+    public isVisible = true;
+    private currentDirection: -1 | 1 = 1;
+
+    protected lastOfAction: Record<string, number> = {
+        shoot: Date.now() / 2,
+        ability: Date.now() / 2,
+    };
+    protected ability: Ability<Tank>;
     protected projectileClass: new (
         owner: string,
         position: Vector2D
@@ -55,12 +74,69 @@ abstract class Tank extends GameObject implements Movement {
         this.baseStats = baseStat;
 
         this.health = this.baseStats.health;
-        this.turnSpeed = this.baseStats.turnSpeed;
         this.shootSpeed = this.baseStats.shootSpeed;
-        this.speed = this.baseStats.speed;
+        this.turnSpeed =
+            maxStatRange.turnSpeed.min +
+            ((this.baseStats.turnSpeed - 1) / 9) *
+                (maxStatRange.turnSpeed.max - maxStatRange.turnSpeed.min);
+        this.speed =
+            maxStatRange.speed.min +
+            ((this.baseStats.speed - 1) / 9) *
+                (maxStatRange.speed.max - maxStatRange.speed.min);
+        this.ability = baseStat.ability;
         this.projectileClass = projectileClass;
 
         this.originalVertices = this.hitbox.vertices;
+    }
+
+    update(deltaTime: number) {
+        this.activePowerUp = this.activePowerUp.filter((powerUp) => {
+            powerUp.update(deltaTime);
+
+            if (!powerUp.isActive) {
+                powerUp.removeEffect(this);
+                return false;
+            }
+
+            return true;
+        });
+
+        this.ability.update(deltaTime);
+
+        if (!this.ability.isActive) {
+            this.ability.deactivateAbility(this);
+        }
+    }
+
+    applyPowerUp(powerUp: PowerUp<Tank>) {
+        const alreadyHas = this.activePowerUp.some(
+            (p) => p.stats.type === powerUp.stats.type && !p.isExpired
+        );
+
+        if (alreadyHas) {
+            return;
+        }
+
+        powerUp.applyEffect(this);
+        this.activePowerUp.push(powerUp);
+        console.log("Applied Power-up", this.activePowerUp);
+    }
+
+    useAbility() {
+        if (this.isDead) return;
+
+        const now = Date.now();
+        const lastAbilityTime = (now - this.lastOfAction["ability"]) / 1000;
+
+        if (
+            lastAbilityTime < this.ability.stats.cooldown ||
+            this.ability.isActive
+        ) {
+            return;
+        }
+
+        this.ability.activateAbility(this);
+        this.lastOfAction["ability"] = now;
     }
 
     resetStats() {
@@ -70,10 +146,17 @@ abstract class Tank extends GameObject implements Movement {
         this.speed = this.baseStats.speed;
     }
 
-    move(map: MapData, forward: number) {
-        if (this.isDead) return;
+    move(map: MapData, forward: boolean) {
+        if (this.isDead || this.inputBlockers.has("stop-movement")) return;
+        this.isMoving = true;
+        this.currentDirection = forward ? 1 : -1;
 
-        const direction = forward ? 1 : -1;
+        let direction = forward ? 1 : -1;
+        if (this.inputBlockers.has("invert-control")) {
+            direction *= -1;
+        }
+
+        // const direction = forward ? 1 : -1;
         const variedSpeed = forward ? this.speed : this.speed * 0.4;
         let movementVector = new Vector2D(
             Math.cos(this.rotation * (Math.PI / 180)) *
@@ -81,6 +164,10 @@ abstract class Tank extends GameObject implements Movement {
             Math.sin(this.rotation * (Math.PI / 180)) *
                 (variedSpeed * direction)
         );
+
+        for (const movementMod of this.movementModifiers) {
+            movementVector = movementMod(movementVector);
+        }
 
         let testPosition = this.position.add(movementVector);
         let testHitbox = new Collision(
@@ -117,11 +204,22 @@ abstract class Tank extends GameObject implements Movement {
     }
 
     rotate(clockwise: boolean, map: MapData) {
-        if (this.isDead) return;
+        if (this.isDead || this.inputBlockers.has("stop-movement")) return;
 
+        let turnSpeed = this.turnSpeed;
+
+        for (const turnMod of this.rotationModifiers) {
+            turnSpeed = turnMod(turnSpeed);
+        }
+
+        const forwardFactor =
+            this.isMoving && this.currentDirection === -1 ? -1 : 1;
+        const adjustedFactor = this.inputBlockers.has("invert-control")
+            ? -forwardFactor
+            : forwardFactor;
         const rotationSpeed = clockwise ? -1 : 1;
         const newRotation =
-            (this.rotation + this.turnSpeed * rotationSpeed) % 360;
+            (this.rotation + turnSpeed * rotationSpeed * adjustedFactor) % 360;
         const nextRad = (newRotation * Math.PI) / 180;
         const potentialVertices = this.originalVertices.map(({ x, y }) => {
             const rotatedX = x * Math.cos(nextRad) - y * Math.sin(nextRad);
@@ -142,12 +240,14 @@ abstract class Tank extends GameObject implements Movement {
     }
 
     shoot() {
+        if (this.inputBlockers.has("disarm")) return;
+
         const now = Date.now();
-        const deltaTime = (now - this.lastShootTime) / 1000;
+        const deltaTime = (now - this.lastOfAction["shoot"]) / 1000;
 
         if (deltaTime < this.shootSpeed / 1000) return null;
 
-        const offsetDistance = 20; // Distance in front of the tank
+        const offsetDistance = 10; // Distance in front of the tank
 
         // Direction vector from tank's rotation
         const forward = Vector2D.fromAngle(this.rotation).multiply(
@@ -159,16 +259,31 @@ abstract class Tank extends GameObject implements Movement {
 
         const newProjectile = new this.projectileClass(this.id, spawnPosition);
         newProjectile.rotation = this.rotation;
+        newProjectile.damage = this.baseStats.baseProjectileDamage
+            ? this.baseStats.baseProjectileDamage
+            : newProjectile.damage;
 
-        console.log(this.onShootModifiers);
+        for (const modifierFn of this.onShootModifiers) {
+            modifierFn(newProjectile);
+        }
 
-        this.lastShootTime = now;
+        this.lastOfAction["shoot"] = now;
 
         return newProjectile;
     }
 
     takeDamage(damage: number) {
+        if (this.inputBlockers.has("invulnerability")) return;
+
+        for (const modifierFn of this.onTakeDamage) {
+            console.log(modifierFn);
+            damage = modifierFn(damage);
+        }
+
+        // console.log(this.id, this.ability.stats.name, damage);
+
         this.health -= damage;
+
         if (this.health <= 0) {
             this.isDead = true;
         }

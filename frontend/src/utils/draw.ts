@@ -6,8 +6,7 @@ import { loadTankImage } from "./Image";
 export function drawTank(player: Player, ctx: CanvasRenderingContext2D) {
     const tank = player.tank;
     if (!tank.hitbox?.vertices) return;
-
-    const tankImage = loadTankImage(player.tankClass);
+    const tankImage = loadTankImage(player.color);
 
     // Draw the image if loaded
     if (tankImage && tankImage.complete) {
@@ -20,13 +19,6 @@ export function drawTank(player: Player, ctx: CanvasRenderingContext2D) {
         ctx.translate(tank.position.x, tank.position.y);
         ctx.rotate((finalRotation * Math.PI) / 180);
         ctx.drawImage(tankImage, -width / 2, -height / 2, width, height);
-        // const imageData = changeSpriteColor(
-        //     -width / 2,
-        //     -height / 2,
-        //     ctx.canvas,
-        //     ctx
-        // );
-        // ctx.putImageData(imageData, tank.position.x, tank.position.y);
         ctx.restore();
         return;
     }

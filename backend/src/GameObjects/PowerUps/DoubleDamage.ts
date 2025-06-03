@@ -9,8 +9,10 @@ class DoubleDamage extends PowerUp<Tank> {
 
     constructor(id: string, position: Vector2D) {
         const stats: PowerUpStats = {
-            duration: 10000, // 10 seconds
+            duration: 5000,
             maxTimeOnGround: 30000, // 30 seconds
+            name: "Double Damage",
+            type: "damage",
             value: 2,
         };
 
@@ -22,7 +24,7 @@ class DoubleDamage extends PowerUp<Tank> {
         this.timeActive = 0;
 
         this.modifierFn = (projectile: Projectile) => {
-            projectile.damage *= 2;
+            projectile.damage *= this.stats.value || 1;
         };
 
         target.onShootModifiers.push(this.modifierFn);

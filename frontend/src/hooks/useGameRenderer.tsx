@@ -31,6 +31,7 @@ export default function useGameRenderer(
             }
 
             for (const player of Object.values(gameState.players) as Player[]) {
+                if (!player.tank.isVisible && socket.id != player.id) continue;
                 drawTank(player, ctx);
             }
 
@@ -43,6 +44,7 @@ export default function useGameRenderer(
                     projectile.hitbox.radius,
                     ctx
                 );
+                console.log(projectile);
             }
 
             drawMap(gameState.map, ctx);

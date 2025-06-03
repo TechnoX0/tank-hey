@@ -1,11 +1,12 @@
 const imageCache: Record<string, HTMLImageElement> = {};
 
-export function loadTankImage(tankClass: string): HTMLImageElement | null {
-    if (imageCache[tankClass]) return imageCache[tankClass];
+export function loadTankImage(tankColor: string): HTMLImageElement | null {
+    if (imageCache[tankColor]) return imageCache[tankColor];
 
     const img = new Image();
-    img.src = `/assets/TankSprites/${tankClass}.png`; // must be in public/assets/...
-    imageCache[tankClass] = img;
+    img.src = `/assets/TankSprites/Tank ${tankColor}.png`;
+    console.log(img);
+    imageCache[tankColor] = img;
 
     return img;
 }

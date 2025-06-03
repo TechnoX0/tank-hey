@@ -11,14 +11,21 @@ class CannonBall extends Projectile {
     timeToLive: number = 5;
     timeAlive: number = 0;
 
-    constructor(owner: string, position: Vector2D) {
+    constructor(owner: string, position: Vector2D, stats?: ProjectileStats) {
         const baseStats: ProjectileStats = {
             damage: 3,
-            speed: 5,
+            radius: 5,
+            speed: 6,
             maxTimeToLive: 5,
         };
 
-        super(owner, position, CollisionType.circle, baseStats, 5);
+        super(
+            owner,
+            position,
+            CollisionType.circle,
+            stats || baseStats,
+            baseStats.radius || 1
+        );
     }
 
     update(deltaTime: number, grid: UniformGridManager) {
@@ -46,7 +53,7 @@ class CannonBall extends Projectile {
             Math.sin(this.rotation * (Math.PI / 180))
         ).normalized.multiply(this.speed);
 
-        const steps = 20;
+        const steps = 30;
         let subMovement = movementVector.divide(steps);
 
         for (let i = 0; i < steps; i++) {
@@ -84,10 +91,11 @@ class CannonBall extends Projectile {
             const doesCollide = this.hitbox.collidesWith(tank.hitbox);
 
             if (doesCollide) {
+                if (this.owner == tank.id && this.timeAlive * 1000 < 100)
+                    return;
                 this.dealDamage(tank);
                 return;
             }
-            console.log(doesCollide);
         }
     }
 

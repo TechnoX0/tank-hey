@@ -2,21 +2,21 @@ import { TankStats } from "../../interface/Stats";
 import CannonBall from "../Projectiles/CannonBall";
 import Vector2D from "../../Utils/Vector2D";
 import Tank from "./Tank";
-import ExpandProjectile from "../../Abilitiese/FullImpact";
+import GhostStep from "../../Abilitiese/GhostStep";
 
-class Juggernaut extends Tank {
+class Scout extends Tank {
     constructor(id: string, position: Vector2D) {
         const baseStats: TankStats = {
-            health: 40,
-            speed: 1,
-            turnSpeed: 1,
-            shootSpeed: 2000, // milliseconds
-            baseProjectileDamage: 10,
-            ability: new ExpandProjectile(),
+            health: 25,
+            speed: 4,
+            turnSpeed: 3,
+            shootSpeed: 500, // milliseconds
+            baseProjectileDamage: 3,
+            ability: new GhostStep(),
         };
 
         super(id, position, baseStats, CannonBall);
     }
 }
 
-export default Juggernaut;
+export default Scout;
