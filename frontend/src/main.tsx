@@ -10,6 +10,7 @@ import Selection from "./components/Selection.tsx";
 import TankSelection from "./pages/TankSelection.tsx";
 import MainMenu from "./pages/MainMenu.tsx";
 import Settings from "./pages/Settings.tsx";
+import Credits from "./pages/Credits.tsx";
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
@@ -22,6 +23,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="/gameselection" element={<TankSelection />} />
                 <Route path="/mainmenu" element={<MainMenu />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/credits" element={<Credits />} />
             </Routes>
         </BrowserRouter>
     </StrictMode>
