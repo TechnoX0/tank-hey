@@ -4,7 +4,7 @@ type Props = {
   lobbyState: LobbyState;
 };
 
-function LobbyStatus({ lobbyState }: Props) {
+function SelectionStatus({ lobbyState }: Props) {
   const { players } = lobbyState;
 
   return (
@@ -26,4 +26,4 @@ function LobbyStatus({ lobbyState }: Props) {
   );
 }
 
-export default LobbyStatus;
+export default SelectionStatus;
