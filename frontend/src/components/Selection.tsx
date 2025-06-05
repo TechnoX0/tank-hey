@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getSocket } from "../Socket";
-import LobbyStatus from "./LobbyStatus";
+import LobbyStatus from "./SelectionStatus";
 
 const socket = getSocket();
 const classes = ["juggernaut", "sniper", "scout", "allrounder"];
@@ -23,7 +23,7 @@ type Props = {
     isOwner: boolean;
 };
 
-const Lobby = ({ roomId, onStartGame, isOwner }: Props) => {
+const Selection = ({ roomId, onStartGame, isOwner }: Props) => {
     const [lobbyState, setLobbyState] = useState<any>();
     const [selectedClass, setClass] = useState(classes[0]);
     const [selectedColor, setColor] = useState(colors[0]);
@@ -166,4 +166,4 @@ const Lobby = ({ roomId, onStartGame, isOwner }: Props) => {
     );
 };
 
-export default Lobby;
+export default Selection;

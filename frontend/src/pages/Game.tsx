@@ -4,8 +4,10 @@ import GameState from "../interface/GameState";
 import useGameRenderer from "../hooks/useGameRenderer";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { getSocket } from "../Socket";
-import Lobby from "../components/Lobby";
+import Selection from "../components/Selection";
 import { GameStatus } from "../components/GameStatus";
+
+import header from "../../public/assets/GUI/header2.png";
 
 const socket = getSocket();
 const canvasWidth = 1000;
@@ -62,7 +64,7 @@ function Game() {
   return (
     <main className="grid place-items-center h-screen w-screen bg-white box-border">
       {!gameState.gameStarted && (
-        <Lobby
+        <Selection
           roomId={roomId}
           onStartGame={startGame}
           isOwner={lobbyState?.ownerId === socket.id}
