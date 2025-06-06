@@ -11,6 +11,8 @@ interface GameState {
     projectiles: Projectile[];
     powerUps: Record<string, PowerUp<any>>;
     gameStarted: boolean;
+    gameEnded: boolean;
+    winner: Player | null;
     messages: Message[];
 }
 

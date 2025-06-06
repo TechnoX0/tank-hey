@@ -240,7 +240,7 @@ abstract class Tank extends GameObject implements Movement {
     }
 
     shoot() {
-        if (this.inputBlockers.has("disarm")) return;
+        if (this.isDead || this.inputBlockers.has("disarm")) return;
 
         const now = Date.now();
         const deltaTime = (now - this.lastOfAction["shoot"]) / 1000;
@@ -273,7 +273,7 @@ abstract class Tank extends GameObject implements Movement {
     }
 
     takeDamage(damage: number) {
-        if (this.inputBlockers.has("invulnerability")) return;
+        if (this.isDead || this.inputBlockers.has("invulnerability")) return;
 
         for (const modifierFn of this.onTakeDamage) {
             console.log(modifierFn);

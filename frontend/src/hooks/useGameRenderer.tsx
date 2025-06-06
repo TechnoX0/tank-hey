@@ -16,6 +16,8 @@ export default function useGameRenderer(
     useEffect(() => {
         if (!canvas || !ctx || !gameState.gameStarted) return;
 
+        console.log(gameState);
+
         const renderFrame = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -31,7 +33,11 @@ export default function useGameRenderer(
             }
 
             for (const player of Object.values(gameState.players) as Player[]) {
-                if (!player.tank.isVisible && socket.id != player.id) continue;
+                if (
+                    (!player.tank.isVisible && socket.id != player.id) ||
+                    player.tank.isDead
+                )
+                    continue;
                 drawTank(player, ctx);
             }
 

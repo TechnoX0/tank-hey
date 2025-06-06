@@ -1,3 +1,5 @@
+import Player from "./Player";
+
 interface GameState {
     id: string;
     map: any;
@@ -5,6 +7,8 @@ interface GameState {
     projectiles?: any;
     powerUps?: any;
     gameStarted?: boolean;
+    gameEnded: boolean;
+    winner?: Player;
 }
 
 export default GameState;

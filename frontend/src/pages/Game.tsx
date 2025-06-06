@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import GameState from "../interface/GameState";
 import useGameRenderer from "../hooks/useGameRenderer";
 import { useGameSocket } from "../hooks/useGameSocket";
@@ -16,6 +16,7 @@ function Game() {
     const roomId = params.roomId || "";
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+    const navigate = useNavigate();
 
     const [gameState, setGameState] = useState<GameState>({
         id: "",
@@ -23,6 +24,7 @@ function Game() {
         players: {},
         projectiles: {},
         gameStarted: false,
+        gameEnded: false,
     });
     const [lobbyState, setLobbyState] = useState<any>();
 
@@ -44,6 +46,12 @@ function Game() {
         if (!canvasRef.current) return;
         ctxRef.current = canvasRef.current.getContext("2d");
     }, [gameState.gameStarted]);
+
+    useEffect(() => {
+        if (gameState.gameEnded && gameState.gameStarted) {
+            setTimeout(() => navigate("/"), 5000);
+        }
+    }, [gameState.gameEnded]);
 
     function startGame() {
         socket.emit(
@@ -69,7 +77,17 @@ function Game() {
                 />
             )}
             {gameState.gameStarted && (
-                <div className="flex">
+                <div className="relative flex">
+                    {gameState.gameEnded && gameState.winner && (
+                        <div className="absolute grid place-items-center w-full h-full">
+                            <img src="/assets/GUI/win_frame.png" alt="Win" />
+                            <img
+                                className="absolute z-10 w-20 h-20 top-[40%]"
+                                src={`/assets/TankSprites/Tank ${gameState.winner.color}.png`}
+                                alt=""
+                            />
+                        </div>
+                    )}
                     <canvas
                         ref={canvasRef}
                         width={canvasWidth}

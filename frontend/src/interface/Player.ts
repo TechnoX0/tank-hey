@@ -2,12 +2,11 @@ import { Entity } from "./Entity";
 
 interface Player {
     id: string;
-    score: number
+    score: number;
     isHost: boolean;
-    isReady: boolean
-    color: string
-    isAlive: boolean
-    tankClass: string
+    isReady: boolean;
+    color: string;
+    tankClass: string;
     tank: Entity;
 }
 

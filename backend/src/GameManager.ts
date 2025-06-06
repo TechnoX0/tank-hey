@@ -17,6 +17,7 @@ class GameManager {
     private map: MapData;
     public gameStarted: boolean = false; // Flag to indicate if the game has started
     public gameEnded: boolean = false;
+    public winner: Player | null = null;
     private messages: Message[] = []; // Array to store messages
     private grid: UniformGridManager = new UniformGridManager(100);
     public powerUpManager: PowerUpManager;
@@ -33,7 +34,7 @@ class GameManager {
     }
 
     update(deltaTime: number) {
-        if (!this.gameStarted) return; // Only update if the game has started
+        if (!this.gameStarted || this.gameEnded) return; // Only update if the game has started
 
         this.grid.clear();
 
@@ -98,6 +99,7 @@ class GameManager {
         );
 
         this.gameEnded = livingPlayers.length <= 1;
+        this.winner = livingPlayers[0];
     }
 
     startGame() {
@@ -114,7 +116,7 @@ class GameManager {
     }
 
     playerAction(playerId: string, action: PlayerAction) {
-        if (!this.gameStarted) return; // Only process actions if the game has started
+        if (!this.gameStarted || this.gameEnded) return; // Only process actions if the game has started
         const player: Tank = this.players[playerId].tank;
         if (!player) return;
 
@@ -155,6 +157,8 @@ class GameManager {
             projectiles: this.projectiles,
             powerUps: this.powerUpManager.powerUps,
             gameStarted: this.gameStarted,
+            gameEnded: this.gameEnded,
+            winner: this.winner,
             messages: this.messages,
         };
     }

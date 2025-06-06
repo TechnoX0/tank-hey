@@ -80,7 +80,7 @@ const Selection = ({ roomId, onStartGame, isOwner }: Props) => {
     }, [roomId]);
 
     return (
-        <div className="w-screen h-screen">
+        <div className="relative w-screen h-screen">
             {!isClassSelected ? (
                 <TankSelection
                     selectedClass={selectedClass}

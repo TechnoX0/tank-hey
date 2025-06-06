@@ -13,9 +13,9 @@ function TankSelection({ selectedClass, handleChange, handleLock }: Props) {
     const tankData = TankClasses[selectedClass];
 
     return (
-        <div className="relative flex flex-col justify-center gap-4 w-screen h-screen py-60">
+        <div className="flex flex-col gap-4 w-screen h-screen pt-50">
             <img
-                className="absolute z-[-10] w-full h-screen x-0 y-0"
+                className="fixed z-[-10] w-full h-screen left-0 top-0"
                 src="\assets\GUI\blank tank selection screen.png"
                 alt="HeaderImage"
             />
@@ -27,7 +27,7 @@ function TankSelection({ selectedClass, handleChange, handleLock }: Props) {
                         alt="Tank"
                     />
                     <div className="flex flex-col justify-between h-full">
-                        <div className="flex flex-col justify-center p-2 bg-[#473b2f]">
+                        <div className="flex flex-col justify-between h-full p-2 bg-[#473b2f]">
                             <h1 className="flex justify-center font-bold text-2xl">
                                 Statistics
                             </h1>
@@ -54,15 +54,12 @@ function TankSelection({ selectedClass, handleChange, handleLock }: Props) {
                             <div className="flex flex-row gap-4 bg-[#281c14]">
                                 <div className="flex flex-col justify-center align-center p-2 gap-1 min-w-max">
                                     <img
-                                        className="flex justify-center align-center w-auto h-[15dvh] rounded-[100%]"
-                                        src="/assets/GUI/skilltemp.png"
-                                        alt="Skill"
+                                        className="flex justify-center align-center w-auto h-[15dvh] rounded-md"
+                                        src={`/assets/TankSprites/Abilities/${tankData.ability_name}.png`}
+                                        alt={tankData.ability_name}
                                     />
-                                    <h1 className="font-bold">
-                                        {tankData.ability_name}
-                                    </h1>
                                 </div>
-                                <div className="py-4">
+                                <div className="px-4 py-2">
                                     <h1>{tankData.ability_description}</h1>
                                 </div>
                             </div>
