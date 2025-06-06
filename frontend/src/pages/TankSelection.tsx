@@ -16,7 +16,7 @@ function TankSelection({ selectedClass, handleChange, handleLock }: Props) {
         <div className="relative flex flex-col justify-center gap-4 w-screen h-screen py-60">
             <img
                 className="absolute z-[-10] w-full h-screen x-0 y-0"
-                src="\public\assets\GUI\blank tank selection screen.png"
+                src="\assets\GUI\blank tank selection screen.png"
                 alt="HeaderImage"
             />
             <div className="flex justify-center align-center">
