@@ -276,7 +276,6 @@ abstract class Tank extends GameObject implements Movement {
         if (this.isDead || this.inputBlockers.has("invulnerability")) return;
 
         for (const modifierFn of this.onTakeDamage) {
-            console.log(modifierFn);
             damage = modifierFn(damage);
         }
 

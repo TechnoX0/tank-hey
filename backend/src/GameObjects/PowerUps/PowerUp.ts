@@ -19,7 +19,7 @@ abstract class PowerUp<T extends GameObject> extends GameObject {
             new Collision(
                 CollisionType.circle,
                 position,
-                5 // Default radius for power-up
+                12 // Default radius for power-up
             ),
             EntityType.powerup
         );

@@ -18,7 +18,7 @@ abstract class Projectile extends GameObject implements Movement {
     public baseStats: ProjectileStats;
 
     protected dealtDamageTo: Map<string, number> = new Map();
-    protected damageCooldown: number = 400;
+    protected damageCooldown: number = 600;
 
     constructor(
         owner: string,

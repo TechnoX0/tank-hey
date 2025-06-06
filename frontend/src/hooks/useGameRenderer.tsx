@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import GameState from "../interface/GameState";
-import { drawCircle, drawMap, drawTank } from "../utils/draw";
+import { drawCircle, drawMap, drawPowerUp, drawTank } from "../utils/draw";
 import { Entity } from "../interface/Entity";
 import { Socket } from "socket.io-client";
 import Player from "../interface/Player";
@@ -16,20 +16,13 @@ export default function useGameRenderer(
     useEffect(() => {
         if (!canvas || !ctx || !gameState.gameStarted) return;
 
-        console.log(gameState);
-
         const renderFrame = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             for (const powerUp of Object.values(
                 gameState.powerUps
             ) as Entity[]) {
-                drawCircle(
-                    "#FF0000",
-                    powerUp.position,
-                    powerUp.hitbox.radius,
-                    ctx
-                );
+                drawPowerUp(powerUp, ctx);
             }
 
             for (const player of Object.values(gameState.players) as Player[]) {

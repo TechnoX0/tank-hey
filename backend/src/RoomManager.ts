@@ -24,6 +24,12 @@ class RoomManager {
     joinRoom(roomId: string, playerId: string) {
         const room = this.rooms[roomId];
         if (!room) return "Room does not exist!";
+        if (
+            room.gameManager.gameStarted ||
+            room.gameManager.gameEnded ||
+            Object.values(room.gameManager.players).length >= 4
+        )
+            return "Unable to join Game!";
         return room.addPlayer(playerId);
     }
 

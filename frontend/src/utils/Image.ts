@@ -1,14 +1,22 @@
 const imageCache: Record<string, HTMLImageElement> = {};
 
-export function loadTankImage(tankColor: string): HTMLImageElement | null {
-    if (imageCache[tankColor]) return imageCache[tankColor];
+export function loadImage(url: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+        if (imageCache[url]?.complete) {
+            resolve(imageCache[url]);
+            return;
+        }
 
-    const img = new Image();
-    img.src = `/assets/TankSprites/Tank ${tankColor}.png`;
-    console.log(img);
-    imageCache[tankColor] = img;
+        const img = new Image();
+        img.src = url;
 
-    return img;
+        img.onload = () => {
+            imageCache[url] = img;
+            resolve(img);
+        };
+
+        img.onerror = reject;
+    });
 }
 
 export function changeSpriteColor(

@@ -1,15 +1,13 @@
 import { Map, Wall } from "../interface/Map";
 import Player from "../interface/Player";
 import { Vector2D } from "../interface/Vector2D";
-import { loadTankImage } from "./Image";
+import { loadImage } from "./Image";
 
 export function drawTank(player: Player, ctx: CanvasRenderingContext2D) {
     const tank = player.tank;
     if (!tank.hitbox?.vertices) return;
-    const tankImage = loadTankImage(player.color);
 
-    // Draw the image if loaded
-    if (tankImage && tankImage.complete) {
+    loadImage(`/assets/TankSprites/Tank ${player.color}.png`).then((img) => {
         const width = 40;
         const height = 40;
         const spriteOffsetDeg = 90;
@@ -18,10 +16,22 @@ export function drawTank(player: Player, ctx: CanvasRenderingContext2D) {
         ctx.save();
         ctx.translate(tank.position.x, tank.position.y);
         ctx.rotate((finalRotation * Math.PI) / 180);
-        ctx.drawImage(tankImage, -width / 2, -height / 2, width, height);
+        ctx.drawImage(img, -width / 2, -height / 2, width, height);
         ctx.restore();
         return;
-    }
+    });
+}
+
+export function drawPowerUp(powerUp: any, ctx: CanvasRenderingContext2D) {
+    loadImage("/assets/Power up.png").then((img) => {
+        const radius = powerUp.hitbox.radius;
+        const diameter = radius * 2;
+
+        ctx.save();
+        ctx.translate(powerUp.position.x, powerUp.position.y);
+        ctx.drawImage(img, -radius, -radius, diameter, diameter);
+        ctx.restore();
+    });
 }
 
 export function drawMap(map: Map, ctx: CanvasRenderingContext2D) {

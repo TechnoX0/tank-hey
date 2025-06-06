@@ -9,7 +9,10 @@ import { MapData } from "./interface/Map";
 import GameState from "./interface/GameState";
 import UniformGridManager from "./UniformGridManager";
 import PowerUpManager from "./PowerUpManager";
-import { EntityType } from "./Utils/Enums";
+import { CollisionType, EntityType } from "./Utils/Enums";
+import Vector2D from "./Utils/Vector2D";
+import Wall from "./Maps/Wall";
+import Collision from "./Utils/Collision";
 
 class GameManager {
     public players: Record<string, Player>;
@@ -26,7 +29,7 @@ class GameManager {
         this.players = {};
         this.projectiles = [];
         this.map = this.pickRandomMap();
-        this.powerUpManager = new PowerUpManager(this.map.walls);
+        this.powerUpManager = new PowerUpManager(this.map.walls, this.grid);
 
         for (const wall of this.map.walls) {
             this.grid.addWall(wall);
@@ -93,6 +96,47 @@ class GameManager {
         }
     }
 
+    spawnPlayers(
+        players: Record<string, Player>,
+        spawnedPlayer: Player,
+        walls: Wall[],
+        minDistance: number,
+        attempts: number
+    ) {
+        for (let i = 0; i < attempts; i++) {
+            const tank = spawnedPlayer.tank;
+            const testPosition = new Vector2D(
+                Math.floor(Math.random() * 1000),
+                Math.floor(Math.random() * 600)
+            );
+
+            const isFarEnough = Object.values(players).every(
+                (player) =>
+                    testPosition.distanceTo(player.tank.position) >= minDistance
+            );
+
+            // Temporarily update hitbox to test this position
+            const testHitbox = new Collision(
+                CollisionType.polygon,
+                testPosition,
+                tank.hitbox.vertices.map((vertex) => vertex.add(testPosition))
+            );
+
+            const hitsWall = walls.some((wall) =>
+                testHitbox.collidesWith(wall.collision)
+            );
+
+            if (isFarEnough && !hitsWall) {
+                spawnedPlayer.tank.hitbox.position = testPosition;
+                spawnedPlayer.tank.position = testPosition;
+                console.log("✅ Spawned at", testPosition);
+                return;
+            }
+        }
+
+        console.log(spawnedPlayer);
+    }
+
     checkGameOver() {
         const livingPlayers = Object.values(this.players).filter(
             (player: Player) => player.tank.health > 0
@@ -104,6 +148,11 @@ class GameManager {
 
     startGame() {
         this.gameStarted = true;
+        for (const id in this.players) {
+            const player = this.players[id];
+            player.tank.rotation = Math.floor(Math.random() * 360);
+            this.spawnPlayers(this.players, player, this.map.walls, 200, 100);
+        }
         return this.getGameState();
     }
 

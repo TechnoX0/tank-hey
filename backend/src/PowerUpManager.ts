@@ -7,22 +7,32 @@ import SpeedBoost from "./GameObjects/PowerUps/SpeedBoost";
 import InvertControl from "./GameObjects/PowerUps/InvertControl";
 import StopMovement from "./GameObjects/PowerUps/StopMovement";
 import Disarm from "./GameObjects/PowerUps/Disarm";
+import UniformGridManager from "./UniformGridManager";
 
 class PowerUpManager {
     public powerUps: Record<string, PowerUp<any>> = {};
     private walls: Wall[] = [];
+    private grid: UniformGridManager;
 
-    constructor(walls: Wall[]) {
+    private spawnCooldown = this.getRandomSpawnCooldown();
+    private timeSinceLastSpawn = 0;
+
+    constructor(walls: Wall[], grid: UniformGridManager) {
         this.walls = walls;
-        this.spawnPowerUp(new Vector2D(50, 100));
+        this.grid = grid;
     }
 
     update(deltaTime: number): void {
         const powerUpIds = Object.keys(this.powerUps);
         const powerUpCount = powerUpIds.length;
 
-        if (powerUpCount === 0) {
-            this.spawnPowerUp();
+        if (powerUpCount < 3) {
+            this.timeSinceLastSpawn += (deltaTime / 60) * 1000;
+            if (this.timeSinceLastSpawn >= this.spawnCooldown) {
+                this.spawnPowerUp();
+                this.timeSinceLastSpawn = 0;
+                this.spawnCooldown = this.getRandomSpawnCooldown();
+            }
         }
 
         for (const id of Object.keys(this.powerUps)) {
@@ -35,6 +45,11 @@ class PowerUpManager {
         }
 
         this.removedPickedUpOrExpired();
+    }
+
+    getRandomSpawnCooldown(): number {
+        // Return a random time between 10 and 20 seconds (in milliseconds)
+        return (10 + Math.random() * 10) * 1000;
     }
 
     spawnPowerUp(vector?: Vector2D): void {
@@ -67,31 +82,30 @@ class PowerUpManager {
     getRandomPowerUp(position: Vector2D): PowerUp<any> {
         const id = generateCustomUUID();
 
-        // In the future, you can add more types here
-        const powerUpTypes = [
-            () => new Disarm(id, position),
+        const buffs = [
             () => new DoubleDamage(id, position),
-            () => new InvertControl(id, position),
             () => new SpeedBoost(id, position),
-            () => new StopMovement(id, position),
         ];
 
-        const randomIndex = Math.floor(Math.random() * powerUpTypes.length);
-        return powerUpTypes[randomIndex]();
+        const debuffs = [
+            () => new InvertControl(id, position),
+            () => new StopMovement(id, position),
+            () => new Disarm(id, position),
+        ];
+
+        const isBuff = Math.random() < 0.65; // 65% chance for buff
+        const pool = isBuff ? buffs : debuffs;
+
+        const randomIndex = Math.floor(Math.random() * pool.length);
+        return pool[randomIndex]();
     }
 
     removedPickedUpOrExpired() {
         for (const id of Object.keys(this.powerUps)) {
             const powerUp = this.powerUps[id];
 
-            if (powerUp.isExpired) {
+            if (powerUp.isExpired || powerUp.isPickedUp) {
                 delete this.powerUps[id];
-                continue;
-            }
-
-            if (powerUp.isPickedUp) {
-                delete this.powerUps[id];
-                continue;
             }
         }
     }
