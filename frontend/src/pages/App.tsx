@@ -1,4 +1,4 @@
-import { useRef } from "react";
+// import { useRef } from "react";
 import { useNavigate } from "react-router";
 import { getSocket } from "../Socket";
 
@@ -6,7 +6,7 @@ const socket = getSocket();
 
 function App() {
     const navigate = useNavigate();
-    const roomNameRef = useRef<HTMLInputElement>(null);
+    // const roomNameRef = useRef<HTMLInputElement>(null);
 
     function createRoom() {
         socket.emit("createRoom", "Room", (roomId: string) => {
