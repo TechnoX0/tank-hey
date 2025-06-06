@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+@font-face {
+    font-family: BitIn;
+    font-style: normal;
+    font-weight: normal;
+    font-display: swap;
+    src: url("./assets/8_bit_arcade/8-bit Arcade In.ttf") format("truetype");
+}

@@ -10,7 +10,7 @@ class Scout extends Tank {
             health: 25,
             speed: 4,
             turnSpeed: 3,
-            shootSpeed: 500, // milliseconds
+            shootSpeed: 400, // milliseconds
             baseProjectileDamage: 3,
             ability: new GhostStep(),
         };

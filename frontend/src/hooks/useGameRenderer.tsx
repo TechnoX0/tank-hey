@@ -44,7 +44,6 @@ export default function useGameRenderer(
                     projectile.hitbox.radius,
                     ctx
                 );
-                console.log(projectile);
             }
 
             drawMap(gameState.map, ctx);

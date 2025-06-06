@@ -1,5 +1,3 @@
-import React from "react";
-
 function Settings() {
     return (
         <div className="relative text-white font-medium">

@@ -7,82 +7,80 @@ import { getSocket } from "../Socket";
 import Selection from "../components/Selection";
 import { GameStatus } from "../components/GameStatus";
 
-import header from "../../public/assets/GUI/header2.png";
-
 const socket = getSocket();
 const canvasWidth = 1000;
 const canvasHeight = 600;
 
 function Game() {
-  const params = useParams<{ roomId: string }>();
-  const roomId = params.roomId || "";
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+    const params = useParams<{ roomId: string }>();
+    const roomId = params.roomId || "";
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
-  const [gameState, setGameState] = useState<GameState>({
-    id: "",
-    map: {},
-    players: {},
-    projectiles: {},
-    gameStarted: false,
-  });
-  const [lobbyState, setLobbyState] = useState<any>();
-
-  useEffect(() => {
-    socket.emit("getRoomState", roomId, (state: any) => {
-      setLobbyState(state);
+    const [gameState, setGameState] = useState<GameState>({
+        id: "",
+        map: {},
+        players: {},
+        projectiles: {},
+        gameStarted: false,
     });
+    const [lobbyState, setLobbyState] = useState<any>();
 
-    socket.on("updateLobby", (state: any) => {
-      setLobbyState(state);
-    });
+    useEffect(() => {
+        socket.emit("getRoomState", roomId, (state: any) => {
+            setLobbyState(state);
+        });
 
-    return () => {
-      socket.off("updateLobby");
-    };
-  }, [roomId]);
+        socket.on("updateLobby", (state: any) => {
+            setLobbyState(state);
+        });
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    ctxRef.current = canvasRef.current.getContext("2d");
-  }, [gameState.gameStarted]);
+        return () => {
+            socket.off("updateLobby");
+        };
+    }, [roomId]);
 
-  function startGame() {
-    socket.emit(
-      "startGame",
-      roomId,
-      (success: boolean, message: string, gameState: GameState) => {
-        console.log(success, message);
-        console.log(gameState);
-      }
+    useEffect(() => {
+        if (!canvasRef.current) return;
+        ctxRef.current = canvasRef.current.getContext("2d");
+    }, [gameState.gameStarted]);
+
+    function startGame() {
+        socket.emit(
+            "startGame",
+            roomId,
+            (success: boolean, message: string, gameState: GameState) => {
+                console.log(success, message);
+                console.log(gameState);
+            }
+        );
+    }
+
+    useGameSocket(socket, roomId, setGameState);
+    useGameRenderer(canvasRef.current, ctxRef.current, gameState, socket);
+
+    return (
+        <main className="grid place-items-center h-screen w-screen box-border">
+            {!gameState.gameStarted && (
+                <Selection
+                    roomId={roomId}
+                    onStartGame={startGame}
+                    isOwner={lobbyState?.ownerId === socket.id}
+                />
+            )}
+            {gameState.gameStarted && (
+                <div className="flex">
+                    <canvas
+                        ref={canvasRef}
+                        width={canvasWidth}
+                        height={canvasHeight}
+                        className="bg-blue-100"
+                    />
+                    <GameStatus gameState={gameState} />
+                </div>
+            )}
+        </main>
     );
-  }
-
-  useGameSocket(socket, roomId, setGameState);
-  useGameRenderer(canvasRef.current, ctxRef.current, gameState, socket);
-
-  return (
-    <main className="grid place-items-center h-screen w-screen bg-white box-border">
-      {!gameState.gameStarted && (
-        <Selection
-          roomId={roomId}
-          onStartGame={startGame}
-          isOwner={lobbyState?.ownerId === socket.id}
-        />
-      )}
-      {gameState.gameStarted && (
-        <div className="flex">
-          <canvas
-            ref={canvasRef}
-            width={canvasWidth}
-            height={canvasHeight}
-            className="bg-blue-100"
-          />
-          <GameStatus gameState={gameState} />
-        </div>
-      )}
-    </main>
-  );
 }
 
 export default Game;

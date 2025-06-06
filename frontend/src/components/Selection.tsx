@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getSocket } from "../Socket";
-import LobbyStatus from "./SelectionStatus";
+import TankSelection from "../pages/TankSelection";
+import Lobby from "../pages/Lobby";
 
 const socket = getSocket();
 const classes = ["juggernaut", "sniper", "scout", "allrounder"];
@@ -28,6 +29,7 @@ const Selection = ({ roomId, onStartGame, isOwner }: Props) => {
     const [selectedClass, setClass] = useState(classes[0]);
     const [selectedColor, setColor] = useState(colors[0]);
     const [isReady, setReady] = useState(false);
+    const [isClassSelected, setIsClassSelected] = useState<boolean>(false);
 
     const emitLobbyUpdate = (data: {
         selectedClass: string;
@@ -56,9 +58,9 @@ const Selection = ({ roomId, onStartGame, isOwner }: Props) => {
         emitLobbyUpdate({ selectedClass, selectedColor: newColor, isReady });
     };
 
-    const handleReadyChange = (newReady: boolean) => {
-        setReady(newReady);
-        emitLobbyUpdate({ selectedClass, selectedColor, isReady: newReady });
+    const handleReadyChange = () => {
+        setReady(!isReady);
+        emitLobbyUpdate({ selectedClass, selectedColor, isReady: !isReady });
     };
 
     useEffect(() => {
@@ -78,8 +80,24 @@ const Selection = ({ roomId, onStartGame, isOwner }: Props) => {
     }, [roomId]);
 
     return (
-        <div className="w-[1000px] h-[600px] bg-[#EDEDED]">
-            <div className="flex gap-12">
+        <div className="w-screen h-screen">
+            {!isClassSelected ? (
+                <TankSelection
+                    selectedClass={selectedClass}
+                    handleChange={handleClassChange}
+                    handleLock={setIsClassSelected}
+                />
+            ) : (
+                <Lobby
+                    handleColorChange={handleColorChange}
+                    handleReadyChange={handleReadyChange}
+                    onStartGame={onStartGame}
+                    lobbyState={lobbyState}
+                    playerId={socket.id || ""}
+                    isOwner={isOwner}
+                />
+            )}
+            {/* <div className="flex gap-12">
                 <div>
                     <h1>Classes</h1>
                     {classes.map((className) => (
@@ -127,7 +145,6 @@ const Selection = ({ roomId, onStartGame, isOwner }: Props) => {
                         ))}
                     </div>
                 </div>
-
                 {isOwner ? (
                     <div>
                         <button
@@ -158,10 +175,10 @@ const Selection = ({ roomId, onStartGame, isOwner }: Props) => {
                 )}
             </div>
             <div>
-                {lobbyState && lobbyState.players && (
-                    <LobbyStatus lobbyState={lobbyState} />
-                )}
-            </div>
+                    {lobbyState && lobbyState.players && (
+                        <LobbyStatus lobbyState={lobbyState} />
+                    )}
+                </div> */}
         </div>
     );
 };

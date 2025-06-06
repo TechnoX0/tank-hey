@@ -1,8 +1,19 @@
-import React from "react";
+import { useNavigate } from "react-router";
+import { getSocket } from "../Socket";
+
+const socket = getSocket();
 
 function MainMenu() {
+    const navigate = useNavigate();
+
+    function createRoom() {
+        socket.emit("createRoom", "Room", (roomId: string) => {
+            navigate("/game/" + roomId);
+        });
+    }
+
     return (
-        <div className="flex flex-row">
+        <div className="flex flex-row w-screen h-screen">
             <div className="flex flex-col bg-[#675645] min-w-[20dvh] align-center gap-5">
                 <div className="flex justify-center pt-[3dvh]">
                     <img
@@ -12,41 +23,47 @@ function MainMenu() {
                     />
                 </div>
                 <div className="flex flex-col bg-[#675645] px-[5dvh] pb-[20dvh] gap-4">
-                    <div className="flex justify-center">
+                    <button
+                        className="flex justify-center hover:cursor-pointer"
+                        onClick={createRoom}
+                    >
                         <img
                             className="flex w-[32dvh] h-full"
                             src="/assets/GUI/Buttons/play button.png"
                             alt="Play"
                         />
-                    </div>
+                    </button>
 
-                    <div className="flex justify-center">
+                    {/* <div className="flex justify-center">
                         <img
                             className="flex w-[32dvh] h-full"
                             src="/assets/GUI/Buttons/settings button.png"
                             alt="Settings"
                         />
-                    </div>
+                    </div> */}
 
-                    <div className="flex justify-center">
+                    <button
+                        className="flex justify-center hover:cursor-pointer"
+                        onClick={() => navigate("/credits")}
+                    >
                         <img
                             className="flex w-[32dvh] h-full"
                             src="/assets/GUI/Buttons/credits button.png"
                             alt="Credits"
                         />
-                    </div>
+                    </button>
 
-                    <div className="flex justify-center">
+                    {/* <div className="flex justify-center">
                         <img
                             className="flex w-[32dvh] h-full"
                             src="/assets/GUI/Buttons/exit button.png"
                             alt="Exit"
                         />
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <img
-                className="flex w-[150dvh] h-full"
+                className="flex w-screen"
                 src="/assets/GUI/ai tank.jpg"
                 alt="Tank"
             />
