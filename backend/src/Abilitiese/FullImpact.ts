@@ -18,6 +18,7 @@ class FullImpact extends Ability<Tank> {
 
         this.modifierFn = (projectile: Projectile) => {
             projectile.hitbox.radius = (projectile.baseStats.radius || 1) * 4;
+            projectile.speed = projectile.speed / 2;
         };
     }
 
@@ -29,6 +30,7 @@ class FullImpact extends Ability<Tank> {
     }
 
     deactivateAbility(target: Tank): void {
+        this.isActive = false;
         const index = target.onShootModifiers.indexOf(this.modifierFn);
         if (index !== -1) {
             target.onShootModifiers.splice(index, 1);

@@ -6,7 +6,7 @@ import Ability from "./Ability";
 class IronFocus extends Ability<Tank> {
     constructor() {
         const stats: AbilityStats = {
-            duration: 10000,
+            duration: 5000,
             cooldown: 45000,
             name: "Iron Focux",
             type: "iron-focus",
@@ -33,6 +33,7 @@ class IronFocus extends Ability<Tank> {
     }
 
     deactivateAbility(target: Tank): void {
+        this.isActive = false;
         target.inputBlockers.delete("invulnerability");
 
         target.onShootModifiers = target.onShootModifiers.filter(

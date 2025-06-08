@@ -13,7 +13,7 @@ class CannonBall extends Projectile {
 
     constructor(owner: string, position: Vector2D, stats?: ProjectileStats) {
         const baseStats: ProjectileStats = {
-            damage: 3,
+            damage: 4,
             radius: 5,
             speed: 6,
             maxTimeToLive: 5,

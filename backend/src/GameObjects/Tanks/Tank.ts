@@ -10,7 +10,7 @@ import PowerUp from "../PowerUps/PowerUp";
 import Ability from "../../Abilitiese/Ability";
 
 const maxStatRange = {
-    speed: { min: 1, max: 8 },
+    speed: { min: 1, max: 5 },
     turnSpeed: { min: 1, max: 10 },
 };
 

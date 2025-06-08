@@ -7,11 +7,11 @@ import IronFocus from "../../Abilitiese/IronFocus";
 class Sniper extends Tank {
     constructor(id: string, position: Vector2D) {
         const baseStats: TankStats = {
-            health: 10,
-            speed: 2,
-            turnSpeed: 2,
+            health: 80,
+            speed: 2.5,
+            turnSpeed: 1.75,
             shootSpeed: 1000, // milliseconds
-            baseProjectileDamage: 10,
+            baseProjectileDamage: 18,
             ability: new IronFocus(),
         };
 

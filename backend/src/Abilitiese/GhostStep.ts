@@ -31,6 +31,7 @@ class GhostStep extends Ability<Tank> {
     }
 
     deactivateAbility(target: Tank): void {
+        this.isActive = false;
         target.isVisible = true;
         target.movementModifiers = target.movementModifiers.filter(
             (fn) => fn !== this.modifierFn

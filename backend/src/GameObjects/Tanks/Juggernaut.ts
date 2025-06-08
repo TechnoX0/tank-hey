@@ -7,11 +7,11 @@ import ExpandProjectile from "../../Abilitiese/FullImpact";
 class Juggernaut extends Tank {
     constructor(id: string, position: Vector2D) {
         const baseStats: TankStats = {
-            health: 40,
+            health: 200,
             speed: 1,
-            turnSpeed: 1,
-            shootSpeed: 2000, // milliseconds
-            baseProjectileDamage: 10,
+            turnSpeed: 1.5,
+            shootSpeed: 1800, // milliseconds
+            baseProjectileDamage: 12,
             ability: new ExpandProjectile(),
         };
 

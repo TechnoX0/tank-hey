@@ -14,7 +14,7 @@ class Shell extends Projectile {
     constructor(owner: string, position: Vector2D, stats?: ProjectileStats) {
         const baseStats: ProjectileStats = {
             damage: 3,
-            speed: 15,
+            speed: 12,
             maxTimeToLive: 5,
         };
 

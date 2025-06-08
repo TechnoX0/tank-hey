@@ -7,11 +7,11 @@ import Fortess from "../../Abilitiese/Fortess";
 class AllRounder extends Tank {
     constructor(id: string, position: Vector2D) {
         const baseStats: TankStats = {
-            health: 30,
-            speed: 3,
-            turnSpeed: 3,
-            shootSpeed: 100, // milliseconds
-            baseProjectileDamage: 5,
+            health: 140,
+            speed: 3.5,
+            turnSpeed: 2.5,
+            shootSpeed: 800, // milliseconds
+            baseProjectileDamage: 7,
             ability: new Fortess(),
         };
 
