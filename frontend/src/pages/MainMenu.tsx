@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import { getSocket } from "../Socket";
+import GameButton from "../components/GameButton";
 
 const socket = getSocket();
 
@@ -23,17 +24,11 @@ function MainMenu() {
                     />
                 </div>
                 <div className="flex flex-col bg-[#675645] px-[5dvh] pb-[20dvh] gap-4">
-                    <button
-                        className="flex justify-center hover:cursor-pointer"
-                        onClick={createRoom}
-                    >
-                        <img
-                            className="flex w-[32dvh] h-full"
-                            src="/assets/GUI/Buttons/play button.png"
-                            alt="Play"
-                        />
-                    </button>
-
+                    <GameButton
+                        func={createRoom}
+                        imagePath="GUI/Buttons/play button.png"
+                        soundPath="Sound Effects/UI SFX/click_confirm.ogg"
+                    />
                     {/* <div className="flex justify-center">
                         <img
                             className="flex w-[32dvh] h-full"
@@ -41,25 +36,11 @@ function MainMenu() {
                             alt="Settings"
                         />
                     </div> */}
-
-                    <button
-                        className="flex justify-center hover:cursor-pointer"
-                        onClick={() => navigate("/credits")}
-                    >
-                        <img
-                            className="flex w-[32dvh] h-full"
-                            src="/assets/GUI/Buttons/credits button.png"
-                            alt="Credits"
-                        />
-                    </button>
-
-                    {/* <div className="flex justify-center">
-                        <img
-                            className="flex w-[32dvh] h-full"
-                            src="/assets/GUI/Buttons/exit button.png"
-                            alt="Exit"
-                        />
-                    </div> */}
+                    <GameButton
+                        func={() => navigate("/credits")}
+                        imagePath="GUI/Buttons/credits button.png"
+                        soundPath="Sound Effects/UI SFX/click_confirm.ogg"
+                    />
                 </div>
             </div>
             <img

@@ -8,6 +8,7 @@ import Projectile from "../Projectiles/Projectile";
 import { TankStats } from "../../interface/Stats";
 import PowerUp from "../PowerUps/PowerUp";
 import Ability from "../../Abilitiese/Ability";
+import { io } from "../../server";
 
 const maxStatRange = {
     speed: { min: 1, max: 5 },
@@ -106,6 +107,8 @@ abstract class Tank extends GameObject implements Movement {
         if (!this.ability.isActive) {
             this.ability.deactivateAbility(this);
         }
+
+        io.emit("move", { id: this.id, moving: this.isMoving });
     }
 
     applyPowerUp(powerUp: PowerUp<Tank>) {
@@ -119,6 +122,7 @@ abstract class Tank extends GameObject implements Movement {
 
         powerUp.applyEffect(this);
         this.activePowerUp.push(powerUp);
+        io.emit("pickUpPowerUp", { id: this.id });
         console.log("Applied Power-up", this.activePowerUp);
     }
 
@@ -137,6 +141,7 @@ abstract class Tank extends GameObject implements Movement {
 
         this.ability.activateAbility(this);
         this.lastOfAction["ability"] = now;
+        io.emit("useSkill", { id: this.id });
     }
 
     resetStats() {
@@ -279,12 +284,13 @@ abstract class Tank extends GameObject implements Movement {
             damage = modifierFn(damage);
         }
 
-        // console.log(this.id, this.ability.stats.name, damage);
-
         this.health -= damage;
 
         if (this.health <= 0) {
             this.isDead = true;
+            io.emit("death", { id: this.id });
+        } else {
+            io.emit("takeDamage", { id: this.id });
         }
     }
 }

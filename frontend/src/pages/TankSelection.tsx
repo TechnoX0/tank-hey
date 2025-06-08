@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { TankClasses } from "../data/ClassData";
+import TankClassSelector from "../components/TankClassSelector";
+import GameButton from "../components/GameButton";
 
 const classes = ["juggernaut", "sniper", "scout", "allrounder"];
 
@@ -67,40 +69,19 @@ function TankSelection({ selectedClass, handleChange, handleLock }: Props) {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-row justify-center cursor-pointer">
-                <img
-                    className="w-auto h-[10dvh]"
-                    src="/assets/GUI/Buttons/lock button.png"
-                    alt="Lock Button"
-                    onClick={() => handleLock(true)}
-                />
-            </div>
+            <GameButton
+                func={() => handleLock(true)}
+                imagePath="GUI/Buttons/lock button.png"
+                soundPath="Sound Effects/UI SFX/click_confirm.ogg"
+                className="flex flex-row justify-center"
+            />
             <div className="flex flex-row justify-center gap-5">
                 {classes.map((tankClass) => (
-                    <div
-                        key={tankClass}
-                        className={`flex flex-col items-center`}
-                    >
-                        <input
-                            type="radio"
-                            name="tankClass"
-                            className="hidden peer"
-                            id={tankClass}
-                            value={tankClass}
-                            checked={selectedClass === tankClass}
-                            onChange={() => handleChange(tankClass)}
-                        />
-                        <label
-                            htmlFor={tankClass}
-                            className="border-4 border-transparent rounded-md peer-checked:border-[#32a852] cursor-pointer"
-                        >
-                            <img
-                                className="flex w-auto h-[15dvh] rounded-sm"
-                                src={`/assets/GUI/Tanks/${tankClass}.png`}
-                                alt=""
-                            />
-                        </label>
-                    </div>
+                    <TankClassSelector
+                        tankClass={tankClass}
+                        selectedClass={selectedClass}
+                        handleChange={() => handleChange(tankClass)}
+                    />
                 ))}
             </div>
         </div>

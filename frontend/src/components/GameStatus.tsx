@@ -26,8 +26,6 @@ export const GameStatus = ({ gameState }: Props) => {
                 const ability = tank.ability;
                 const abilityType = ability.stats.type;
 
-                console.log(player);
-
                 return (
                     <div>
                         <ProgressBar

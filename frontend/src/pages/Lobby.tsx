@@ -1,4 +1,6 @@
+import GameButton from "../components/GameButton";
 import Player from "../interface/Player";
+import { SoundManager } from "../utils/SoundManager";
 
 interface Props {
     handleColorChange: (newColor: string) => void;
@@ -32,6 +34,15 @@ function Lobby({
 }: Props) {
     const players = lobbyState.players;
     const player = players[playerId];
+
+    function readyChange() {
+        handleReadyChange();
+        SoundManager.play(
+            `/assets/Sound/Sound Effects/UI SFX/player_${
+                !player.isReady ? "ready" : "notready"
+            }.wav`
+        );
+    }
 
     return (
         <div className="relative">
@@ -88,27 +99,18 @@ function Lobby({
                 <div className="flex flex-row justify-center">
                     <div className="flex justify-center gap-8">
                         {isOwner ? (
-                            <button
-                                onClick={() => onStartGame()}
-                                className="cursor-pointer"
-                            >
-                                <img
-                                    className="w-[40dvh] h-full"
-                                    src="/assets/GUI/Buttons/play button.png"
-                                    alt="Ready"
-                                />
-                            </button>
+                            <GameButton
+                                func={() => onStartGame()}
+                                imagePath="GUI/Buttons/lock button.png"
+                                soundPath="Sound Effects/UI SFX/click_confirm.ogg"
+                                className="flex flex-row justify-center"
+                            />
                         ) : (
-                            <button
-                                onClick={() => handleReadyChange()}
-                                className="cursor-pointer"
-                            >
-                                <img
-                                    className="w-[40dvh] h-full"
-                                    src="/assets/GUI/Buttons/ready button.png"
-                                    alt="Ready"
-                                />
-                            </button>
+                            <GameButton
+                                func={readyChange}
+                                imagePath="GUI/Buttons/lock button.png"
+                                className="flex flex-row justify-center"
+                            />
                         )}
                     </div>
                 </div>

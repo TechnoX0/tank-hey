@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import GameButton from "../components/GameButton";
 
 function Credits() {
     const navigate = useNavigate();
@@ -47,7 +48,13 @@ function Credits() {
                         </div>
                     </div>
                 </div>
-                <button
+                <GameButton
+                    func={() => navigate("/")}
+                    imagePath="GUI/Buttons/back button.png"
+                    soundPath="Sound Effects/UI SFX/click_back.ogg"
+                    className="flex flex-col self-start mx-8 my-4"
+                />
+                {/* <button
                     className="flex flex-col self-start mx-8 my-4"
                     onClick={() => navigate("/")}
                 >
@@ -56,7 +63,7 @@ function Credits() {
                         src="/assets/GUI/Buttons/back button.png"
                         alt="Back Button"
                     />
-                </button>
+                </button> */}
             </div>
         </div>
     );

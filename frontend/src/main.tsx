@@ -16,10 +16,6 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="/" element={<MainMenu />} />
                 <Route path="/game" element={<Game />} />
                 <Route path="/game/:roomId" element={<Game />} />
-                {/* <Route path="/gamelobby" element={<Lobby />} /> */}
-                {/* <Route path="/gameselection" element={<TankSelection />} /> */}
-                {/* <Route path="/mainmenu" element={<MainMenu />} /> */}
-                {/* <Route path="/settings" element={<Settings />} /> */}
                 <Route path="/credits" element={<Credits />} />
             </Routes>
         </BrowserRouter>

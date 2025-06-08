@@ -6,10 +6,45 @@ import { useGameSocket } from "../hooks/useGameSocket";
 import { getSocket } from "../Socket";
 import Selection from "../components/Selection";
 import { GameStatus } from "../components/GameStatus";
+import { SoundManager } from "../utils/SoundManager";
 
 const socket = getSocket();
 const canvasWidth = 1000;
 const canvasHeight = 600;
+
+const SoundEffects = [
+    {
+        trigger: "death",
+        soundPath: "Tank SFX/effect_death.ogg",
+        samePlayer: true,
+    },
+    {
+        trigger: "takeDamage",
+        soundPath: "Tank SFX/effect_dmg.wav",
+        samePlayer: true,
+    },
+    {
+        trigger: "pickUpPowerUp",
+        soundPath: "Tank SFX/effect_item_pickup.wav",
+        samePlayer: true,
+    },
+    {
+        trigger: "killedPlayer",
+        soundPath: "Tank SFX/effect_kill.wav",
+        samePlayer: false,
+    },
+    {
+        trigger: "respawn",
+        soundPath: "Tank SFX/effect_respawn.ogg",
+        samePlayer: true,
+    },
+    {
+        trigger: "useSkill",
+        soundPath: "Tank SFX/effect_skill_use.wav",
+        samePlayer: true,
+    },
+    // { trigger: "move", soundPath: "Tank SFX/tank_movement.ogg" },
+];
 
 function Game() {
     const params = useParams<{ roomId: string }>();
@@ -37,8 +72,37 @@ function Game() {
             setLobbyState(state);
         });
 
+        // socket.on("move", (data) => {
+        //     console.log("Data:", data);
+        //     if (socket.id === data.id) {
+        //         if (data.moving) {
+        //             SoundManager.loop(
+        //                 `/assets/Sound/Sound Effects/Tank SFX/tank_movement.ogg`
+        //             );
+        //         } else {
+        //             SoundManager.stopLoop(
+        //                 `/assets/Sound/Sound Effects/Tank SFX/tank_movement.ogg`
+        //             );
+        //         }
+        //     }
+        // });
+
+        for (const soundEffect of SoundEffects) {
+            socket.on(soundEffect.trigger, (data: any) => {
+                if (socket.id === data.id) {
+                    if (soundEffect.samePlayer && data.id != socket.id) return;
+                    SoundManager.play(
+                        `/assets/Sound/Sound Effects/${soundEffect.soundPath}`
+                    );
+                }
+            });
+        }
+
         return () => {
             socket.off("updateLobby");
+            for (const soundEffect of SoundEffects) {
+                socket.off(soundEffect.trigger);
+            }
         };
     }, [roomId]);
 
@@ -62,10 +126,13 @@ function Game() {
                 console.log(gameState);
             }
         );
+
+        SoundManager.play("/assets/Sound/Sound Effects/UI SFX/match_start.wav");
     }
 
     useGameSocket(socket, roomId, setGameState);
     useGameRenderer(canvasRef.current, ctxRef.current, gameState, socket);
+    // console.log(lobbyState, socket.id);
 
     return (
         <main className="grid place-items-center h-screen w-screen box-border">

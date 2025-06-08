@@ -6,6 +6,7 @@ import Movement from "../../interface/Movement";
 import Collision from "../../Utils/Collision";
 import { CollisionType, EntityType } from "../../Utils/Enums";
 import { ProjectileStats } from "../../interface/Stats";
+import { io } from "../../server";
 
 abstract class Projectile extends GameObject implements Movement {
     public owner: string;
@@ -76,6 +77,7 @@ abstract class Projectile extends GameObject implements Movement {
 
         target.takeDamage(this.damage);
         this.dealtDamageTo.set(target.id, now);
+        if (target.health <= 0) io.emit("killedPlayer", { id: this.owner });
     }
 
     shouldDestroy(): boolean {

@@ -1,7 +1,7 @@
 import { Map, Wall } from "../interface/Map";
 import Player from "../interface/Player";
 import { Vector2D } from "../interface/Vector2D";
-import { loadImage } from "./Image";
+import { loadImage } from "./ImageManager";
 
 export function drawTank(
     player: Player,
