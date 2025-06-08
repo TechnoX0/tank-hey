@@ -1,6 +1,12 @@
 import { useEffect, useRef } from "react";
 import GameState from "../interface/GameState";
-import { drawCircle, drawMap, drawPowerUp, drawTank } from "../utils/draw";
+import {
+    drawAbility,
+    drawCircle,
+    drawMap,
+    drawPowerUp,
+    drawTank,
+} from "../utils/draw";
 import { Entity } from "../interface/Entity";
 import { Socket } from "socket.io-client";
 import Player from "../interface/Player";
@@ -31,7 +37,12 @@ export default function useGameRenderer(
                     player.tank.isDead
                 )
                     continue;
-                drawTank(player, ctx);
+
+                if (player.tank.ability.isActive) {
+                    drawAbility(player, ctx);
+                }
+
+                drawTank(player, socket.id === player.id, ctx);
             }
 
             for (const projectile of Object.values(
@@ -41,7 +52,8 @@ export default function useGameRenderer(
                     "#295C0A",
                     projectile.position,
                     projectile.hitbox.radius,
-                    ctx
+                    ctx,
+                    "#295C0A"
                 );
             }
 

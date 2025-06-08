@@ -1,8 +1,16 @@
 import GameState from "../interface/GameState";
 import Player from "../interface/Player";
+import ProgressBar from "./ProgressBar";
 
 type Props = {
     gameState: GameState;
+};
+
+const className: Record<string, string> = {
+    allrounder: "All Rounder",
+    juggernaut: "Juggernaut",
+    sniper: "Sniper",
+    scout: "Scout",
 };
 
 export const GameStatus = ({ gameState }: Props) => {
@@ -15,13 +23,25 @@ export const GameStatus = ({ gameState }: Props) => {
                 const tank = player.tank;
                 const health = tank.health;
                 const baseHealth = tank.baseStats.health;
+                const ability = tank.ability;
+                const abilityType = ability.stats.type;
+
+                console.log(player);
 
                 return (
-                    <div
-                        key={player.id}
-                        style={{ backgroundColor: `#${player.color}` }}
-                        className="px-8 py-4 text-white"
-                    >{`${health} / ${baseHealth}`}</div>
+                    <div>
+                        <ProgressBar
+                            min={0}
+                            max={baseHealth}
+                            value={health}
+                            text={className[player.tankClass]}
+                            variant={
+                                abilityType === "fortess" && ability.isActive
+                                    ? "shield"
+                                    : "health"
+                            }
+                        />
+                    </div>
                 );
             })}
         </div>

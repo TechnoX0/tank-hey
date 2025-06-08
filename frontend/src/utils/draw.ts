@@ -3,7 +3,11 @@ import Player from "../interface/Player";
 import { Vector2D } from "../interface/Vector2D";
 import { loadImage } from "./Image";
 
-export function drawTank(player: Player, ctx: CanvasRenderingContext2D) {
+export function drawTank(
+    player: Player,
+    isOwner: boolean,
+    ctx: CanvasRenderingContext2D
+) {
     const tank = player.tank;
     if (!tank.hitbox?.vertices) return;
 
@@ -16,6 +20,9 @@ export function drawTank(player: Player, ctx: CanvasRenderingContext2D) {
         ctx.save();
         ctx.translate(tank.position.x, tank.position.y);
         ctx.rotate((finalRotation * Math.PI) / 180);
+
+        ctx.globalAlpha = isOwner && !player.tank.isVisible ? 0.3 : 1;
+
         ctx.drawImage(img, -width / 2, -height / 2, width, height);
         ctx.restore();
         return;
@@ -32,6 +39,35 @@ export function drawPowerUp(powerUp: any, ctx: CanvasRenderingContext2D) {
         ctx.drawImage(img, -radius, -radius, diameter, diameter);
         ctx.restore();
     });
+}
+
+export function drawAbility(player: Player, ctx: CanvasRenderingContext2D) {
+    const tank = player.tank;
+    const abilityType = tank.ability.stats.type;
+
+    switch (abilityType) {
+        case "iron-focus":
+            ctx.save();
+            ctx.fillStyle = "gold";
+            ctx.globalAlpha = 0.25;
+            ctx.beginPath();
+            ctx.arc(tank.position.x, tank.position.y, 30, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.restore();
+            break;
+        case "fortess":
+            ctx.save();
+            ctx.strokeStyle = "cyan";
+            ctx.lineWidth = 3;
+            ctx.globalAlpha = 0.5;
+            ctx.beginPath();
+            ctx.arc(tank.position.x, tank.position.y, 30, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.restore();
+            break;
+        default:
+            break;
+    }
 }
 
 export function drawMap(map: Map, ctx: CanvasRenderingContext2D) {
@@ -63,11 +99,18 @@ export function drawCircle(
     color: string,
     location: Vector2D,
     radius: number,
-    ctx: CanvasRenderingContext2D
+    ctx: CanvasRenderingContext2D,
+    fill?: string
 ) {
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(location.x, location.y);
     ctx.arc(location.x, location.y, radius, 0, Math.PI * 2, false);
-    ctx.fill();
+    if (fill) {
+        ctx.fillStyle = fill;
+        ctx.fill();
+    } else {
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    }
 }

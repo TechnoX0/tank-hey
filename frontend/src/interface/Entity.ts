@@ -1,4 +1,14 @@
 export interface Entity {
+    ability: {
+        isActive: boolean;
+        stats: {
+            duration: number;
+            cooldown: number;
+            name: string;
+            type: string;
+        };
+        timeActive: number;
+    };
     activePowerUp: [];
     baseStats: {
         health: number;
