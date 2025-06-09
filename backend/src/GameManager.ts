@@ -25,6 +25,8 @@ class GameManager {
     private grid: UniformGridManager = new UniformGridManager(100);
     public powerUpManager: PowerUpManager;
 
+    private playerRespawnTime = 5000;
+
     constructor() {
         this.players = {};
         this.projectiles = [];
@@ -79,6 +81,20 @@ class GameManager {
                     continue;
                 }
             }
+
+            if (tank.isDead && tank.lives > 0) {
+                const passedTime = Date.now() - tank.lastRespawnTime;
+
+                if (passedTime > this.playerRespawnTime) {
+                    this.spawnPlayers(
+                        this.players,
+                        player,
+                        this.map.walls,
+                        150,
+                        100
+                    );
+                }
+            }
         }
 
         this.powerUpManager.update(deltaTime);
@@ -127,19 +143,19 @@ class GameManager {
             );
 
             if (isFarEnough && !hitsWall) {
-                spawnedPlayer.tank.hitbox.position = testPosition;
-                spawnedPlayer.tank.position = testPosition;
+                tank.hitbox.position = testPosition;
+                tank.position = testPosition;
+                tank.lastRespawnTime = Date.now();
+                tank.resetStats();
                 console.log("✅ Spawned at", testPosition);
                 return;
             }
         }
-
-        console.log(spawnedPlayer);
     }
 
     checkGameOver() {
         const livingPlayers = Object.values(this.players).filter(
-            (player: Player) => player.tank.health > 0
+            (player: Player) => player.tank.health > 0 || player.tank.lives > 0
         );
 
         this.gameEnded = livingPlayers.length <= 1;
@@ -150,8 +166,10 @@ class GameManager {
         this.gameStarted = true;
         for (const id in this.players) {
             const player = this.players[id];
-            player.tank.rotation = Math.floor(Math.random() * 360);
-            this.spawnPlayers(this.players, player, this.map.walls, 200, 100);
+            const rotation = Math.floor(Math.random() * 360);
+            player.tank.rotation = rotation;
+            player.tank.rotate(true, this.map);
+            this.spawnPlayers(this.players, player, this.map.walls, 150, 100);
         }
         return this.getGameState();
     }

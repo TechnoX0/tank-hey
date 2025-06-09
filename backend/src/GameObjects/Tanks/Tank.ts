@@ -35,9 +35,12 @@ abstract class Tank extends GameObject implements Movement {
     public shootSpeed: number; // milliseconds
     public rotation: number = 0;
     public isDead: boolean = false;
-    public isMoving = false;
-    public isVisible = true;
+    public isMoving: boolean = false;
+    public isVisible: boolean = true;
     private currentDirection: -1 | 1 = 1;
+
+    public lives = 3;
+    public lastRespawnTime: number = Date.now();
 
     protected lastOfAction: Record<string, number> = {
         shoot: Date.now() / 2,
@@ -149,6 +152,9 @@ abstract class Tank extends GameObject implements Movement {
         this.turnSpeed = this.baseStats.turnSpeed;
         this.shootSpeed = this.baseStats.shootSpeed;
         this.speed = this.baseStats.speed;
+        this.isDead = false;
+        this.isMoving = false;
+        this.isVisible = true;
     }
 
     move(map: MapData, forward: boolean) {
@@ -288,6 +294,7 @@ abstract class Tank extends GameObject implements Movement {
 
         if (this.health <= 0) {
             this.isDead = true;
+            this.lastRespawnTime = Date.now();
             io.emit("death", { id: this.id });
         } else {
             io.emit("takeDamage", { id: this.id });
