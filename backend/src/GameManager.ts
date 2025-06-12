@@ -200,8 +200,10 @@ class GameManager {
             case "shoot":
                 const projectile = player.shoot();
                 if (projectile) this.projectiles.push(projectile);
+                break;
             case "ability":
                 player.useAbility();
+                break;
             default:
                 break;
         }
